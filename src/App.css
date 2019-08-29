@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'THSarabunNew';
+    src: url('/font/THSarabunNew.ttf');
+
+}
+
+h1,h2,h3,h4,h5,h6,p,span {
+    font-family: 'THSarabunNew', 'THSarabunNew';
+}
+
+
+.title {
+    font-family: 'THSarabunNew', 'THSarabunNew';
+    font-size: 20px;
+}
