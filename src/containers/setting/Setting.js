@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import Header from '../Header';
-import Menu from '../Menu';
-import Footer from '../Footer';
+import Header from '../../components/Header';
+import Menu from '../../components/Menu';
+import Footer from '../../components/Footer';
 
 export default class Setting extends Component {
     render() {
