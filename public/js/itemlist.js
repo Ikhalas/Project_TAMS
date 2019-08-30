@@ -1,6 +1,6 @@
 $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
+    $('#table1').DataTable()
+    $('#table2').DataTable({
       'paging'      : true,
       'lengthChange': false,
       'searching'   : false,

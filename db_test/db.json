@@ -1,464 +1,258 @@
 {
-    "Staff":[
+  "Staff": [
+    {
+      "id": 1,
+      "No": "5910110405",
+      "Name": "Ikhalas  Mannoon",
+      "Position": "Student",
+      "Role": "admin"
+    }
+  ],
+  "Department": [
+    {
+      "id": 1,
+      "name": "อบต.ท่าข้าม"
+    },
+    {
+      "id": 2,
+      "name": "ศูนย์พัฒนาเด็กเล็กท่าข้าม"
+    }
+  ],
+  "itemType": [
+    {
+      "id": 3,
+      "code": "003",
+      "type": "ที่ดิน",
+      "name": "ที่ดินที่มีหลักฐาน ส.ค.1"
+    },
+    {
+      "id": 6,
+      "code": "002",
+      "type": "ที่ดิน",
+      "name": "ที่ดินที่มีหลักฐาน น.ส.3"
+    },
+    {
+      "id": 10,
+      "code": "002",
+      "type": "ที่ดิน",
+      "name": "ที่ดินที่มีหลักฐาน น.ส.3"
+    },
+    {
+      "id": 14,
+      "type": "ที่ดิน",
+      "code": "002",
+      "name": "ที่ดินที่มีหลักฐาน น.ส.3"
+    }
+  ],
+  "items": [
+    {
+      "itemVehicle": [
         {
-            "No": "5910110405",
-            "Name": "Ikhalas  Mannoon",
-            "Position": "Student",
-            "Role": "admin"
+          "id": 1,
+          "itemCode": "011-62-0002",
+          "itemName": "รถกระเช้าไฟฟ้าพร้อมติดตั้งรถเทรน",
+          "waybillCode": "เล่มที่1เลขที่KL6206048 ลว 25มิ.ย.62",
+          "itemBrand": "ISUZU",
+          "itemType": "รุ่น FRR90HSXTU",
+          "orderNo": "",
+          "bodyNo": "",
+          "frameNo": "",
+          "regisNo": "29-82-7008 สงขลา",
+          "itemColor": "เหลือง",
+          "other": "",
+          "insuranceTerms": "",
+          "insuranceExpDate": "",
+          "insuranceCompany": "",
+          "insuranceDate": "",
+          "derivedFrom": "บริษัท กวงเล้ง ออโต้ เซอร์วิส จำกัด",
+          "derivedDate": "29 มิถุนายน 2562",
+          "Price": 2494000,
+          "budgetOf": "อบต.ท่าข้าม",
+          "Depreciations": [
+            {
+              "Year": 1,
+              "Percent": "",
+              "Balance": 249400
+            },
+            {
+              "Year": 2,
+              "Percent": "",
+              "Balance": 24940
+            }
+          ],
+          "Encashment": [
+            {
+              "Date": "",
+              "Method": "",
+              "approvalNo": "",
+              "Price": "",
+              "profitOrLost": ""
+            }
+          ],
+          "Responsibility": [
+            {
+              "Year": "2562",
+              "departmentName": "อบต.ท่าข้าม",
+              "UserName": "กองช่าง",
+              "departmentHead": "นายสินธพ อินทรัตน์"
+            },
+            {
+              "Year": "2563",
+              "departmentName": "อบต.ท่าข้าม",
+              "UserName": "กองช่าง",
+              "departmentHead": "นายสินธพ อินทรัตน์"
+            }
+          ],
+          "Exploitation": [
+            {
+              "Year": "",
+              "List": "",
+              "Benefits": ""
+            }
+          ],
+          "Thumbnail": "",
+          "Note": ""
         }
-    ],
-    "itemType":[
+      ],
+      "itemOffice": [
         {
-            "Land":[
-                {
-                    "001": "ที่ดินที่มีโฉนด",
-                    "002": "ที่ดินที่มีหลักฐาน น.ส.3",
-                    "003": "ที่ดินที่มีหลักฐาน ส.ค.1",
-                    "004": "ที่ดินในครอบครองไม่มีหลักฐานและไม่เป็นของผู้อื่น"
-                }
-            ],
-            "Office":[
-
-            ],
-            "Transport":[
-
-            ],
-            "Public":[
-
-            ],
-            "Archaeological":[
-
-            ],
-            "Irrigation":[
-
-            ],
-            "General":[
-
-            ]
-
+          "id": 1,
+          "itemCode": "ศพด.ท่าข้าม 401-57-0138",
+          "itemName": "เก้าอี้ (ชุดโต๊ะทำงาน)",
+          "waybillCode": "IV5700099 ลว 3ต.ค.57",
+          "itemBrand": "TK-35A",
+          "itemType": "",
+          "orderNo": "",
+          "bodyNo": "",
+          "frameNo": "",
+          "regisNo": "",
+          "itemColor": "",
+          "other": "",
+          "insuranceTerms": "",
+          "insuranceExpDate": "",
+          "insuranceCompany": "",
+          "insuranceDate": "",
+          "derivedFrom": "หจก.สรวีย์ ออฟฟิศ เฟอร์นิเจอร์",
+          "derivedDate": "12 มิถุนายน 2557",
+          "Price": 690,
+          "budgetOf": "อบต.ท่าข้าม",
+          "Depreciations": [
+            {
+              "Year": 1,
+              "Percent": "",
+              "Balance": 600
+            },
+            {
+              "Year": 2,
+              "Percent": "",
+              "Balance": 550
+            }
+          ],
+          "Encashment": [
+            {
+              "Date": "",
+              "Method": "",
+              "approvalNo": "",
+              "Price": "",
+              "profitOrLost": ""
+            }
+          ],
+          "Responsibility": [
+            {
+              "Year": "2557",
+              "departmentName": "ส่วนการศึกษา",
+              "UserName": "ศพด.ท่าข้าม",
+              "departmentHead": "น.ส.สุจิตร ผลยฤทธิ์"
+            }
+          ],
+          "Exploitation": [
+            {
+              "Year": "",
+              "List": "",
+              "Benefits": ""
+            }
+          ],
+          "Thumbnail": "",
+          "Note": ""
         }
-    ],
-    "SdAO":[
+      ],
+      "itemLand": [
         {
-            "itemVehicle": [
-                {
-                    "id": 1,
-                    "itemCode": "011-62-0002",
-                    "itemName": "รถกระเช้าไฟฟ้าพร้อมติดตั้งรถเทรน",
-                    "waybillCode": "เล่มที่1เลขที่KL6206048 ลว 25มิ.ย.62",
-                    "itemBrand": "ISUZU",
-                    "itemType": "รุ่น FRR90HSXTU",
-                    "orderNo": "",
-                    "bodyNo": "",
-                    "frameNo": "",
-                    "regisNo": "29-82-7008 สงขลา",
-                    "itemColor": "เหลือง",
-                    "other": "",
-                    "insuranceTerms": "",
-                    "insuranceExpDate": "",
-                    "insuranceCompany": "",
-                    "insuranceDate": "",
-                    "derivedFrom": "บริษัท กวงเล้ง ออโต้ เซอร์วิส จำกัด",
-                    "derivedDate": "29 มิถุนายน 2562",
-                    "Price": 2494000,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 249400
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 24940
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2562",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "UserName": "กองช่าง",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        },
-                        {
-                            "Year": "2563",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "UserName": "กองช่าง",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ],
-            "itemOffice": [
-                {
-                    "id": 1,
-                    "itemCode": "ศพด.ท่าข้าม 401-57-0138",
-                    "itemName": "เก้าอี้ (ชุดโต๊ะทำงาน)",
-                    "waybillCode": "IV5700099 ลว 3ต.ค.57",
-                    "itemBrand": "TK-35A",
-                    "itemType": "",
-                    "orderNo": "",
-                    "bodyNo": "",
-                    "frameNo": "",
-                    "regisNo": "",
-                    "itemColor": "",
-                    "other": "",
-                    "insuranceTerms": "",
-                    "insuranceExpDate": "",
-                    "insuranceCompany": "",
-                    "insuranceDate": "",
-                    "derivedFrom": "หจก.สรวีย์ ออฟฟิศ เฟอร์นิเจอร์",
-                    "derivedDate": "12 มิถุนายน 2557",
-                    "Price": 690,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 600
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 550
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2557",
-                            "departmentName": "ส่วนการศึกษา",
-                            "UserName": "ศพด.ท่าข้าม",
-                            "departmentHead": "น.ส.สุจิตร ผลยฤทธิ์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ],
-            "itemLand": [
-                {
-                    "id": 1,
-                    "itemCode": "002-55-0004",
-                    "itemName": "ที่ดินที่มีหลักฐาน น.ส.3",
-                    "Location": "หมู่ที่ 3 หลาต้นม่วง (อบต.ใหม่)",
-                    "derivedDate": "12 พฤศจิกายน 2555",
-                    "approvalDate": "5 พฤศจิกายน 2555",
-                    "Price": 1998675,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Certificate": "น.ส.3 ก. เลขที่ 4951",
-                    "sellerName": "นางหนู อรุณทอง",
-                    "Area": [
-                        {
-                            "Rai": 4,
-                            "Ngan": 20
-                        }
-                    ],
-                    "Building": [
-                        {
-                            "buildingType": "",
-                            "Material": "",
-                            "Floors": ""
-                        }
-                    ],
-                    "Other":[
-                        {
-                            "Type": "",
-                            "Size": ""
-                        }
-                    ],
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 600
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 550
-                        }
-                    ],
-                    "valueIncreases4Years": [
-                        {
-                            "Year": "",
-                            "Percent": "",
-                            "Balance": ""
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2555",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ]
+          "id": 1,
+          "itemCode": "002-55-0004",
+          "itemName": "ที่ดินที่มีหลักฐาน น.ส.3",
+          "Location": "หมู่ที่ 3 หลาต้นม่วง (อบต.ใหม่)",
+          "derivedDate": "12 พฤศจิกายน 2555",
+          "approvalDate": "5 พฤศจิกายน 2555",
+          "Price": 1998675,
+          "budgetOf": "อบต.ท่าข้าม",
+          "Certificate": "น.ส.3 ก. เลขที่ 4951",
+          "sellerName": "นางหนู อรุณทอง",
+          "Area": [
+            {
+              "Rai": 4,
+              "Ngan": 20
+            }
+          ],
+          "Building": [
+            {
+              "buildingType": "",
+              "Material": "",
+              "Floors": ""
+            }
+          ],
+          "Other": [
+            {
+              "Type": "",
+              "Size": ""
+            }
+          ],
+          "Depreciations": [
+            {
+              "Year": 1,
+              "Percent": "",
+              "Balance": 600
+            },
+            {
+              "Year": 2,
+              "Percent": "",
+              "Balance": 550
+            }
+          ],
+          "valueIncreases4Years": [
+            {
+              "Year": "",
+              "Percent": "",
+              "Balance": ""
+            }
+          ],
+          "Encashment": [
+            {
+              "Date": "",
+              "Method": "",
+              "approvalNo": "",
+              "Price": "",
+              "profitOrLost": ""
+            }
+          ],
+          "Responsibility": [
+            {
+              "Year": "2555",
+              "departmentName": "อบต.ท่าข้าม",
+              "departmentHead": "นายสินธพ อินทรัตน์"
+            }
+          ],
+          "Exploitation": [
+            {
+              "Year": "",
+              "List": "",
+              "Benefits": ""
+            }
+          ],
+          "Thumbnail": "",
+          "Note": ""
         }
-    ],
-    "CDC":[
-        {
-            "itemVehicle": [
-                {
-                    "id": 1,
-                    "itemCode": "011-62-0002",
-                    "itemName": "รถกระเช้าไฟฟ้าพร้อมติดตั้งรถเทรน",
-                    "waybillCode": "เล่มที่1เลขที่KL6206048 ลว 25มิ.ย.62",
-                    "itemBrand": "ISUZU",
-                    "itemType": "รุ่น FRR90HSXTU",
-                    "orderNo": "",
-                    "bodyNo": "",
-                    "frameNo": "",
-                    "regisNo": "29-82-7008 สงขลา",
-                    "itemColor": "เหลือง",
-                    "other": "",
-                    "insuranceTerms": "",
-                    "insuranceExpDate": "",
-                    "insuranceCompany": "",
-                    "insuranceDate": "",
-                    "derivedFrom": "บริษัท กวงเล้ง ออโต้ เซอร์วิส จำกัด",
-                    "derivedDate": "29 มิถุนายน 2562",
-                    "Price": 2494000,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 249400
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 24940
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2562",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "UserName": "กองช่าง",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        },
-                        {
-                            "Year": "2563",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "UserName": "กองช่าง",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ],
-            "itemOffice": [
-                {
-                    "id": 1,
-                    "itemCode": "ศพด.ท่าข้าม 401-57-0138",
-                    "itemName": "เก้าอี้ (ชุดโต๊ะทำงาน)",
-                    "waybillCode": "IV5700099 ลว 3ต.ค.57",
-                    "itemBrand": "TK-35A",
-                    "itemType": "",
-                    "orderNo": "",
-                    "bodyNo": "",
-                    "frameNo": "",
-                    "regisNo": "",
-                    "itemColor": "",
-                    "other": "",
-                    "insuranceTerms": "",
-                    "insuranceExpDate": "",
-                    "insuranceCompany": "",
-                    "insuranceDate": "",
-                    "derivedFrom": "หจก.สรวีย์ ออฟฟิศ เฟอร์นิเจอร์",
-                    "derivedDate": "12 มิถุนายน 2557",
-                    "Price": 690,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 600
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 550
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2557",
-                            "departmentName": "ส่วนการศึกษา",
-                            "UserName": "ศพด.ท่าข้าม",
-                            "departmentHead": "น.ส.สุจิตร ผลยฤทธิ์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ],
-            "itemLand": [
-                {
-                    "id": 1,
-                    "itemCode": "002-55-0004",
-                    "itemName": "ที่ดินที่มีหลักฐาน น.ส.3",
-                    "Location": "หมู่ที่ 3 หลาต้นม่วง (อบต.ใหม่)",
-                    "derivedDate": "12 พฤศจิกายน 2555",
-                    "approvalDate": "5 พฤศจิกายน 2555",
-                    "Price": 1998675,
-                    "budgetOf": "อบต.ท่าข้าม",
-                    "Certificate": "น.ส.3 ก. เลขที่ 4951",
-                    "sellerName": "นางหนู อรุณทอง",
-                    "Area": [
-                        {
-                            "Rai": 4,
-                            "Ngan": 20
-                        }
-                    ],
-                    "Building": [
-                        {
-                            "buildingType": "",
-                            "Material": "",
-                            "Floors": ""
-                        }
-                    ],
-                    "Other":[
-                        {
-                            "Type": "",
-                            "Size": ""
-                        }
-                    ],
-                    "Depreciations": [
-                        {
-                            "Year": 1,
-                            "Percent": "",
-                            "Balance": 600
-                        },
-                        {
-                            "Year": 2,
-                            "Percent": "",
-                            "Balance": 550
-                        }
-                    ],
-                    "valueIncreases4Years": [
-                        {
-                            "Year": "",
-                            "Percent": "",
-                            "Balance": ""
-                        }
-                    ],
-                    "Encashment": [
-                        {
-                            "Date": "",
-                            "Method": "",
-                            "approvalNo": "",
-                            "Price": "",
-                            "profitOrLost": ""
-                        }
-                    ],
-                    "Responsibility": [
-                        {
-                            "Year": "2555",
-                            "departmentName": "อบต.ท่าข้าม",
-                            "departmentHead": "นายสินธพ อินทรัตน์"
-                        }
-                    ],
-                    "Exploitation": [
-                        {
-                            "Year": "",
-                            "List": "",
-                            "Benefits": ""
-                        }
-                    ],
-                    "Thumbnail": "",
-                    "Note": ""
-                }
-            ]
-        }
-    ]
-    
+      ]
+    }
+  ]
 }
