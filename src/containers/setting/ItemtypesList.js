@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 export default class ItemtypesList extends Component {
     render() {
-        console.log (this.props.itemType)
+        //console.log (this.props.itemType)
         const { code, type, name } = this.props.itemType
         return (
             <tr>

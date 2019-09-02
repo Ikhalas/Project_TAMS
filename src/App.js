@@ -6,6 +6,7 @@ import ItemLand from "./containers/item/ItemLand";
 import ItemOffice from "./containers/item/ItemOffice";
 import ItemVehicle from "./containers/item/ItemVehicle";
 import Setting from './containers/setting/Setting';
+import DepartmentEdit from './containers/setting/DepartmentEdit';
 
 export default class App extends Component {
 
@@ -14,6 +15,8 @@ export default class App extends Component {
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route exact path="/setting" component={Setting}/>
+        <Route exact path="/setting/add-department" component={DepartmentEdit}/>
+        <Route exact path="/setting/edit-department/:id" component={DepartmentEdit}/>
         <Route exact path="/itemland" component={ItemLand}/>
         <Route exact path="/itemoffice" component={ItemOffice}/>
         <Route exact path="/itemvehicle" component={ItemVehicle}/>

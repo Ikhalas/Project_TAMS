@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom';
 import ItemtypesList from './ItemtypesList'
 import DepartmentsList from './DepartmentsList'
 
-export default class SettingContainer extends Component {
+class SettingContainer extends Component {
 
     componentDidMount() {
         const script = document.createElement('script')
@@ -13,7 +14,7 @@ export default class SettingContainer extends Component {
 
     showDepartment() {
         return this.props.departments && this.props.departments.map(department => (
-            <DepartmentsList key={department.id} department={department} onDelDepartment={this.props.onDelDepartment}/>
+            <DepartmentsList key={department.id} department={department} onDelDepartment={this.props.onDelDepartment} onEditDepartment={this.props.onEditDepartment}/>
         ))
     }
 
@@ -42,7 +43,7 @@ export default class SettingContainer extends Component {
                                 <div className="box">
                                     <div className="box-header">
                                         <h3 className="box-title" style={font30}>รายการชื่อหน่วยงาน</h3>
-                                        <button className="btn btn-success title pull-right" onClick={() => this.props.history.push}>เพิ่มรายการ</button>
+                                        <button className="btn btn-success title pull-right" onClick={() => this.props.history.push('/setting/add-department')}>เพิ่มรายการ</button>
                                     </div>
                                     {/* /.box-header */}
                                     <div className="box-body">
@@ -106,3 +107,5 @@ export default class SettingContainer extends Component {
         )
     }
 }
+
+export default withRouter(SettingContainer)

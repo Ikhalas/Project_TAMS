@@ -9,7 +9,7 @@ export default class DepartmentsList extends Component {
                 <td>
                     <button className="btn btn-danger title col-5 float-right" onClick={() => this.props.onDelDepartment(this.props.department)}>ลบ</button>
                     &nbsp;&nbsp;
-                    <button className="btn btn-warning title col-5 float-right">แก้ไข</button>
+                    <button className="btn btn-warning title col-5 float-right" onClick={() => this.props.onEditDepartment(this.props.department)}>แก้ไข</button>
                 </td>
             </tr>
         )
