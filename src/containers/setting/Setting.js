@@ -1,63 +1,59 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom';
-import Header from '../../components/Header';
-import Menu from '../../components/Menu';
-import Footer from '../../components/Footer';
-import SettingContainer from './SettingContainer';
-import { connect } from 'react-redux';
-import { itemtypesFetch, itemtypeDelete, departmentsFetch, departmentDelete } from '../../redux/actions'
+import axios from 'axios';
+import DepartmentContainer from './department/DepartmentContainer';
+import ItemtypeContainer from './itemtype/ItemtypeContainer'
+
 
 class Setting extends Component {
     constructor(props){
         super(props)
-        this.delDepartment = this.delDepartment.bind(this)
-        this.delItemtype = this.delItemtype.bind(this)
-        this.editDepartment = this.editDepartment.bind(this)
+        this.state = {
+            departments : [],
+            itemTypes : []
+        }
     }
 
     componentDidMount(){
-        this.props.itemtypesFetch()  //action จะอยู่ใน props ของ componennt แล้ว เรียกใช้ได้เลย
-        this.props.departmentsFetch()
-    }
+        //get departments
+        axios.get("http://localhost:3001/Department").then(
+            res => {
+                //console.log(res)
+                this.setState({departments : res.data})
+            } )
+        .catch(err => console.log(err))
 
-    delDepartment(department){
-        this.props.departmentDelete(department.id)
-    }
 
-    editDepartment(department){
-        this.props.history.push('/setting/edit-department/' + department.id)
+        //get items
+        axios.get("http://localhost:3001/itemType").then(
+            res => {
+                //console.log(res)
+                this.setState({itemTypes : res.data})
+            }
+        )
+        .catch(err => console.log(err))
+        
     }
-
-    delItemtype(itemTypes){
-        this.props.itemtypeDelete(itemTypes.id)
-    }
+    
 
     render() {
         //console.log(this.props.itemTypes)
         return (
             <div>
-                <Header/>
-                <Menu/>
-
-                {this.props.departments && Array.isArray(this.props.departments) && (
-                    <SettingContainer 
-                        itemTypes={this.props.itemTypes} departments={this.props.departments} 
-                        onDelDepartment={this.delDepartment} onDelItemtype={this.delItemtype}
-                        onEditDepartment={this.editDepartment}
-                    />
-                )}
-                <Footer/>
+                <div className="content-wrapper title">
+                    <section className="content-header">
+                        <h1> <span style={{fontSize:35}}>&nbsp;การตั้งค่า</span> </h1>
+                    </section>
+                    <DepartmentContainer departments={this.state.departments} />
+                    <ItemtypeContainer itemtypes={this.state.itemTypes} />
+                </div>
             </div>
         )
     }
 }
 
-function mapStateToProps(state){
-    //console.log(state.departments)
-    return { itemTypes: state.itemtypes, departments: state.departments }
-}
 
-export default withRouter(connect(mapStateToProps, { itemtypesFetch, departmentsFetch, itemtypeDelete, departmentDelete  }) (Setting))
+
+export default Setting
 
 //mapStateToProps ฟังก์ชั่นสำหรับนำค่า State ใน store มาเก็บไว้ใน props ของ component Setting
 //Action ทีใช่
