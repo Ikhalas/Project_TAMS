@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import {  DEPARTMENT } from '../../../common/APIutl'
 
 export default class DepartmentEdit extends Component {
     constructor(props){
@@ -28,7 +29,7 @@ export default class DepartmentEdit extends Component {
 
     getDepartment(){
         let departmentId = this.props.match.params.id;
-        axios.get("http://localhost:3001/Department/" + departmentId ).then(
+        axios.get( DEPARTMENT + '/' + departmentId ).then(
             res => {
                 this.setState({
                     id : res.data.id,
@@ -44,7 +45,7 @@ export default class DepartmentEdit extends Component {
     editDepartment(newDepartment){
         axios.request({
             method: 'put',
-            url: 'http://localhost:3001/Department/' + this.state.id,
+            url: DEPARTMENT + '/' + this.state.id,
             data: newDepartment
         }).then(res => {
             this.props.history.push('/setting');

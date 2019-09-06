@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { ITEMTYPE } from '../../../common/APIutl'
 
 export default class ItemtypeEdit extends Component {
     constructor(props){
@@ -8,7 +9,6 @@ export default class ItemtypeEdit extends Component {
             id : '',
             code : '',
             typeI : '',
-            typeII : '',
             other : ''
         }
     }
@@ -29,13 +29,12 @@ export default class ItemtypeEdit extends Component {
 
     getItemtype(){
         let itemtypeId = this.props.match.params.id;
-        axios.get("http://localhost:3001/itemType/" + itemtypeId ).then(
+        axios.get(ITEMTYPE + '/' + itemtypeId ).then(
             res => {
                 this.setState({
                     id : res.data.id,
                     code : res.data.code,
                     typeI : res.data.typeI,
-                    typeII : res.data.typeII,
                     other : res.data.other
                 }, () => console.log(this.state))
             
@@ -46,7 +45,7 @@ export default class ItemtypeEdit extends Component {
     editDepartment(newItemtype){
         axios.request({
             method: 'put',
-            url: 'http://localhost:3001/itemType/' + this.state.id,
+            url: ITEMTYPE + '/' + this.state.id,
             data: newItemtype
         }).then(res => {
             this.props.history.push('/setting');
@@ -58,8 +57,7 @@ export default class ItemtypeEdit extends Component {
         const newItemtype = {
             code: this.refs.code.value,
             typeI: this.refs.typeI.value,
-            typeII: this.refs.typeII.value,
-            other: this.refs.other.value,
+            other: this.refs.other.value
         }
         this.editDepartment(newItemtype)
         e.preventDefault();
@@ -73,7 +71,7 @@ export default class ItemtypeEdit extends Component {
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;แก้ไขรายการประเภทครุภัณฑ์</span>
+                            <span style={{ fontSize: 35 }}>&nbsp;แก้ไขรายการประเภทพัสดุครุภัณฑ์</span>
                         </h1>
                     </section>
                     <section className="content">
@@ -82,7 +80,7 @@ export default class ItemtypeEdit extends Component {
 
 
                                 <form onSubmit={this.onSubmit.bind(this)}>
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสครุภัณฑ์</label>
+                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="code"
@@ -94,24 +92,13 @@ export default class ItemtypeEdit extends Component {
                                         required
                                     />
                                     <br />
-                                    <label className="title" style={{fontSize:20}}>ประเภทครุภัณฑ์ (หลัก)</label>
+                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="typeI"
                                         ref="typeI"
                                         className="form-control"
                                         value={this.state.typeI}
-                                        onChange={this.handleInputChange.bind(this)}
-                                        style={{ fontSize: 20 }}
-                                    />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ประเภทครุภัณฑ์ (รอง)</label>
-                                    <input
-                                        type="text"
-                                        name="typeII"
-                                        ref="typeII"
-                                        className="form-control"
-                                        value={this.state.typeII}
                                         onChange={this.handleInputChange.bind(this)}
                                         style={{ fontSize: 20 }}
                                     />

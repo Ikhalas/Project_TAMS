@@ -41,33 +41,21 @@ export default class Menu extends Component {
         <li className="header title" style={font18}>รายการครุภัณฑ์</li>
 
         <li>
-          <Link to="/itemvehicle">
-            <i className="fa fa-files-o" /> <span className="title">ยานพาหนะและขนส่ง</span>
+          <Link to="/items">
+            <i className="fa fa-files-o" /> <span className="title">รายการครุภัณฑ์ทั้งหมด</span>
           </Link>
         </li>
 
         <li>
-          <Link to="/itemoffice">
-            <i className="fa fa-files-o" /> <span className="title">ของใช้สำนักงาน</span>
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/itemland">
-            <i className="fa fa-files-o" /> <span className="title">ที่ดิน</span>
-          </Link>
-        </li>
-
-        <li className="header title" style={font18}>การจัดการ</li>
-
-        <li>
-          <Link to="fake_url">
-            <i className="fa fa-th" /> <span className="title">เพิ่มรายการครุภัณฑ์</span>
+          <Link to="/items/item-add">
+            <i className="fa fa-plus-circle"/> <span className="title">เพิ่มรายการครุภัณฑ์</span>
             <span className="pull-right-container">
               <small className="label pull-right bg-green">new</small>
             </span>
           </Link>
         </li>
+
+        <li className="header title" style={font18}>การจัดการ</li>
 
         <li className="treeview">
           <Link to="fake_url">

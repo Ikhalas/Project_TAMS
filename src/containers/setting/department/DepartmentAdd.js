@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import {  DEPARTMENT } from '../../../common/APIutl'
 
 export default class DepartmentAdd extends Component {
 
@@ -7,7 +8,7 @@ export default class DepartmentAdd extends Component {
         //console.log(newDepartment)
         axios.request({
             method: 'post',
-            url: 'http://localhost:3001/Department',
+            url: DEPARTMENT,
             data: newDepartment
         }).then(res => {
             this.props.history.push('/setting');

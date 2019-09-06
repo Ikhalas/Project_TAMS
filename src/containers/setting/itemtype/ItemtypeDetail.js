@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { ITEMTYPE } from '../../../common/APIutl'
 
 
 export default class ItemtypeDetail extends Component {
@@ -16,7 +17,7 @@ export default class ItemtypeDetail extends Component {
 
     getItemtype(){
         let ItemtypeId = this.props.match.params.id;
-        axios.get("http://localhost:3001/itemType/" + ItemtypeId ).then(
+        axios.get(ITEMTYPE + '/' + ItemtypeId ).then(
             res => {
                 //console.log(res)
                 this.setState({detail : res.data}, () => {
@@ -28,7 +29,7 @@ export default class ItemtypeDetail extends Component {
 
     onDelete(){
         let ItemtypeId = this.state.detail.id;
-        axios.delete("http://localhost:3001/itemType/" + ItemtypeId).then(
+        axios.delete(ITEMTYPE + '/' + ItemtypeId).then(
             res => {
                 this.props.history.push('/setting');
             })
@@ -42,21 +43,18 @@ export default class ItemtypeDetail extends Component {
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;รายละเอียดประเภทครุภัณฑ์&nbsp;<strong>{this.state.detail.typeI}</strong></span>
+                            <span style={{ fontSize: 35 }}>&nbsp;รายละเอียดประเภทพัสดุครุภัณฑ์&nbsp;<strong>{this.state.detail.typeI}</strong></span>
                         </h1>
                     </section>
                     <section className="content">
                         <div className="row">
                             <div className="col-xs-12">
                                 <ul className="list-group">
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>เลขรหัสครุภัณฑ์</b> &nbsp; : &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
                                         {this.state.detail.code}
                                     </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทครุภัณฑ์ (หลัก)</b> &nbsp; : &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
                                         {this.state.detail.typeI}
-                                    </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทครุภัณฑ์ (รอง)</b> &nbsp; : &nbsp;</span>
-                                        {this.state.detail.typeII}
                                     </li>
                                     <li className="list-group-item title"><span style={{fontSize:20}}><b>รายละเอียดอื่น ๆ</b> &nbsp;: &nbsp;</span>
                                         {this.state.detail.other}
@@ -77,8 +75,6 @@ export default class ItemtypeDetail extends Component {
                         </div>
                     </section>
                 </div>
-
-                
             </div>
         )
     }

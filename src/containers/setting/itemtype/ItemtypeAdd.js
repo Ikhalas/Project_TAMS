@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { ITEMTYPE } from '../../../common/APIutl'
 
 export default class ItemtypeAdd extends Component {
 
@@ -7,7 +8,7 @@ export default class ItemtypeAdd extends Component {
         //console.log(newItemtype)
         axios.request({
             method: 'post',
-            url: 'http://localhost:3001/itemType',
+            url: ITEMTYPE,
             data: newItemtype
         }).then(res => {
             this.props.history.push('/setting');
@@ -19,8 +20,7 @@ export default class ItemtypeAdd extends Component {
         const newItemtype = {
             code: this.refs.code.value,
             typeI: this.refs.typeI.value,
-            typeII: this.refs.typeII.value,
-            other: this.refs.other.value,
+            other: this.refs.other.value
         }
         this.addDepartment(newItemtype)
         e.preventDefault();
@@ -32,7 +32,7 @@ export default class ItemtypeAdd extends Component {
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการประเภทครุภัณฑ์</span>
+                            <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการประเภทพัสดุครุภัณฑ์</span>
                         </h1>
                     </section>
                     <section className="content">
@@ -41,7 +41,7 @@ export default class ItemtypeAdd extends Component {
 
 
                                 <form onSubmit={this.onSubmit.bind(this)}>
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสครุภัณฑ์</label>
+                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="code"
@@ -51,20 +51,11 @@ export default class ItemtypeAdd extends Component {
                                         required
                                     />
                                     <br />
-                                    <label className="title" style={{fontSize:20}}>ประเภทครุภัณฑ์ (หลัก)</label>
+                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="typeI"
                                         ref="typeI"
-                                        className="form-control"
-                                        style={{ fontSize: 20 }}
-                                    />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ประเภทครุภัณฑ์ (รอง)</label>
-                                    <input
-                                        type="text"
-                                        name="typeII"
-                                        ref="typeII"
                                         className="form-control"
                                         style={{ fontSize: 20 }}
                                     />

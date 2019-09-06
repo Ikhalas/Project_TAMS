@@ -27,7 +27,6 @@ class SettingContainer extends Component {
         )
     }
 
-
     render() {
         return (
             <div>

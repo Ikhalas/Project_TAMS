@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import {  DEPARTMENT } from '../../../common/APIutl'
 
 
 export default class DepartmentDetail extends Component {
@@ -16,7 +17,7 @@ export default class DepartmentDetail extends Component {
 
     getDepartment(){
         let departmentId = this.props.match.params.id;
-        axios.get("http://localhost:3001/Department/" + departmentId ).then(
+        axios.get( DEPARTMENT + '/' + departmentId ).then(
             res => {
                 //console.log(res)
                 this.setState({detail : res.data}, () => {
@@ -28,7 +29,7 @@ export default class DepartmentDetail extends Component {
 
     onDelete(){
         let departmentId = this.state.detail.id;
-        axios.delete("http://localhost:3001/Department/" + departmentId).then(
+        axios.delete( DEPARTMENT + '/' + departmentId ).then(
             res => {
                 this.props.history.push('/setting');
             })

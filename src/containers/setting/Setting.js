@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import DepartmentContainer from './department/DepartmentContainer';
+import DepartmentContainer from './department/DepartmentContainer'
 import ItemtypeContainer from './itemtype/ItemtypeContainer'
+import { ITEMTYPE, DEPARTMENT } from '../../common/APIutl'
 
 
 class Setting extends Component {
@@ -15,7 +16,7 @@ class Setting extends Component {
 
     componentDidMount(){
         //get departments
-        axios.get("http://localhost:3001/Department").then(
+        axios.get( DEPARTMENT ).then(
             res => {
                 //console.log(res)
                 this.setState({departments : res.data})
@@ -24,7 +25,7 @@ class Setting extends Component {
 
 
         //get items
-        axios.get("http://localhost:3001/itemType").then(
+        axios.get(ITEMTYPE).then(
             res => {
                 //console.log(res)
                 this.setState({itemTypes : res.data})
