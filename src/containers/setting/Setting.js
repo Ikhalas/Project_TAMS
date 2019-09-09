@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import DepartmentContainer from './department/DepartmentContainer'
 import ItemtypeContainer from './itemtype/ItemtypeContainer'
-import { ITEMTYPE, DEPARTMENT } from '../../common/APIutl'
+import TypeContainer from './type/TypeContainer'
+import { ITEMTYPE, DEPARTMENT, TYPES } from '../../common/APIutl'
 
 
 class Setting extends Component {
@@ -10,7 +11,8 @@ class Setting extends Component {
         super(props)
         this.state = {
             departments : [],
-            itemTypes : []
+            itemTypes : [],
+            types : []
         }
     }
 
@@ -20,6 +22,15 @@ class Setting extends Component {
             res => {
                 //console.log(res)
                 this.setState({departments : res.data})
+            } )
+        .catch(err => console.log(err))
+
+
+        //get type
+        axios.get( TYPES ).then(
+            res => {
+                //console.log(res)
+                this.setState({types : res.data})
             } )
         .catch(err => console.log(err))
 
@@ -45,6 +56,7 @@ class Setting extends Component {
                         <h1> <span style={{fontSize:35}}>&nbsp;การตั้งค่า</span> </h1>
                     </section>
                     <DepartmentContainer departments={this.state.departments} />
+                    <TypeContainer types={this.state.types} />
                     <ItemtypeContainer itemtypes={this.state.itemTypes} />
                 </div>
             </div>

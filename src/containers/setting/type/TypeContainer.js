@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom';
 
 
-class ItemtypeContainer extends Component {
+class TypeContainer extends Component {
 
     componentDidMount() {
         const script = document.createElement('script')
@@ -13,33 +13,21 @@ class ItemtypeContainer extends Component {
 
     }
 
-    generateItemtypeRows() {
+    generateTypeRows() {
         return (
-            this.props.itemtypes.map(itemtype => (
-                <tr key={itemtype.id}>
+            this.props.types.map(type => (
+                <tr key={type.id}>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/setting/itemtype-detail/' + itemtype.id}>
-                            &nbsp;{itemtype.code}
+                        <Link to={'/setting/type-detail/' + type.id}>
+                            &nbsp;{type.name}
                         </Link>
-                    </td>
-                    <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.type}
-                    </td>
-                    <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.name}
-                    </td>
-                    <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.other}
                     </td>
                 </tr>
             ))
-
         )
     }
 
-
     render() {
-        //console.log(this.props.itemTypes)
         return (
             <div>
                 <section className="content">
@@ -47,28 +35,25 @@ class ItemtypeContainer extends Component {
                         <div className="col-xs-12">
                             <div className="box">
                                 <div className="box-header">
-                                    <h3 className="box-title" style={{fontSize:30}}>รายการเลขรหัสประเภทพัสดุครุภัณฑ์</h3>
+                                    <h3 className="box-title" style={{fontSize:30}}>ประเภทพัสดุครุภัณฑ์</h3>
                                     <button
                                         className="btn btn-success btn-sm title pull-right"
-                                        onClick={() => this.props.history.push('/setting/itemtype-add')}
+                                        onClick={() => this.props.history.push('/setting/type-add')}
                                     >
                                         &nbsp;&nbsp;เพิ่มรายการ&nbsp;&nbsp;
                                     </button>
                                 </div>
                                 {/* /.box-header */}
                                 <div className="box-body">
-                                    <table id="table" className="table table-bordered table-striped">
+                                    <table className="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>เลขรหัสพัสดุครุภัณฑ์</th>
-                                                <th>ประเภทพัสดุครุภัณฑ์</th>
-                                                <th>ชื่อพัสดุครุภัณฑ์</th>
-                                                <th>หมายเหตุ</th>
+                                                <th>&nbsp;ประเภท</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            {this.generateItemtypeRows()}
+                                            {this.generateTypeRows()}
                                         </tbody>
                                     </table>
                                 </div>
@@ -85,4 +70,4 @@ class ItemtypeContainer extends Component {
     }
 }
 
-export default withRouter(ItemtypeContainer)
+export default withRouter(TypeContainer)

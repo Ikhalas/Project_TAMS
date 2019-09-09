@@ -1,39 +1,19 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { ITEMTYPE, TYPES } from '../../../common/APIutl'
+import {  TYPES } from '../../../common/APIutl'
 
-export default class ItemtypeEdit extends Component {
+export default class TypeEdit extends Component {
     constructor(props){
         super(props)
         this.state = {
             id : '',
-            code : '',
-            type : '',
             name : '',
-            other : '',
-            types : []
+            other : ''
         }
     }
 
     componentDidMount(){
-        this.getItemtype()
-        
-        axios.get(TYPES).then(
-            res => {
-                //console.log(res)
-                this.setState({ types: res.data })
-            }
-        )
-            .catch(err => console.log(err))
-    }
-
-    generateTypeRows() {
-        //console.log(this.state.types)
-        return (
-            this.state.types.map(typeI => (
-                <option key={typeI.id}>{typeI.name}</option>
-            ))
-        )
+        this.getType()
     }
 
     handleInputChange(e){
@@ -46,14 +26,12 @@ export default class ItemtypeEdit extends Component {
         })
     }
 
-    getItemtype(){
-        let itemtypeId = this.props.match.params.id;
-        axios.get(ITEMTYPE + '/' + itemtypeId ).then(
+    getType(){
+        let typetId = this.props.match.params.id;
+        axios.get( TYPES + '/' + typetId ).then(
             res => {
                 this.setState({
                     id : res.data.id,
-                    code : res.data.code,
-                    type : res.data.type,
                     name : res.data.name,
                     other : res.data.other
                 }, () => console.log(this.state))
@@ -62,37 +40,35 @@ export default class ItemtypeEdit extends Component {
         .catch(err => console.log(err))
     }
 
-    editDepartment(newItemtype){
+    editType(newType){
         axios.request({
             method: 'put',
-            url: ITEMTYPE + '/' + this.state.id,
-            data: newItemtype
+            url: TYPES + '/' + this.state.id,
+            data: newType
         }).then(res => {
-            this.props.history.push('/setting/itemtype-detail/'+ this.state.id);
+            this.props.history.push('/setting/type-detail/'+ this.state.id);
         }).catch(err => console.log(err));
     }
 
     onSubmit = (e) => {
         //console.log(this.refs.name.value)
-        const newItemtype = {
-            code: this.refs.code.value,
-            type: this.refs.type.value,
+        const newType = {
             name: this.refs.name.value,
             other: this.refs.other.value
         }
-        this.editDepartment(newItemtype)
+        this.editType(newType)
         e.preventDefault();
     }
 
     render() {
      
-        //console.log(this.props.itemtype)
+        console.log(this.props.department)
         return (
             <div>
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;แก้ไขรายการประเภทพัสดุครุภัณฑ์</span>
+                            <span style={{ fontSize: 35 }}>&nbsp;แก้ไขประเภทพัสดุครุภัณฑ์</span>
                         </h1>
                     </section>
                     <section className="content">
@@ -101,26 +77,7 @@ export default class ItemtypeEdit extends Component {
 
 
                                 <form onSubmit={this.onSubmit.bind(this)}>
-
-                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
-                                    <select name="type" ref="type" className="form-control selectpicker" style={{ fontSize: 20 }} required>
-                                            <option value={this.state.type}>&nbsp;{this.state.type} (เดิม)</option>
-                                            {this.generateTypeRows()}
-                                    </select>
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
-                                    <input
-                                        type="text"
-                                        name="code"
-                                        ref="code"
-                                        className="form-control"
-                                        value={this.state.code}
-                                        onChange={this.handleInputChange.bind(this)}
-                                        style={{ fontSize: 20 }}
-                                        required
-                                    />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ชื่อพัสดุครุภัณฑ์</label>
+                                    <label className="title" style={{fontSize:25}}>ประเภท</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -132,7 +89,7 @@ export default class ItemtypeEdit extends Component {
                                         required
                                     />
                                     <br />
-                                    <label className="title" style={{fontSize:20}}>รายละเอียดอื่น ๆ</label>
+                                    <label className="title" style={{fontSize:25}}>รายละเอียดอื่น ๆ</label>
                                     <input
                                         type="text"
                                         name="other"
@@ -157,4 +114,3 @@ export default class ItemtypeEdit extends Component {
         )
     }
 }
-

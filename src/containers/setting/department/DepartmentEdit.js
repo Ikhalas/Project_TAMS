@@ -48,7 +48,7 @@ export default class DepartmentEdit extends Component {
             url: DEPARTMENT + '/' + this.state.id,
             data: newDepartment
         }).then(res => {
-            this.props.history.push('/setting');
+            this.props.history.push('/setting/department-detail/'+ this.state.id)
         }).catch(err => console.log(err));
     }
 

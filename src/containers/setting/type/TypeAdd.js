@@ -1,54 +1,27 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { TYPES, ITEMTYPE } from '../../../common/APIutl'
+import {  TYPES } from '../../../common/APIutl'
 
-export default class ItemtypeAdd extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            types : []
-        }
-    }
+export default class TypeAdd extends Component {
 
-    componentDidMount() {
-        axios.get(TYPES).then(
-            res => {
-                //console.log(res)
-                this.setState({ types: res.data })
-            }
-        )
-            .catch(err => console.log(err))
-    }
-
-    generateTypeRows() {
-        //console.log(this.state.types)
-        return (
-            this.state.types.map(type => (
-                <option key={type.id}>{type.name}</option>
-            ))
-        )
-    }
-
-    addDepartment(newItemtype) {
-        //console.log(newItemtype)
+    addDepartment(newType) {
+        //console.log(newDepartment)
         axios.request({
             method: 'post',
-            url: ITEMTYPE,
-            data: newItemtype
+            url: TYPES,
+            data: newType
         }).then(res => {
             this.props.history.push('/setting');
         }).catch(err => console.log(err));
     }
 
     onSubmit = (e) => {
-        console.log(this.refs.code.value)
-        const newItemtype = {
-            code: this.refs.code.value,
-            type: this.refs.type.value,
+        //console.log(this.refs.name.value)
+        const newType = {
             name: this.refs.name.value,
             other: this.refs.other.value
         }
-        this.addDepartment(newItemtype)
+        this.addDepartment(newType)
         e.preventDefault();
     }
 
@@ -65,24 +38,9 @@ export default class ItemtypeAdd extends Component {
                         <div className="row">
                             <div className="col-xs-12">
 
+
                                 <form onSubmit={this.onSubmit.bind(this)}>
-                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
-                                    <select name="type" ref="type" className="form-control selectpicker" style={{ fontSize: 20 }} required>
-                                            <option value="">&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
-                                            {this.generateTypeRows()}
-                                    </select>
-                                    <br/>
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
-                                    <input
-                                        type="text"
-                                        name="code"
-                                        ref="code"
-                                        className="form-control"
-                                        style={{ fontSize: 20 }}
-                                        required
-                                    />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ชื่อพัสดุครุภัณฑ์</label>
+                                    <label className="title" style={{fontSize:20}}>ประเภท</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -99,9 +57,9 @@ export default class ItemtypeAdd extends Component {
                                         ref="other"
                                         className="form-control"
                                         style={{ fontSize: 20 }}
+
                                     />
                                     <br />
-
                                     <button className="btn btn-info title" type="submit">
                                         &nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;
                                     </button>

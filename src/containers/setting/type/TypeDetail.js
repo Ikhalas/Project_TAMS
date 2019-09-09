@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { ITEMTYPE } from '../../../common/APIutl'
+import { TYPES } from '../../../common/APIutl'
 
 
-export default class ItemtypeDetail extends Component {
+export default class TypeDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -12,12 +12,12 @@ export default class ItemtypeDetail extends Component {
     }
 
     componentDidMount(){
-        this.getItemtype()
+        this.getDepartment()
     }
 
-    getItemtype(){
-        let ItemtypeId = this.props.match.params.id;
-        axios.get(ITEMTYPE + '/' + ItemtypeId ).then(
+    getDepartment(){
+        let typeId = this.props.match.params.id;
+        axios.get( TYPES + '/' + typeId ).then(
             res => {
                 //console.log(res)
                 this.setState({detail : res.data}, () => {
@@ -28,8 +28,8 @@ export default class ItemtypeDetail extends Component {
     }
 
     onDelete(){
-        let ItemtypeId = this.state.detail.id;
-        axios.delete(ITEMTYPE + '/' + ItemtypeId).then(
+        let typeId = this.state.detail.id;
+        axios.delete( TYPES + '/' + typeId ).then(
             res => {
                 this.props.history.push('/setting');
             })
@@ -43,20 +43,14 @@ export default class ItemtypeDetail extends Component {
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;รายละเอียดประเภทพัสดุครุภัณฑ์&nbsp;<strong>{this.state.detail.typeI}</strong></span>
+                            <span style={{ fontSize: 35 }}>&nbsp;รายละเอียดประเภทพัสดุครุภัณฑ์&nbsp;<strong>{this.state.detail.name}</strong></span>
                         </h1>
                     </section>
                     <section className="content">
                         <div className="row">
                             <div className="col-xs-12">
                                 <ul className="list-group">
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
-                                        {this.state.detail.type}
-                                    </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
-                                        {this.state.detail.code}
-                                    </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ชื่อพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภท</b> &nbsp; : &nbsp;</span>
                                         {this.state.detail.name}
                                     </li>
                                     <li className="list-group-item title"><span style={{fontSize:20}}><b>รายละเอียดอื่น ๆ</b> &nbsp;: &nbsp;</span>
@@ -71,15 +65,16 @@ export default class ItemtypeDetail extends Component {
                                 <button className="btn btn-info btn-sm title pull-left" onClick={() => this.props.history.push('/setting')}>&nbsp;ย้อนกลับ&nbsp;</button>
                             
                                 <div className="pull-right">
-                                    <button className="btn btn-warning btn-sm title" onClick={() => this.props.history.push('/setting/itemtype-edit/'+ this.state.detail.id)}>&nbsp;&nbsp;&nbsp;&nbsp;แก้ไข&nbsp;&nbsp;&nbsp;&nbsp;</button>&nbsp;&nbsp;&nbsp;
+                                    <button className="btn btn-warning btn-sm title" onClick={() => this.props.history.push('/setting/type-edit/'+ this.state.detail.id)}>&nbsp;&nbsp;&nbsp;&nbsp;แก้ไข&nbsp;&nbsp;&nbsp;&nbsp;</button>&nbsp;&nbsp;&nbsp;
                                     <button className="btn btn-danger btn-sm title" onClick={this.onDelete.bind(this)}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                 </div>
                             </div>
                         </div>
                     </section>
                 </div>
+
+                
             </div>
         )
     }
 }
-
