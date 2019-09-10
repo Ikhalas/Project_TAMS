@@ -107,11 +107,13 @@
        
       "Depreciations": [
         {
+          "id":1,
           "Year": 1,
           "Percent": "",
           "Balance": 600
         },
         {
+          "id":2,
           "Year": 2,
           "Percent": "",
           "Balance": 550
@@ -119,6 +121,7 @@
       ],
       "valueIncreases4Years": [
         {
+          "id": 1,
           "Year": "",
           "Percent": "",
           "Balance": ""
@@ -133,14 +136,20 @@
           "profitOrLost": ""
         }
       ],
+
+      "Responsibility":[
+        {
+          "id":1,
+          "responsibilityYear": "2555",
+          "responsibilityDepartmentName": "อบต.ท่าข้าม",
+          "responsibilityDepartmentHead": "นายสินธพ อินทรัตน์"
+        }
+      ],
       
-      "responsibilityYear": "2555",
-      "responsibilityDepartmentName": "อบต.ท่าข้าม",
-      "responsibilityDepartmentHead": "นายสินธพ อินทรัตน์",
-        
       
       "Exploitation": [
         {
+          "id":1,
           "Year": "",
           "List": "",
           "Benefits": ""
