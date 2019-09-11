@@ -1,16 +1,21 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
-import { DEPARTMENT, ITEMTYPE } from '../../../common/APIutl'
+import { DEPARTMENT, ITEMTYPE, ITEMS } from '../../../common/APIutl'
 
 
-export default class LandForm extends Component {
+class LandForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
             Departments: [],
             Itemtypes: [],
+            Landtypes: []
+          
         }
+
+      
 
     }
 
@@ -36,10 +41,16 @@ export default class LandForm extends Component {
         )
             .catch(err => console.log(err))
 
+        axios.get(ITEMTYPE + "?type=ที่ดิน").then(
+            res => {
+                //console.log(res)
+                this.setState({ Landtypes: res.data })
+            }
+        )
+            .catch(err => console.log(err))
+
 
     }
-
-
 
     generateDepartmentOption() {
         return (
@@ -57,18 +68,82 @@ export default class LandForm extends Component {
         )
     }
 
+    generateLandtypeOption() {
+        return (
+            this.state.Landtypes.map(Landtype => (
+                <option key={Landtype.id}>{Landtype.name}</option>
+            ))
+        )
+    }
+
+
+    onSubmit = (e) => {
+        //console.log(this.refs.name.value)
+        const newLand = {
+            itemType: this.refs.itemType.value,
+            Department: this.refs.Department.value,
+            itemName: this.refs.itemName.value,
+            itemCode: this.refs.itemCode.value,
+            Location: this.refs.Location.value,
+            derivedDate: this.refs.derivedDate.value,
+            approvalDate: this.refs.approvalDate.value,
+            Price: this.refs.Price.value,
+            budgetOf: this.refs.budgetOf.value,
+            Certificate: this.refs.Certificate.value,
+            sellerName: this.refs.sellerName.value,
+            Rai: this.refs.Rai.value,
+            Ngan: this.refs.Ngan.value,
+            buildingType: this.refs.buildingType.value,
+            Material: this.refs.Material.value,
+            Floors: this.refs.Floors.value,
+            otherType: this.refs.otherType.value,
+            otherSize: this.refs.otherSize.value,
+            Note: this.refs.Note.value,
+            disposalDate: this.refs.disposalDate.value,
+            disposalMethod: this.refs.disposalMethod.value,
+            disposalapprovalNo: this.refs.disposalapprovalNo.value,
+            disposalPrice: this.refs.disposalPrice.value,
+            profitOrLost: this.refs.profitOrLost.value,
+
+        }
+        const Responsibility = {
+            responsibilityYear: this.refs.responsibilityYear.value,
+            responsibilityDepartmentName: this.refs.responsibilityDepartmentName.value,
+            responsibilityDepartmentHead: this.refs.responsibilityDepartmentHead.value
+        }
+        console.log(Responsibility)
+        this.addItem(newLand)
+        e.preventDefault();
+    }
+
+    addItem(newLand) {
+        //console.log(newDepartment)
+        axios.request({
+            method: 'post',
+            url: ITEMS,
+            data: newLand
+        }).then(res => {
+            this.props.history.push('/items');
+            console.log(this.state.selectbuildingType)
+            alert(`เพิ่มรายการพัสดุครุภัณฑ์แล้ว`);
+        }).catch(err => console.log(err));
+    }
+
+
+
 
     render() {
 
         return (
             <div>
-                <form>
+                <form onSubmit={this.onSubmit.bind(this)}>
 
                     <input
                         type="hidden"
                         name="itemType" /******/
                         ref="itemType"  /******/
                         value={this.props.type}
+
                     />
 
                     <div className="box box-success">
@@ -86,7 +161,7 @@ export default class LandForm extends Component {
                                             name="Department" /******/
                                             ref="Department" /******/
                                         >
-                                            <option disabled selected="selected" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                            <option disabled selected="selected" value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
                                             {this.generateDepartmentOption()}
                                         </select>
                                     </div>
@@ -102,8 +177,8 @@ export default class LandForm extends Component {
                                             name="itemName" /******/
                                             ref="itemName" /******/
                                         >
-                                            <option disabled selected="selected" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
-                                            {this.generateItemtypeOption()}
+                                            <option disabled selected="selected" value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
+                                            {this.generateLandtypeOption()}
                                         </select>
                                     </div>
                                 </div>
@@ -223,7 +298,7 @@ export default class LandForm extends Component {
                                             name="budgetOf" /******/
                                             ref="budgetOf" /******/
                                         >
-                                            <option disabled selected="selected" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
                                             {this.generateDepartmentOption()}
                                         </select>
                                     </div>
@@ -315,6 +390,8 @@ export default class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
+
+
                                 </div>
                                 {/* /.box-body */}
 
@@ -322,32 +399,50 @@ export default class LandForm extends Component {
                                     <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>โรงเรือน</b></h1>
                                 </div>
                                 <div className="box-body">
-                                    <div class="form-group">
-                                        <div>
-                                            <label>
-                                                <input type="radio" name="buildingType" value="อาคารเดี่ยว" className="flat-red" /> อาคารเดี่ยว
-                                            </label>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label>
-                                                <input type="radio" name="buildingType" value="อาคารแถว" className="flat-red" /> อาคารแถว
-                                            </label>
-                                        </div>
+                                    <div className="form-group">
+                                        <label>ประเภทโรงเรือน</label>
+                                        <select
+                                            className="form-control select2"
+                                            style={{ width: '100%' }}
+                                            name="buildingType" /******/
+                                            ref="buildingType" /******/
+                                        >
+                                            <option disabled selected="selected" value="" >-- โปรดเลือกประเภทโรงเรือน --</option>
+                                            <option>อาคารเดี่ยว</option>
+                                            <option>อาคารแถว</option>
+                                            
+                                        </select>
                                         <br />
-                                        <div>
-                                            <label>
-                                                <input type="radio" name="Material" value="ตึก" className="flat-red" /> ตึก
-                                            </label>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label>
-                                                <input type="radio" name="Material" value="ไม้" className="flat-red" /> ไม้
-                                            </label>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label>
-                                                <input type="radio" name="Material" value="ครึ่งตึกครึ่งไม้" className="flat-red" /> ครึ่งตึกครึ่งไม้
-                                            </label>
+                                    </div>
+                                    <div className="form-group">
+                                    <label>วัสดุที่ใช้ก่อสร้าง</label>
+                                        <select
+                                            className="form-control select2"
+                                            style={{ width: '100%' }}
+                                            name="Material" /******/
+                                            ref="Material" /******/
+                                        >
+                                            <option disabled selected="selected" value="" >-- โปรดเลือกวัสดุที่ใช้ก่อสร้าง --</option>
+                                            <option>ตึก</option>
+                                            <option>ไม้</option>
+                                            <option>ครึ่งตึกครึ่งไม้</option>
+                                            
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>จำนวนชั้น</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-align-justify" />
+                                            </div>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="Floors" /*****/
+                                                ref="Floors"  /*****/
+                                            />
                                         </div>
-
-
                                     </div>
                                 </div>
 
@@ -455,39 +550,70 @@ export default class LandForm extends Component {
                                 {/* /.box-body */}
                             </div>
                             {/* /.box */}
-                           
+
                             <div className="box box-default">
                                 <div className="box-body">
-                                <div className="form-group">
+                                    <div className="form-group">
                                         <label>หมายเหตุเพิ่มเติม</label>
-                                      
-                                        <textarea 
-                                            class="form-control" 
-                                            rows="3" 
+
+                                        <textarea
+                                            className="form-control"
+                                            rows="3"
                                             style={{ fontSize: 20 }}
                                             placeholder="หมายเหตุ ..."
                                             name="Note" /*****/
-                                            ref="Note"  /*****/  
-                                        >      
+                                            ref="Note"  /*****/
+                                        >
                                         </textarea>
-                                       
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {/* /.col (right) */}
-
-                        
                     </div>
 
-                    <button className="btn btn-block btn-info title" type="submit" style={{fontSize:25}}>
+                    <input
+                        type="hidden"
+                        name="disposalDate" /******/
+                        ref="disposalDate"  /******/
+                        value=""
+                    />
+                    <input
+                        type="hidden"
+                        name="disposalMethod" /******/
+                        ref="disposalMethod"  /******/
+                        value=""
+                    />
+                    <input
+                        type="hidden"
+                        name="disposalapprovalNo" /******/
+                        ref="disposalapprovalNo"  /******/
+                        value=""
+                    />
+                    <input
+                        type="hidden"
+                        name="disposalPrice" /******/
+                        ref="disposalPrice"  /******/
+                        value=""
+                    />
+                    <input
+                        type="hidden"
+                        name="profitOrLost" /******/
+                        ref="profitOrLost"  /******/
+                        value=""
+                    />
+
+                    <button className="btn btn-block btn-info title" type="submit" style={{ fontSize: 25 }}>
                         บันทึก
                     </button>
-                
+
                 </form>
 
             </div >
         )
     }
 }
+
+export default withRouter(LandForm)
 

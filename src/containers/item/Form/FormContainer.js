@@ -31,7 +31,7 @@ export default class ItemAdd extends Component {
         //console.log(this.state.itemTypes)
         return (
             this.state.Types.map(Type => (
-                <option key={Type.id}>{Type.name}</option>
+                <option key={Type.id} value={Type.name}>{Type.name}</option>
             ))
         )
     }
@@ -41,6 +41,10 @@ export default class ItemAdd extends Component {
         this.setState({ typeProps : event.target.value})
         if (event.target.value === 'ที่ดิน') {
             this.setState({ formType: 'land' })
+        }
+
+        else if (event.target.value === 'none'){
+            this.setState({ formType: 'none' })
         }
 
         else {
@@ -79,12 +83,12 @@ export default class ItemAdd extends Component {
                         </h1>
                     </section>
                     <section className="content">
-                        <form>
+                       
                             <div className="selectContainer">
                                 <div className="input-group">
                                     <span style={{ fontSize: 20 }} className="input-group-addon "><b>ประเภท</b></span>
-                                    <select name="type" className="form-control selectpicker" style={{ fontSize: 20 }} onChange={this.handleChange} >
-                                        <option disabled selected >&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
+                                    <select  className="form-control selectpicker" style={{ fontSize: 20 }} onChange={this.handleChange}  >
+                                        <option value="none" >&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
                                         {this.generateItemtypeRows()}
                                     </select>
                                 </div>
@@ -93,7 +97,7 @@ export default class ItemAdd extends Component {
                            
                             {this.showForm()}
                     
-                        </form>
+                        
                     </section>
 
                 </div>

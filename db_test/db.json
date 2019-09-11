@@ -20,6 +20,12 @@
       "address": "ข้าง อบต.ท่าข้าม",
       "other": "เลี้ยงเด็กเล็ก แต่ไม่เล็กน่ะครับ",
       "id": 6
+    },
+    {
+      "name": "อบต.บางเป้า",
+      "address": "102/5 หมู่ที่ 3",
+      "other": "",
+      "id": 7
     }
   ],
   "Type": [
@@ -37,6 +43,11 @@
       "name": "โยธา",
       "other": "น่าอยู่ดี มีประโยชน์",
       "id": 3
+    },
+    {
+      "name": "ของใช้สำนักงาน",
+      "other": "",
+      "id": 4
     }
   ],
   "itemType": [
@@ -81,6 +92,13 @@
       "name": "หอกระจายข่าว",
       "other": "",
       "id": 10
+    },
+    {
+      "code": "298",
+      "type": "ของใช้สำนักงาน",
+      "name": "เก้าอี้",
+      "other": "",
+      "id": 11
     }
   ],
   "Items": [
@@ -104,57 +122,11 @@
       "Floors": "",
       "otherType": "",
       "otherSize": "",
-       
-      "Depreciations": [
-        {
-          "id":1,
-          "Year": 1,
-          "Percent": "",
-          "Balance": 600
-        },
-        {
-          "id":2,
-          "Year": 2,
-          "Percent": "",
-          "Balance": 550
-        }
-      ],
-      "valueIncreases4Years": [
-        {
-          "id": 1,
-          "Year": "",
-          "Percent": "",
-          "Balance": ""
-        }
-      ],
-      "Encashment": [
-        {
-          "Date": "",
-          "Method": "",
-          "approvalNo": "",
-          "Price": "",
-          "profitOrLost": ""
-        }
-      ],
-
-      "Responsibility":[
-        {
-          "id":1,
-          "responsibilityYear": "2555",
-          "responsibilityDepartmentName": "อบต.ท่าข้าม",
-          "responsibilityDepartmentHead": "นายสินธพ อินทรัตน์"
-        }
-      ],
-      
-      
-      "Exploitation": [
-        {
-          "id":1,
-          "Year": "",
-          "List": "",
-          "Benefits": ""
-        }
-      ],
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
       "Thumbnail": "",
       "Note": ""
     },
@@ -287,6 +259,222 @@
       ],
       "Thumbnail": "",
       "Note": ""
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "141-45-545_",
+      "Location": "5524241114",
+      "derivedDate": "25/12/2045",
+      "approvalDate": "4412425544",
+      "Price": "54413",
+      "budgetOf": "อบต.ท่าข้าม",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 4
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemCode": "222-22-2222",
+      "Location": "",
+      "derivedDate": "",
+      "approvalDate": "",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 5
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "444-44-4444",
+      "Location": "",
+      "derivedDate": "",
+      "approvalDate": "",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 6
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "444-44-4444",
+      "Location": "",
+      "derivedDate": "",
+      "approvalDate": "",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 7
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "444-44-4444",
+      "Location": ";l'",
+      "derivedDate": "",
+      "approvalDate": "",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 8
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "441-42-5454",
+      "Location": "45",
+      "derivedDate": "04/05/yyyy",
+      "approvalDate": "45",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 9
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "215-96-6666",
+      "Location": "",
+      "derivedDate": "",
+      "approvalDate": "",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 10
+    },
+    {
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "125-99-6666",
+      "Location": "1111111",
+      "derivedDate": "15/02/2066",
+      "approvalDate": "75826",
+      "Price": "15251",
+      "budgetOf": "ศูนย์พัฒนาเด็กเล็ก",
+      "Certificate": "uiui",
+      "sellerName": "uiu",
+      "Rai": "125",
+      "Ngan": "148",
+      "buildingType": "อาคารแถว",
+      "Material": "ไม้",
+      "Floors": "2",
+      "otherType": "ui",
+      "otherSize": "ui",
+      "Note": "15222",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "id": 11
     }
   ]
 }
