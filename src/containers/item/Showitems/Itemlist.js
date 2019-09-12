@@ -17,16 +17,20 @@ class Itemlist extends Component {
                     </td>
                     <td style={{ fontSize: 20 }}>
                         &nbsp;{item.itemName}
+                      
                     </td>
                     <td style={{ fontSize: 20 }}>
                         &nbsp;{item.Department}
                     </td>
                 </tr>
             ))
+            
         )
+        
     }
 
     render() {
+        
         return (
             <div>
                 <section className="content">

@@ -1,22 +1,16 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { withRouter } from 'react-router-dom';
-
-import { DEPARTMENT, ITEMTYPE, ITEMS } from '../../../common/APIutl'
-
+import { withRouter } from "react-router";
 
 class LandForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
             Departments: [],
+            types:[],
             Itemtypes: [],
             Landtypes: []
-          
         }
-
-      
-
     }
 
     componentDidMount() {
@@ -25,30 +19,17 @@ class LandForm extends Component {
         script.async = true
         document.body.appendChild(script)
 
-        axios.get(DEPARTMENT).then(
+        axios.get('http://localhost:3001/Department').then(
             res => {
                 //console.log(res)
                 this.setState({ Departments: res.data })
-            }
-        )
-            .catch(err => console.log(err))
+            }).catch(err => console.log(err))
 
-        axios.get(ITEMTYPE).then(
-            res => {
-                //console.log(res)
-                this.setState({ Itemtypes: res.data })
-            }
-        )
-            .catch(err => console.log(err))
 
-        axios.get(ITEMTYPE + "?type=ที่ดิน").then(
+        axios.get('http://localhost:3001/itemType?type='+ this.props.type).then(
             res => {
-                //console.log(res)
                 this.setState({ Landtypes: res.data })
-            }
-        )
-            .catch(err => console.log(err))
-
+            }).catch(err => console.log(err))
 
     }
 
@@ -56,14 +37,6 @@ class LandForm extends Component {
         return (
             this.state.Departments.map(Department => (
                 <option key={Department.id}>{Department.name}</option>
-            ))
-        )
-    }
-
-    generateItemtypeOption() {
-        return (
-            this.state.Itemtypes.map(Itemtype => (
-                <option key={Itemtype.id}>{Itemtype.name}</option>
             ))
         )
     }
@@ -80,55 +53,162 @@ class LandForm extends Component {
     onSubmit = (e) => {
         //console.log(this.refs.name.value)
         const newLand = {
-            itemType: this.refs.itemType.value,
-            Department: this.refs.Department.value,
-            itemName: this.refs.itemName.value,
-            itemCode: this.refs.itemCode.value,
-            Location: this.refs.Location.value,
-            derivedDate: this.refs.derivedDate.value,
-            approvalDate: this.refs.approvalDate.value,
-            Price: this.refs.Price.value,
-            budgetOf: this.refs.budgetOf.value,
-            Certificate: this.refs.Certificate.value,
-            sellerName: this.refs.sellerName.value,
-            Rai: this.refs.Rai.value,
-            Ngan: this.refs.Ngan.value,
-            buildingType: this.refs.buildingType.value,
-            Material: this.refs.Material.value,
-            Floors: this.refs.Floors.value,
-            otherType: this.refs.otherType.value,
-            otherSize: this.refs.otherSize.value,
-            Note: this.refs.Note.value,
-            disposalDate: this.refs.disposalDate.value,
-            disposalMethod: this.refs.disposalMethod.value,
-            disposalapprovalNo: this.refs.disposalapprovalNo.value,
-            disposalPrice: this.refs.disposalPrice.value,
-            profitOrLost: this.refs.profitOrLost.value,
+            "condition": "ใช้งานได้ดี",                                            //สภาพพัสดุ
+            "itemType": this.refs.itemType.value,                               //ประเภท         
+            "Department": this.refs.Department.value,                           //หน่วยงานต้นสังกัด
+            "itemName": this.refs.itemName.value,                               //ชื่อ
+            "itemCode": this.refs.itemCode.value,                               //เลขรหัส
+            "Location": this.refs.Location.value,                               //ที่ตั้ง
+            "derivedDate": this.refs.derivedDate.value,                         //วันที่ได้มา
+            "approvalDate": this.refs.approvalDate.value,                       //เลขที่หนังสืออนุมัติ/ลงวันที่
+            "Price": this.refs.Price.value,                                     //ราคา
+            "budgetOf": this.refs.budgetOf.value,                               //งบประมาณของ
+            "Certificate": this.refs.Certificate.value,                         //เอกสารสิทธิ์
+            "sellerName": this.refs.sellerName.value,                           //ชื่อผู้ขาย
+            "Rai": this.refs.Rai.value,                                         //เนื้อที่
+            "Ngan": this.refs.Ngan.value,                                       //งาน
+            "buildingType": this.refs.buildingType.value,                       //ประเภทโรงเรือน
+            "Material": this.refs.Material.value,                               //วัสดุก่อสร้าง
+            "Floors": this.refs.Floors.value,                                   //ชั้น
+            "otherType": this.refs.otherType.value,                             //อื่นๆ .ชนิด
+            "otherSize": this.refs.otherSize.value,                             //อื่นๆ .ขนาด
+            "Note": this.refs.Note.value,                                       //หมายเหตุ
+            "thumbnail": ""                                                     //รูป
+        }
 
+        const Disposal = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "disposalDate": "",                                                 //วันที่จำหน่าย
+            "disposalMethod": "",                                               //วิธีจำหน่าย
+            "disposalapprovalNo": "",                                           //เลขที่หนังสืออนุมัติ
+            "disposalPrice": "",                                                //ราคาจำหน่าย
+            "profitOrLost": "",                                                 //กำไร/ขาดทุน
+            "Note": "",                                                         //หมายเหตุจการจำหน่าย
         }
-        const Responsibility = {
-            responsibilityYear: this.refs.responsibilityYear.value,
-            responsibilityDepartmentName: this.refs.responsibilityDepartmentName.value,
-            responsibilityDepartmentHead: this.refs.responsibilityDepartmentHead.value
+
+
+        const landDepreciations = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "Percent": "",
+            "Balance": "",
+            "Note": ""
         }
-        console.log(Responsibility)
+
+        const landValueIncreases4Years = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "Percent": "",
+            "Balance": "",
+            "Note": ""
+        }
+
+        const landResponsibility = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "responsibilityYear": this.refs.responsibilityYear.value,
+            "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
+            "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
+            "Note": ""
+        }
+
+        const landExploitation = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "List": "",
+            "Benefits": "",
+            "Note": ""
+        }
+
         this.addItem(newLand)
+        this.addlandDepreciations(landDepreciations)
+        this.addlandValueIncreases4Years(landValueIncreases4Years)
+        this.addlandResponsibility(landResponsibility)
+        this.addlandExploitation(landExploitation)
+        this.addlandDisposal(Disposal)
+
         e.preventDefault();
     }
 
+    /*******************************************************/
     addItem(newLand) {
-        //console.log(newDepartment)
         axios.request({
             method: 'post',
-            url: ITEMS,
+            url: 'http://localhost:3001/Items',
             data: newLand
         }).then(res => {
-            this.props.history.push('/items');
-            console.log(this.state.selectbuildingType)
-            alert(`เพิ่มรายการพัสดุครุภัณฑ์แล้ว`);
+            //console.log(res.data)
         }).catch(err => console.log(err));
     }
 
+    /*******************************************************/
+    addlandDepreciations(landDepreciations) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Depreciations',
+            data: landDepreciations
+        }).then(res => {
+            //console.log(res.data)
+        }).catch(err => console.log(err));
+    }
+
+    /*******************************************************/
+    addlandValueIncreases4Years(landValueIncreases4Years) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/landValueIncreases4Years',
+            data: landValueIncreases4Years
+        }).then(res => {
+            //console.log(res.data)
+        }).catch(err => console.log(err));
+    }
+
+    /*******************************************************/
+    addlandResponsibility(landResponsibility) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Responsibility',
+            data: landResponsibility
+        }).then(res => {
+            //console.log(res.data)
+        }).catch(err => console.log(err));
+    }
+
+    /*******************************************************/
+    addlandExploitation(landExploitation) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Exploitation',
+            data: landExploitation
+        }).then(res => {
+            
+        }).catch(err => console.log(err));
+    }
+    /*******************************************************/
+    addlandDisposal(Disposal) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Disposal',
+            data: Disposal
+        }).then(res => {
+            this.props.history.push('/items');
+            alert("เพิ่มข้อมูลสำเร็จ")
+        }).catch(err => console.log(err));
+    }
 
 
 
@@ -143,7 +223,6 @@ class LandForm extends Component {
                         name="itemType" /******/
                         ref="itemType"  /******/
                         value={this.props.type}
-
                     />
 
                     <div className="box box-success">
@@ -169,6 +248,31 @@ class LandForm extends Component {
 
                                 <div className="col-md-6">
                                     <div className="form-group">
+                                        <label>เลขที่หนังสืออนุมัติ/ลงวันที่</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-book" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="approvalDate" /*****/
+                                                ref="approvalDate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            {/* /.row */}
+                            {/* /------------------------------------------------------------------------------------------------------ */}
+                            <div className="row">
+
+
+
+                                <div className="col-md-6">
+                                    <div className="form-group">
                                         <label>ชื่อพัสดุ</label>
                                         <select
                                             className="form-control select2"
@@ -183,9 +287,29 @@ class LandForm extends Component {
                                     </div>
                                 </div>
 
-                            </div>
-                            {/* /.row */}
+                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>ราคา</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-money" />
+                                            </div>
+                                            <input
+                                                type="number"
+                                                placeholder="บาท"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="Price" /*****/
+                                                ref="Price"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
+
+
+                            </div>
+                            {/* /------------------------------------------------------------------------------------------------------ */}
                             <div className="row">
 
                                 <div className="col-md-6">
@@ -211,6 +335,30 @@ class LandForm extends Component {
 
                                 <div className="col-md-6">
                                     <div className="form-group">
+                                        <label>งบประมาณของ</label>
+                                        <select
+                                            className="form-control select2"
+                                            style={{ width: '100%' }}
+                                            name="budgetOf" /******/
+                                            ref="budgetOf" /******/
+                                        >
+                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                            {this.generateDepartmentOption()}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </div>
+                            {/* /------------------------------------------------------------------------------------------------------ */}
+                            <div className="row">
+
+                                <div className="col-md-6">
+                                    <div className="form-group">
                                         <label>ที่ตั้งพัสดุ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -227,9 +375,31 @@ class LandForm extends Component {
                                     </div>
                                 </div>
 
-                            </div>
 
+                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>เอกสารสิทธิ์พัสดุ</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-certificate" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="Certificate" /*****/
+                                                ref="Certificate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            {/* /------------------------------------------------------------------------------------------------------ */}
                             <div className="row">
+
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <label>ซื้อ/จ้าง/ได้มา เมื่อวันที่</label>
@@ -250,79 +420,8 @@ class LandForm extends Component {
                                     </div>
                                 </div>
 
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>เลขที่หนังสืออนุมัติ/ลงวันที่</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-book" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="approvalDate" /*****/
-                                                ref="approvalDate"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>ราคา</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-money" />
-                                            </div>
-                                            <input
-                                                type="number"
-                                                placeholder="บาท"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="Price" /*****/
-                                                ref="Price"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>งบประมาณของ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            name="budgetOf" /******/
-                                            ref="budgetOf" /******/
-                                        >
-                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                            {this.generateDepartmentOption()}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>เอกสารสิทธิ์พัสดุ</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="Certificate" /*****/
-                                                ref="Certificate"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
@@ -341,8 +440,8 @@ class LandForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
+                            {/* /------------------------------------------------------------------------------------------------------ */}
                         </div>
                         {/* /.box-body */}
                     </div>
@@ -410,12 +509,12 @@ class LandForm extends Component {
                                             <option disabled selected="selected" value="" >-- โปรดเลือกประเภทโรงเรือน --</option>
                                             <option>อาคารเดี่ยว</option>
                                             <option>อาคารแถว</option>
-                                            
+
                                         </select>
                                         <br />
                                     </div>
                                     <div className="form-group">
-                                    <label>วัสดุที่ใช้ก่อสร้าง</label>
+                                        <label>วัสดุที่ใช้ก่อสร้าง</label>
                                         <select
                                             className="form-control select2"
                                             style={{ width: '100%' }}
@@ -426,7 +525,7 @@ class LandForm extends Component {
                                             <option>ตึก</option>
                                             <option>ไม้</option>
                                             <option>ครึ่งตึกครึ่งไม้</option>
-                                            
+
                                         </select>
                                     </div>
                                     <div className="form-group">
@@ -572,37 +671,6 @@ class LandForm extends Component {
                         </div>
                         {/* /.col (right) */}
                     </div>
-
-                    <input
-                        type="hidden"
-                        name="disposalDate" /******/
-                        ref="disposalDate"  /******/
-                        value=""
-                    />
-                    <input
-                        type="hidden"
-                        name="disposalMethod" /******/
-                        ref="disposalMethod"  /******/
-                        value=""
-                    />
-                    <input
-                        type="hidden"
-                        name="disposalapprovalNo" /******/
-                        ref="disposalapprovalNo"  /******/
-                        value=""
-                    />
-                    <input
-                        type="hidden"
-                        name="disposalPrice" /******/
-                        ref="disposalPrice"  /******/
-                        value=""
-                    />
-                    <input
-                        type="hidden"
-                        name="profitOrLost" /******/
-                        ref="profitOrLost"  /******/
-                        value=""
-                    />
 
                     <button className="btn btn-block btn-info title" type="submit" style={{ fontSize: 25 }}>
                         บันทึก

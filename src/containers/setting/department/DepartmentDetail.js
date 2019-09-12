@@ -12,6 +12,7 @@ export default class DepartmentDetail extends Component {
     }
 
     componentDidMount(){
+       
         this.getDepartment()
     }
 

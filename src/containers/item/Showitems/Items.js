@@ -9,18 +9,21 @@ export default class Items extends Component {
         this.state = {
             items : []
         }
+      
     }
 
     componentDidMount(){
         axios.get( ITEMS ).then(
             res => {
-                //console.log(res)
+               
                 this.setState({items : res.data})
+                //console.log(this.state.items)
             } )
         .catch(err => console.log(err))
-
-
     }
+
+    
+
     render() {
         return (
             <div>
@@ -32,8 +35,10 @@ export default class Items extends Component {
                     </section>
                     <section className="content">
                        <Itemlist items={this.state.items} />
+                      
                     </section>
                 </div>
+                <button onClick={() => this.testPost()}>test</button>
             </div>
         )
     }

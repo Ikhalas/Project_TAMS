@@ -3,7 +3,6 @@ import axios from 'axios';
 import DepartmentContainer from './department/DepartmentContainer'
 import ItemtypeContainer from './itemtype/ItemtypeContainer'
 import TypeContainer from './type/TypeContainer'
-import { ITEMTYPE, DEPARTMENT, TYPES } from '../../common/APIutl'
 
 
 class Setting extends Component {
@@ -17,32 +16,22 @@ class Setting extends Component {
     }
 
     componentDidMount(){
-        //get departments
-        axios.get( DEPARTMENT ).then(
+        axios.get( 'http://localhost:3001/Department' ).then(
             res => {
-                //console.log(res)
                 this.setState({departments : res.data})
-            } )
-        .catch(err => console.log(err))
+            }).catch(err => console.log(err))
 
 
-        //get type
-        axios.get( TYPES ).then(
+        axios.get( 'http://localhost:3001/Type' ).then(
             res => {
-                //console.log(res)
                 this.setState({types : res.data})
-            } )
-        .catch(err => console.log(err))
+            }).catch(err => console.log(err))
 
 
-        //get items
-        axios.get(ITEMTYPE).then(
+        axios.get( 'http://localhost:3001/itemType' ).then(
             res => {
-                //console.log(res)
                 this.setState({itemTypes : res.data})
-            }
-        )
-        .catch(err => console.log(err))
+            }).catch(err => console.log(err))
         
     }
     

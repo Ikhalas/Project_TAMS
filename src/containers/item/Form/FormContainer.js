@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import LandForm from './LandForm'
-import AssetForm from './AssetForm'
+import AssetForm from './GeneralForm'
 import { TYPES } from '../../../common/APIutl'
 
 
@@ -11,13 +11,15 @@ export default class ItemAdd extends Component {
         this.state = {
             Types: [],
             formType: "",
-            typeProps: ""
+            typeProps: "",
+            forReRender: false
         }
 
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
+        
         axios.get(TYPES).then(
             res => {
                 //console.log(res)
@@ -60,11 +62,13 @@ export default class ItemAdd extends Component {
         }
 
         else if (this.state.formType === "asset") {
+            //console.log("state"+this.state.typeProps)
             return (
                 <AssetForm type={this.state.typeProps} />
             )
         }
 
+       
         else {
             return (
                 <p>กรุณาเลือกประเภท</p>
@@ -72,6 +76,8 @@ export default class ItemAdd extends Component {
         }
 
     }
+
+    
 
     render() {
         return (
@@ -87,7 +93,7 @@ export default class ItemAdd extends Component {
                             <div className="selectContainer">
                                 <div className="input-group">
                                     <span style={{ fontSize: 20 }} className="input-group-addon "><b>ประเภท</b></span>
-                                    <select  className="form-control selectpicker" style={{ fontSize: 20 }} onChange={this.handleChange}  >
+                                    <select id="sort-item" className="form-control selectpicker" style={{ fontSize: 20 }} onChange={this.handleChange}  >
                                         <option value="none" >&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
                                         {this.generateItemtypeRows()}
                                     </select>
