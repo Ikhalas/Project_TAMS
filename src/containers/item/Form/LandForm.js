@@ -9,8 +9,15 @@ class LandForm extends Component {
             Departments: [],
             types:[],
             Itemtypes: [],
-            Landtypes: []
+            Landtypes: [],
+            check_1: false,
+            check_2: false,
+            check_3: false,
+            check_4: false,
+            check_5: false,
+            check_6: false,
         }
+       
     }
 
     componentDidMount() {
@@ -53,7 +60,7 @@ class LandForm extends Component {
     onSubmit = (e) => {
         //console.log(this.refs.name.value)
         const newLand = {
-            "condition": "ใช้งานได้ดี",                                            //สภาพพัสดุ
+            "status": "ใช้งานได้ดี",                                               //สภาพพัสดุ
             "itemType": this.refs.itemType.value,                               //ประเภท         
             "Department": this.refs.Department.value,                           //หน่วยงานต้นสังกัด
             "itemName": this.refs.itemName.value,                               //ชื่อ
@@ -117,7 +124,7 @@ class LandForm extends Component {
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
             "Department": this.refs.Department.value, 
-            "responsibilityYear": this.refs.responsibilityYear.value,
+            "Year": this.refs.Year.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "Note": ""
@@ -144,6 +151,8 @@ class LandForm extends Component {
         e.preventDefault();
     }
 
+    
+
     /*******************************************************/
     addItem(newLand) {
         axios.request({
@@ -151,7 +160,8 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Items',
             data: newLand
         }).then(res => {
-            //console.log(res.data)
+            this.setState({check_1:true})
+            this.confirmAdd()
         }).catch(err => console.log(err));
     }
 
@@ -162,7 +172,8 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Depreciations',
             data: landDepreciations
         }).then(res => {
-            //console.log(res.data)
+            this.setState({check_2:true})
+            this.confirmAdd()
         }).catch(err => console.log(err));
     }
 
@@ -173,7 +184,8 @@ class LandForm extends Component {
             url: 'http://localhost:3001/landValueIncreases4Years',
             data: landValueIncreases4Years
         }).then(res => {
-            //console.log(res.data)
+            this.setState({check_3:true}) 
+            this.confirmAdd()  
         }).catch(err => console.log(err));
     }
 
@@ -184,7 +196,8 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Responsibility',
             data: landResponsibility
         }).then(res => {
-            //console.log(res.data)
+            this.setState({check_4:true})
+            this.confirmAdd()
         }).catch(err => console.log(err));
     }
 
@@ -195,7 +208,8 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Exploitation',
             data: landExploitation
         }).then(res => {
-            
+            this.setState({check_5:true})
+            this.confirmAdd()
         }).catch(err => console.log(err));
     }
     /*******************************************************/
@@ -205,9 +219,16 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Disposal',
             data: Disposal
         }).then(res => {
-            this.props.history.push('/items');
-            alert("เพิ่มข้อมูลสำเร็จ")
+            this.setState({check_6:true})
+            this.confirmAdd()
         }).catch(err => console.log(err));
+    }
+
+    confirmAdd(){
+        if(this.state.check_1 && this.state.check_2 && this.state.check_3 && this.state.check_4 && this.state.check_5 && this.state.check_6){
+            this.props.history.push('/items')
+            alert("เพิ่มข้อมูลสำเร็จ")
+        }
     }
 
 
@@ -607,8 +628,8 @@ class LandForm extends Component {
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
-                                                name="responsibilityYear" /*****/
-                                                ref="responsibilityYear"  /*****/
+                                                name="Year" /*****/
+                                                ref="Year"  /*****/
                                             />
                                         </div>
                                     </div>

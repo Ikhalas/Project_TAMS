@@ -1,67 +1,47 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { ITEMS } from '../../../common/APIutl'
+import LandDetail from './LandDetail'
+
 
 export default class ItemDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            detail: ''
+            detail: []
         }
     }
 
-    componentDidMount(){
-        this.getItemtype()
-    }
-
-    getItemtype(){
+    componentDidMount() {
         let itemId = this.props.match.params.id;
-        axios.get(ITEMS + '/' + itemId ).then(
+        axios.get('http://localhost:3001/Items/' + itemId).then(
             res => {
-                //console.log(res)
-                this.setState({detail : res.data}, () => {
-                    //console.log(this.state)
-                })
-            })
-        .catch(err => console.log(err))
+                this.setState({ detail: res.data })
+                //console.log(this.state.detail.itemType)
+                this.renderDetail()
+            }).catch(err => console.log(err))
     }
 
+    renderDetail() {
+        //console.log(this.state.detail.itemType)
+        if (this.state.detail.itemType === 'ที่ดิน') {
+            return(
+                <LandDetail detail={this.state.detail} />
+            )
+        }
+
+        else {
+            return (
+                <p>eiei</p>
+            )
+        }
+
+    }
 
     render() {
         return (
             <div>
                 <div className="content-wrapper title">
-                    <section className="content-header">
-                        <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;รายละเอียดพัสดุครุภัณฑ์&nbsp;|&nbsp;<b>{this.state.detail.itemName}&nbsp;</b>{this.state.detail.itemCode}</span>
-                        </h1>
-                    </section>
-                    <section className="content">
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <div className="block-example border border-primary">
-                                    <ul className="list-group">
-                                        <li className="list-group-item title"><span style={{fontSize:20}}><b>ชื่อพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
-                                            {this.state.detail.itemName}
-                                        </li>
-                                        <li className="list-group-item title"><span style={{fontSize:20}}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
-                                            {this.state.detail.itemCode}
-                                        </li>
-                                        <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
-                                            {this.state.detail.itemType}
-                                        </li>
-                                        <li className="list-group-item title"><span style={{fontSize:20}}><b>หน่วยงานที่รับผิดชอบ</b> &nbsp; : &nbsp;</span>
-                                            {this.state.detail.Department}
-                                        </li>
-                                        
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        
-                    </section>
+                    {this.renderDetail()}
                 </div>
             </div>
         )

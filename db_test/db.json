@@ -108,18 +108,18 @@
       "sellerName": "นางหนู อรุณทอง",
       "Rai": 4,
       "Ngan": 20,
-      "buildingType": "",
-      "Material": "",
-      "Floors": "",
-      "otherType": "",
-      "otherSize": "",
-      "disposalDate": "",
-      "disposalMethod": "",
-      "disposalapprovalNo": "",
-      "disposalPrice": "",
-      "profitOrLost": "",
-      "Thumbnail": "",
-      "Note": ""
+      "buildingType": "xxxxxxxxx",
+      "Material": "xxxxxxxxxx",
+      "Floors": "xxxxxxxxxxx",
+      "otherType": "xxxxxxxxxx",
+      "otherSize": "xxxxxxx",
+      "disposalDate": "xxxxxxxxxxxxx",
+      "disposalMethod": "xxxxxxxxxx",
+      "disposalapprovalNo": "xxxxxxxxxxx",
+      "disposalPrice": "xxxxxxxxxxxxx",
+      "profitOrLost": "xxxxxxxxxxxxxx",
+      "Thumbnail": "xxxxxxxxxxxx",
+      "Note": "xxxxxxxxxxx"
     },
     {
       "id": 2,
@@ -278,7 +278,7 @@
       "profitOrLost": "",
       "Responsibility": [
         {
-          "responsibilityYear": "5595",
+          "Year": "5595",
           "responsibilityDepartmentName": "454",
           "responsibilityDepartmentHead": "82885"
         }
@@ -286,7 +286,7 @@
       "id": 4
     },
     {
-      "condition": "ใช้งานได้ดี",
+      "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีโฉนด",
@@ -315,7 +315,7 @@
       "id": 5
     },
     {
-      "condition": "ใช้งานได้ดี",
+      "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีโฉนด",
@@ -344,7 +344,7 @@
       "id": 6
     },
     {
-      "condition": "ใช้งานได้ดี",
+      "status": "ใช้งานได้ดี",
       "itemType": "ของใช้สำนักงาน",
       "Department": "อบต.ท่าข้าม",
       "itemCode": "111-11-1111",
@@ -377,7 +377,7 @@
       "id": 7
     },
     {
-      "condition": "ใช้งานได้ดี",
+      "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีโฉนด",
@@ -399,6 +399,30 @@
       "Note": "22222222222",
       "thumbnail": "",
       "id": 8
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "192-16-8777",
+      "Location": "",
+      "derivedDate": "",
+      "approvalDate": "test",
+      "Price": "",
+      "budgetOf": "ยังไม่ได้เลือก",
+      "Certificate": "",
+      "sellerName": "",
+      "Rai": "",
+      "Ngan": "",
+      "buildingType": "",
+      "Material": "",
+      "Floors": "",
+      "otherType": "",
+      "otherSize": "",
+      "Note": "",
+      "thumbnail": "",
+      "id": 9
     }
   ],
   "Depreciations": [
@@ -419,25 +443,47 @@
       "Percent": "",
       "Balance": "",
       "Note": "",
-      "id": 2
+      "id": 5
     },
     {
       "itemCode": "222-22-2222",
       "itemName": "ที่ดินที่มีโฉนด",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
+      "Year": "1",
+      "Percent": "20",
+      "Balance": "2000000",
+      "Note": "",
+      "id": 3
+    },
+    {
+      "itemCode": "222-22-2222",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "2",
+      "Percent": "20",
+      "Balance": "3000000",
+      "Note": "",
+      "id": 2
+    },
+    {
+      "itemCode": "192-16-8777",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
       "Year": "",
       "Percent": "",
       "Balance": "",
       "Note": "",
-      "id": 3
+      "id": 4
     }
   ],
   "Responsibility": [
     {
       "itemCode": "152-22-5555",
       "itemName": "ที่ดินที่มีโฉนด",
-      "responsibilityYear": "2558",
+      "Year": "2558",
       "responsibilityDepartmentName": "กองกลาง",
       "responsibilityDepartmentHead": "นายหวัด",
       "id": 1
@@ -447,7 +493,7 @@
       "itemName": "เก้าอี้",
       "itemType": "ของใช้สำนักงาน",
       "Department": "อบต.ท่าข้าม",
-      "responsibilityYear": "1111111",
+      "Year": "1111111",
       "responsibilityDepartmentName": "111111",
       "responsibilityDepartmentHead": "11111",
       "responsibilityUserName": "111111",
@@ -459,11 +505,22 @@
       "itemName": "ที่ดินที่มีโฉนด",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
-      "responsibilityYear": "2222222222",
+      "Year": "2222222222",
       "responsibilityDepartmentName": "2222222222",
       "responsibilityDepartmentHead": "222222222",
       "Note": "",
       "id": 3
+    },
+    {
+      "itemCode": "192-16-8777",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "Year": "",
+      "responsibilityDepartmentName": "",
+      "responsibilityDepartmentHead": "",
+      "Note": "",
+      "id": 4
     }
   ],
   "Exploitation": [
@@ -491,11 +548,22 @@
       "itemName": "ที่ดินที่มีโฉนด",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
+      "Year": "1",
+      "List": "นอนเฉยๆ",
+      "Benefits": "1000000",
+      "Note": "",
+      "id": 3
+    },
+    {
+      "itemCode": "192-16-8777",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
       "Year": "",
       "List": "",
       "Benefits": "",
       "Note": "",
-      "id": 3
+      "id": 4
     }
   ],
   "Disposal": [
@@ -511,6 +579,19 @@
       "profitOrLost": "",
       "Note": "",
       "id": 1
+    },
+    {
+      "itemCode": "192-16-8777",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "disposalDate": "",
+      "disposalMethod": "",
+      "disposalapprovalNo": "",
+      "disposalPrice": "",
+      "profitOrLost": "",
+      "Note": "",
+      "id": 2
     }
   ],
   "landValueIncreases4Years": [
@@ -527,11 +608,33 @@
       "itemName": "ที่ดินที่มีโฉนด",
       "itemType": "ที่ดิน",
       "Department": "อบต.ท่าข้าม",
+      "Year": "2553",
+      "Percent": "5",
+      "Balance": "20000",
+      "Note": "ไม่มี",
+      "id": 2
+    },
+    {
+      "itemCode": "222-22-2222",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "2554",
+      "Percent": "10",
+      "Balance": "30000",
+      "Note": "ไม่มี",
+      "id": 4
+    },
+    {
+      "itemCode": "192-16-8777",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
       "Year": "",
       "Percent": "",
       "Balance": "",
       "Note": "",
-      "id": 2
+      "id": 3
     }
   ],
   "itemMaintenance": [

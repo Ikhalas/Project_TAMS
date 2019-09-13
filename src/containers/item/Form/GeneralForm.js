@@ -70,7 +70,7 @@ class GeneralForm extends Component {
 
     onSubmit = (e) => {
         const newItem = {
-            "condition": "ใช้งานได้ดี",
+            "status": "ใช้งานได้ดี",
             "itemType": this.refs.itemType.value,                       //ประเภท
             "Department": this.refs.Department.value,                   //หน่วยงาน      
             "itemCode": this.refs.itemCode.value,                       //เลขรหัส
@@ -112,7 +112,7 @@ class GeneralForm extends Component {
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
             "Department": this.refs.Department.value, 
-            "responsibilityYear": this.refs.responsibilityYear.value,
+            "Year": this.refs.Year.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "responsibilityUserName": this.refs.responsibilityUserName.value,
@@ -685,8 +685,8 @@ class GeneralForm extends Component {
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
-                                                name="responsibilityYear" /*****/
-                                                ref="responsibilityYear"  /*****/
+                                                name="Year" /*****/
+                                                ref="Year"  /*****/
                                             />
                                         </div>
                                     </div>

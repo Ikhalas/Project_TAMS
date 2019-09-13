@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { withRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class Itemlist extends Component {
 
     generateItemRows() {
+        console.log(this.props.items)
         return (
-            this.props.items.map(item => (
+            this.props.items && this.props.items.map(item => (
                 <tr key={item.id}>
                     <td style={{ fontSize: 20 }}>
                         <Link to={'/items/item-detail/' + item.id}>
@@ -23,10 +24,8 @@ class Itemlist extends Component {
                         &nbsp;{item.Department}
                     </td>
                 </tr>
-            ))
-            
-        )
-        
+            )) 
+        ) 
     }
 
     render() {
@@ -75,4 +74,4 @@ class Itemlist extends Component {
     }
 }
 
-export default withRouter(Itemlist)
+export default Itemlist

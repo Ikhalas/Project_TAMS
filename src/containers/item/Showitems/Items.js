@@ -22,8 +22,6 @@ export default class Items extends Component {
         .catch(err => console.log(err))
     }
 
-    
-
     render() {
         return (
             <div>
@@ -35,10 +33,8 @@ export default class Items extends Component {
                     </section>
                     <section className="content">
                        <Itemlist items={this.state.items} />
-                      
                     </section>
                 </div>
-                <button onClick={() => this.testPost()}>test</button>
             </div>
         )
     }
