@@ -8,6 +8,8 @@ class GeneralForm extends Component {
         this.state = {
             Departments: [],
             Itemtypes: [],
+            check_1: false,
+            check_2: false
        
         }
     }
@@ -96,17 +98,6 @@ class GeneralForm extends Component {
             "thumbnail": ""                                              //รูป
         }
 
-        const ItemDepreciations = {
-            "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "Year": "",
-            "Percent": "",
-            "Balance": "",
-            "Note": ""
-        }
-
         const ItemResponsibility = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
@@ -119,7 +110,19 @@ class GeneralForm extends Component {
             "Note": ""
         }
 
-        const ItemExploitation = {
+        /*const ItemDepreciations = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "Percent": "",
+            "Balance": "",
+            "Note": ""
+        }*/
+
+
+        /*const ItemExploitation = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
@@ -128,9 +131,9 @@ class GeneralForm extends Component {
             "List": "",
             "Benefits": "",
             "Note": ""
-        }
+        }*/
 
-        const ItemMaintenance = {
+        /*const ItemMaintenance = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
@@ -141,9 +144,9 @@ class GeneralForm extends Component {
             "List": "",
             "Amount": "",
             "Responsible": ""
-        }
+        }*/
 
-        const Disposal = {
+        /*const Disposal = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
@@ -154,14 +157,14 @@ class GeneralForm extends Component {
             "disposalPrice": "",                                        //ราคาจำหน่าย
             "profitOrLost": "",                                         //กำไร/ขาดทุน
             "disposalNote": "",                                         //หมายเหตุจการจำหน่าย
-        }
+        }*/
 
         this.addItem(newItem)
-        this.addItemDepreciations(ItemDepreciations)
-        this.addItemMaintenance(ItemMaintenance)
         this.addItemResponsibility(ItemResponsibility)
-        this.addItemExploitation(ItemExploitation)
-        this.addItemDisposal(Disposal)
+        //this.addItemDepreciations(ItemDepreciations)
+        //this.addItemMaintenance(ItemMaintenance)
+        //this.addItemExploitation(ItemExploitation)
+        //this.addItemDisposal(Disposal)
 
         e.preventDefault();
     }
@@ -172,12 +175,25 @@ class GeneralForm extends Component {
             url: 'http://localhost:3001/Items',
             data: newItem
         }).then(res => {
-            //console.log(res.data)
+            this.setState({check_1:true})
         }).catch(err => console.log(err));
     }
 
     /*******************************************************/
-    addItemDepreciations(ItemDepreciations) {
+    
+    addItemResponsibility(ItemResponsibility) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Responsibility',
+            data: ItemResponsibility
+        }).then(res => {
+            this.setState({check_2:true})
+            this.confirmAdd()
+        }).catch(err => console.log(err));
+    }
+
+    /*******************************************************/
+    /*addItemDepreciations(ItemDepreciations) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Depreciations',
@@ -185,10 +201,11 @@ class GeneralForm extends Component {
         }).then(res => {
             //console.log(res.data)
         }).catch(err => console.log(err));
-    }
+    }*/
 
     /*******************************************************/
-    addItemMaintenance(itemMaintenance) {
+
+    /*addItemMaintenance(itemMaintenance) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/itemMaintenance',
@@ -196,21 +213,12 @@ class GeneralForm extends Component {
         }).then(res => {
             //console.log(res.data)
         }).catch(err => console.log(err));
-    }
+    }*/
 
+    
     /*******************************************************/
-    addItemResponsibility(ItemResponsibility) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Responsibility',
-            data: ItemResponsibility
-        }).then(res => {
-            //console.log(res.data)
-        }).catch(err => console.log(err));
-    }
 
-    /*******************************************************/
-    addItemExploitation(ItemExploitation) {
+    /*addItemExploitation(ItemExploitation) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Exploitation',
@@ -218,9 +226,11 @@ class GeneralForm extends Component {
         }).then(res => {
             
         }).catch(err => console.log(err));
-    }
+    }*/
 
-    addItemDisposal(Disposal) {
+    /*******************************************************/
+
+    /*addItemDisposal(Disposal) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Disposaln',
@@ -229,8 +239,19 @@ class GeneralForm extends Component {
             this.props.history.push('/items');
             alert("เพิ่มข้อมูลสำเร็จ")
         }).catch(err => console.log(err));
-    }
+    }*/
 
+    /*******************************************************/
+
+    confirmAdd(){
+        if(this.state.check_1 && this.state.check_2){
+            this.props.history.push('/items')
+            alert("เพิ่มข้อมูลสำเร็จ")
+        }
+        else{
+            alert("ผิดพลาด")
+        }
+    }
 
 
     render() {

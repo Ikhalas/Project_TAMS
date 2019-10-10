@@ -11,29 +11,21 @@ export default class ItemtypeDetail extends Component {
         }
     }
 
-    componentDidMount(){
-        this.getItemtype()
-    }
-
-    getItemtype(){
+    componentDidMount() {
         let ItemtypeId = this.props.match.params.id;
-        axios.get(ITEMTYPE + '/' + ItemtypeId ).then(
+        axios.get(ITEMTYPE + '/' + ItemtypeId).then(
             res => {
-                //console.log(res)
-                this.setState({detail : res.data}, () => {
-                    //console.log(this.state)
-                })
-            })
-        .catch(err => console.log(err))
+                this.setState({ detail: res.data })
+            }).catch(err => console.log(err))     
     }
 
-    onDelete(){
-        let ItemtypeId = this.state.detail.id;
+    onDelete() {
+        let ItemtypeId = this.props.match.params.id;
         axios.delete(ITEMTYPE + '/' + ItemtypeId).then(
             res => {
                 this.props.history.push('/setting');
             })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
     }
 
 
@@ -50,16 +42,16 @@ export default class ItemtypeDetail extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <ul className="list-group">
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ประเภทพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>ประเภทพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
                                         {this.state.detail.type}
                                     </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;</span>
                                         {this.state.detail.code}
                                     </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>ชื่อพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>ชื่อพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
                                         {this.state.detail.name}
                                     </li>
-                                    <li className="list-group-item title"><span style={{fontSize:20}}><b>รายละเอียดอื่น ๆ</b> &nbsp;: &nbsp;</span>
+                                    <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>รายละเอียดอื่น ๆ</b> &nbsp;: &nbsp;</span>
                                         {this.state.detail.other}
                                     </li>
                                 </ul>
@@ -69,9 +61,9 @@ export default class ItemtypeDetail extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <button className="btn btn-info btn-sm title pull-left" onClick={() => this.props.history.push('/setting')}>&nbsp;ย้อนกลับ&nbsp;</button>
-                            
+
                                 <div className="pull-right">
-                                    <button className="btn btn-warning btn-sm title" onClick={() => this.props.history.push('/setting/itemtype-edit/'+ this.state.detail.id)}>&nbsp;&nbsp;&nbsp;&nbsp;แก้ไข&nbsp;&nbsp;&nbsp;&nbsp;</button>&nbsp;&nbsp;&nbsp;
+                                    <button className="btn btn-warning btn-sm title" onClick={() => this.props.history.push('/setting/itemtype-edit/' + this.state.detail.id)}>&nbsp;&nbsp;&nbsp;&nbsp;แก้ไข&nbsp;&nbsp;&nbsp;&nbsp;</button>&nbsp;&nbsp;&nbsp;
                                     <button className="btn btn-danger btn-sm title" onClick={this.onDelete.bind(this)}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                 </div>
                             </div>

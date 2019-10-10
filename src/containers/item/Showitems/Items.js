@@ -1,25 +1,12 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import { ITEMS } from '../../../common/APIutl'
 import Itemlist from './Itemlist'
+import { connect } from 'react-redux'
+import { itemFetch } from '../../../redux/actions'
 
-export default class Items extends Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            items : []
-        }
-      
-    }
-
+class Items extends Component {
+    
     componentDidMount(){
-        axios.get( ITEMS ).then(
-            res => {
-               
-                this.setState({items : res.data})
-                //console.log(this.state.items)
-            } )
-        .catch(err => console.log(err))
+        this.props.itemFetch()
     }
 
     render() {
@@ -32,10 +19,16 @@ export default class Items extends Component {
                         </h1>
                     </section>
                     <section className="content">
-                       <Itemlist items={this.state.items} />
+                       <Itemlist items={this.props.items} />
                     </section>
                 </div>
             </div>
         )
     }
 }
+
+function mapStateToProps(state) {
+    return { items: state.items }
+}
+
+export default  connect(mapStateToProps, { itemFetch }) (Items)

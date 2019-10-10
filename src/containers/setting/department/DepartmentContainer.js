@@ -9,8 +9,6 @@ class SettingContainer extends Component {
         script.src = 'js/itemlist.js'
         script.async = true
         document.body.appendChild(script)
-
-
     }
 
     generateDepartmentRows() {

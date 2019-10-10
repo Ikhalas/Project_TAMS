@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import LandDetail from './LandDetail'
+import GeneralDetail from './GeneralDetail'
 
 
 export default class ItemDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            detail: []
+            detail: [],
         }
     }
 
@@ -22,16 +23,15 @@ export default class ItemDetail extends Component {
     }
 
     renderDetail() {
-        //console.log(this.state.detail.itemType)
+
         if (this.state.detail.itemType === 'ที่ดิน') {
             return(
                 <LandDetail detail={this.state.detail} />
             )
         }
-
         else {
             return (
-                <p>eiei</p>
+                <GeneralDetail detail={this.state.detail} />
             )
         }
 

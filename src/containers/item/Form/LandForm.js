@@ -7,17 +7,11 @@ class LandForm extends Component {
         super(props)
         this.state = {
             Departments: [],
-            types:[],
             Itemtypes: [],
             Landtypes: [],
             check_1: false,
-            check_2: false,
-            check_3: false,
-            check_4: false,
-            check_5: false,
-            check_6: false,
+            check_2: false 
         }
-       
     }
 
     componentDidMount() {
@@ -83,42 +77,6 @@ class LandForm extends Component {
             "thumbnail": ""                                                     //รูป
         }
 
-        const Disposal = {
-            "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "disposalDate": "",                                                 //วันที่จำหน่าย
-            "disposalMethod": "",                                               //วิธีจำหน่าย
-            "disposalapprovalNo": "",                                           //เลขที่หนังสืออนุมัติ
-            "disposalPrice": "",                                                //ราคาจำหน่าย
-            "profitOrLost": "",                                                 //กำไร/ขาดทุน
-            "Note": "",                                                         //หมายเหตุจการจำหน่าย
-        }
-
-
-        const landDepreciations = {
-            "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "Year": "",
-            "Percent": "",
-            "Balance": "",
-            "Note": ""
-        }
-
-        const landValueIncreases4Years = {
-            "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "Year": "",
-            "Percent": "",
-            "Balance": "",
-            "Note": ""
-        }
-
         const landResponsibility = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
@@ -130,7 +88,45 @@ class LandForm extends Component {
             "Note": ""
         }
 
-        const landExploitation = {
+        /*const Disposal = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "disposalDate": "",                                                 //วันที่จำหน่าย
+            "disposalMethod": "",                                               //วิธีจำหน่าย
+            "disposalapprovalNo": "",                                           //เลขที่หนังสืออนุมัติ
+            "disposalPrice": "",                                                //ราคาจำหน่าย
+            "profitOrLost": "",                                                 //กำไร/ขาดทุน
+            "Note": "",                                                         //หมายเหตุจการจำหน่าย
+        }*/
+
+
+        /*const landDepreciations = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "Percent": "",
+            "Balance": "",
+            "Note": ""
+        }*/
+
+        /*const landValueIncreases4Years = {
+            "itemCode": this.refs.itemCode.value,
+            "itemName": this.refs.itemName.value,
+            "itemType": this.refs.itemType.value, 
+            "Department": this.refs.Department.value, 
+            "Year": "",
+            "Percent": "",
+            "Balance": "",
+            "Note": ""
+        }*/
+
+        
+
+        /*const landExploitation = {
             "itemCode": this.refs.itemCode.value,
             "itemName": this.refs.itemName.value,
             "itemType": this.refs.itemType.value, 
@@ -139,14 +135,14 @@ class LandForm extends Component {
             "List": "",
             "Benefits": "",
             "Note": ""
-        }
+        }*/
 
         this.addItem(newLand)
-        this.addlandDepreciations(landDepreciations)
-        this.addlandValueIncreases4Years(landValueIncreases4Years)
         this.addlandResponsibility(landResponsibility)
-        this.addlandExploitation(landExploitation)
-        this.addlandDisposal(Disposal)
+        //this.addlandDepreciations(landDepreciations)
+        //this.addlandValueIncreases4Years(landValueIncreases4Years)
+        //this.addlandExploitation(landExploitation)
+        //this.addlandDisposal(Disposal)
 
         e.preventDefault();
     }
@@ -161,31 +157,6 @@ class LandForm extends Component {
             data: newLand
         }).then(res => {
             this.setState({check_1:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }
-
-    /*******************************************************/
-    addlandDepreciations(landDepreciations) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Depreciations',
-            data: landDepreciations
-        }).then(res => {
-            this.setState({check_2:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }
-
-    /*******************************************************/
-    addlandValueIncreases4Years(landValueIncreases4Years) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/landValueIncreases4Years',
-            data: landValueIncreases4Years
-        }).then(res => {
-            this.setState({check_3:true}) 
-            this.confirmAdd()  
         }).catch(err => console.log(err));
     }
 
@@ -196,13 +167,52 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Responsibility',
             data: landResponsibility
         }).then(res => {
-            this.setState({check_4:true})
+            this.setState({check_2:true})
             this.confirmAdd()
         }).catch(err => console.log(err));
     }
+    /*******************************************************/
+
+    /*addlandDisposal(Disposal) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Disposal',
+            data: Disposal
+        }).then(res => {
+            this.setState({check_3:true})
+            this.confirmAdd()
+        }).catch(err => console.log(err));
+    }*/
 
     /*******************************************************/
-    addlandExploitation(landExploitation) {
+
+    /*addlandDepreciations(landDepreciations) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/Depreciations',
+            data: landDepreciations
+        }).then(res => {
+            this.setState({check_2:true})
+            this.confirmAdd()
+        }).catch(err => console.log(err));
+    }*/
+
+    /*******************************************************/
+
+    /*addlandValueIncreases4Years(landValueIncreases4Years) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/landValueIncreases4Years',
+            data: landValueIncreases4Years
+        }).then(res => {
+            this.setState({check_3:true}) 
+            this.confirmAdd()  
+        }).catch(err => console.log(err));
+    }*/
+
+    /*******************************************************/
+
+    /*addlandExploitation(landExploitation) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Exploitation',
@@ -211,23 +221,17 @@ class LandForm extends Component {
             this.setState({check_5:true})
             this.confirmAdd()
         }).catch(err => console.log(err));
-    }
-    /*******************************************************/
-    addlandDisposal(Disposal) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Disposal',
-            data: Disposal
-        }).then(res => {
-            this.setState({check_6:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }
+    }*/
 
+    /*******************************************************/
+    
     confirmAdd(){
-        if(this.state.check_1 && this.state.check_2 && this.state.check_3 && this.state.check_4 && this.state.check_5 && this.state.check_6){
+        if(this.state.check_1 && this.state.check_2){
             this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
+        }
+        else{
+            alert("ผิดพลาด")
         }
     }
 
