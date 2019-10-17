@@ -17,22 +17,18 @@ export default class ItemDetail extends Component {
         axios.get('http://localhost:3001/Items/' + itemId).then(
             res => {
                 this.setState({ detail: res.data })
-                //console.log(this.state.detail.itemType)
-                this.renderDetail()
             }).catch(err => console.log(err))
     }
 
     renderDetail() {
 
         if (this.state.detail.itemType === 'ที่ดิน') {
-            return(
-                <LandDetail detail={this.state.detail} />
-            )
+            let itemId = this.props.match.params.id;
+            return( <LandDetail itemId={itemId} /> )
         }
         else {
-            return (
-                <GeneralDetail detail={this.state.detail} />
-            )
+            let itemId = this.props.match.params.id;
+            return ( <GeneralDetail itemId={itemId} /> )
         }
 
     }

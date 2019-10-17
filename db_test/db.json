@@ -96,6 +96,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
+      "typeNo": 1,
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีโฉนด",
       "itemCode": "111-11-1111",
@@ -120,6 +121,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
+      "typeNo": 1,
       "Department": "ศูนย์พัฒนาเด็กเล็ก",
       "itemName": "ที่ดินที่มีโฉนด",
       "itemCode": "222-22-2222",
@@ -144,6 +146,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
+      "typeNo": 1,
       "Department": "ศูนย์พัฒนาเด็กเล็ก",
       "itemName": "ที่ดินที่มีโฉนด",
       "itemCode": "333-33-3333",
@@ -168,6 +171,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "โยธา",
+      "typeNo": 2,
       "Department": "อบต.ท่าข้าม",
       "itemCode": "444-44-4444",
       "itemName": "เลื่อยยนต์",
@@ -195,6 +199,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
+      "typeNo": 1,
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
       "itemCode": "555-55-5555",
@@ -219,6 +224,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ทั่วไป",
+      "typeNo": 2,
       "Department": "อบต.ท่าข้าม",
       "itemCode": "666-66-6666",
       "itemName": "เสาธง",
@@ -246,6 +252,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ทั่วไป",
+      "typeNo": 2,
       "Department": "อบต.ท่าข้าม",
       "itemCode": "777-77-7777",
       "itemName": "เสาธง",
@@ -273,6 +280,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "โยธา",
+      "typeNo": 2,
       "Department": "อบต.ท่าข้าม",
       "itemCode": "478-49-4849",
       "itemName": "เลื่อยยนต์",
@@ -300,6 +308,7 @@
     {
       "status": "ใช้งานได้ดี",
       "itemType": "ที่ดิน",
+      "typeNo": 1,
       "Department": "อบต.ท่าข้าม",
       "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
       "itemCode": "001-96-8877",
@@ -320,6 +329,58 @@
       "Note": "",
       "thumbnail": "",
       "id": 9
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ที่ดิน",
+      "typeNo": 1,
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemCode": "999-99-9999",
+      "Location": "102/8",
+      "derivedDate": "11/02/2059",
+      "approvalDate": "9999999999",
+      "Price": "9999999999",
+      "budgetOf": "อบต.ท่าข้าม",
+      "Certificate": "9999999999",
+      "sellerName": "9999999999",
+      "Rai": "2",
+      "Ngan": "10",
+      "buildingType": "อาคารเดี่ยว",
+      "Material": "ไม้",
+      "Floors": "3",
+      "otherType": "9999999999",
+      "otherSize": "9999999999",
+      "Note": "9999999999",
+      "thumbnail": "",
+      "id": 10
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ของใช้สำนักงาน",
+      "Department": "อบต.ท่าข้าม",
+      "itemCode": "888-88-8888",
+      "itemName": "เก้าอี้",
+      "waybillCode": "888888888",
+      "itemBrand": "888888888",
+      "itemStyle": "888888888",
+      "orderNo": "888888888",
+      "bodyNo": "888888888",
+      "frameNo": "888888888",
+      "regisNo": "888888888",
+      "itemColor": "888888888",
+      "other": "888888888",
+      "insuranceTerms": "888888888",
+      "insuranceExpDate": "888888888",
+      "insuranceCompany": "888888888",
+      "insuranceDate": "888888888",
+      "derivedFrom": "888888888",
+      "derivedDate": "888888888",
+      "Price": "888888888",
+      "budgetOf": "อบต.ท่าข้าม",
+      "Note": "888888888",
+      "thumbnail": "",
+      "id": 11
     }
   ],
   "Responsibility": [
@@ -392,6 +453,51 @@
       "responsibilityDepartmentHead": "",
       "Note": "",
       "id": 6
+    },
+    {
+      "itemCode": "999-99-9999",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "9999999999",
+      "responsibilityDepartmentName": "9999999999",
+      "responsibilityDepartmentHead": "9999999999",
+      "Note": "",
+      "id": 7
+    },
+    {
+      "itemCode": "111-11-1111",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "1111111111",
+      "responsibilityDepartmentName": "1111111111",
+      "responsibilityDepartmentHead": "1111111111",
+      "Note": "",
+      "id": 8
+    },
+    {
+      "itemCode": "111-11-1111",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "2012",
+      "responsibilityDepartmentName": "2015",
+      "responsibilityDepartmentHead": "10255555",
+      "Note": "",
+      "id": 9
+    },
+    {
+      "itemCode": "888-88-8888",
+      "itemName": "เก้าอี้",
+      "itemType": "ของใช้สำนักงาน",
+      "Department": "อบต.ท่าข้าม",
+      "Year": "888888888",
+      "responsibilityDepartmentName": "888888888",
+      "responsibilityDepartmentHead": "888888888",
+      "responsibilityUserName": "888888888",
+      "Note": "",
+      "id": 10
     }
   ],
   "Depreciations": [],

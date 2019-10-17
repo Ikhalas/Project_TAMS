@@ -5,6 +5,8 @@ export default class GeneralDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            item: [],
+
             Depreciations: [],
             Responsibility: [],
             Exploitation: [],
@@ -16,40 +18,53 @@ export default class GeneralDetail extends Component {
     }
 
     componentDidMount() {
-        //console.log(this.props.detail)
-        let itemCode = this.props.detail.itemCode;
-        //console.log(this.props.detail.itemCode)
-        axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+        let id = this.props.itemId
+        axios.get('http://localhost:3001/items/' + id).then(
             res => {
-                this.setState({ Depreciations: res.data })
-                //console.log(this.state.Depreciations)
+                this.setState({ item: res.data })
+
+                //console.log("Gstatus|"+this.state.item.status)
+                if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
+                else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
+                else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
+                else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
+                else this.setState({ statusClass: 'label label-primary' })
+
+                //console.log(this.state.item)
+                let itemCode = this.state.item.itemCode;
+                //console.log(this.state.item.itemCode)
+                axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Depreciations: res.data })
+                        //console.log(this.state.Depreciations)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ itemMaintenance: res.data })
+                        //console.log(this.state.LandValueIncreases4Years)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Responsibility: res.data })
+                        //console.log(this.state.Responsibility)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Exploitation: res.data })
+                        //console.log(this.state.Exploitation)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Disposal: res.data })
+                        //console.log(this.state.Disposal)
+                    }).catch(err => console.log(err))
+
             }).catch(err => console.log(err))
 
-        axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ itemMaintenance: res.data })
-                //console.log(this.state.LandValueIncreases4Years)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Responsibility: res.data })
-                //console.log(this.state.Responsibility)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Exploitation: res.data })
-                //console.log(this.state.Exploitation)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Disposal: res.data })
-                //console.log(this.state.Disposal)
-            }).catch(err => console.log(err))
-        
-        this.generateStatus()
 
     }
 
@@ -167,30 +182,21 @@ export default class GeneralDetail extends Component {
 
     }
 
-    generateStatus() {
-        //console.log("Gstatus|"+this.props.detail.status)
-        if (this.props.detail.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
-        else if (this.props.detail.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
-        else if (this.props.detail.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
-        else if (this.props.detail.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
-        else this.setState({ statusClass: 'label label-primary' })
-    }
-
     render() {
-        //console.log(this.props.detail)
+        //console.log(this.state.item)
         return (
             <div>
                 <section className="content-header">
                     <span style={{ fontSize: 35 }}>รายละเอียดพัสดุครุภัณฑ์</span>
                     <span className="pull-right" style={{ marginTop: 10 }}>
-                        <span className={this.state.statusClass} style={{ fontSize: 23 }}>{this.props.detail.status}</span>&nbsp;&nbsp;
+                        <span className={this.state.statusClass} style={{ fontSize: 23 }}>{this.state.item.status}</span>&nbsp;&nbsp;
                 </span>
                 </section>
 
                 <section className="content">
-                    <span style={{ fontSize: 23 }}>ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.props.detail.itemType}</b></span>
+                    <span style={{ fontSize: 23 }}>ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemType}</b></span>
                     <span className="pull-right" style={{ fontSize: 23 }}>
-                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.props.detail.itemCode}</b>&nbsp;&nbsp;
+                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>&nbsp;&nbsp;
                 </span>
 
 
@@ -204,61 +210,61 @@ export default class GeneralDetail extends Component {
                                     <table className="table table-striped ">
                                         <tbody>
                                             <tr>
-                                                <td>ชื่อพัสดุ : &nbsp;<b>{this.props.detail.itemName}</b></td>
+                                                <td>ชื่อพัสดุ : &nbsp;<b>{this.state.item.itemName}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ใบส่งของที่ : &nbsp;<b>{this.props.detail.waybillCode}</b></td>
+                                                <td>ใบส่งของที่ : &nbsp;<b>{this.state.item.waybillCode}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ชื่อ/ยี่ห้อผู้ทำหรือผลิต : &nbsp;<b>{this.props.detail.itemBrand}</b></td>
+                                                <td>ชื่อ/ยี่ห้อผู้ทำหรือผลิต : &nbsp;<b>{this.state.item.itemBrand}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>แบบ/ชนิด/ลักษณะ : &nbsp;<b>{this.props.detail.itemStyle}</b></td>
+                                                <td>แบบ/ชนิด/ลักษณะ : &nbsp;<b>{this.state.item.itemStyle}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขลำดับ : &nbsp;<b>{this.props.detail.orderNo}</b></td>
+                                                <td>หมายเลขลำดับ : &nbsp;<b>{this.state.item.orderNo}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขเครื่อง : &nbsp;<b>{this.props.detail.bodyNo}</b></td>
+                                                <td>หมายเลขเครื่อง : &nbsp;<b>{this.state.item.bodyNo}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขกรอบ : &nbsp;<b>{this.props.detail.frameNo}</b></td>
+                                                <td>หมายเลขกรอบ : &nbsp;<b>{this.state.item.frameNo}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขจดทะเบียน : &nbsp;<b>{this.props.detail.regisNo}</b></td>
+                                                <td>หมายเลขจดทะเบียน : &nbsp;<b>{this.state.item.regisNo}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>สีของพัสดุ : &nbsp;<b>{this.props.detail.itemColor}</b></td>
+                                                <td>สีของพัสดุ : &nbsp;<b>{this.state.item.itemColor}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>อื่น ๆ : &nbsp;<b>{this.props.detail.other}</b></td>
+                                                <td>อื่น ๆ : &nbsp;<b>{this.state.item.other}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>เงือนไข - การประกัน : &nbsp;<b>{this.props.detail.insuranceTerms}</b></td>
+                                                <td>เงือนไข - การประกัน : &nbsp;<b>{this.state.item.insuranceTerms}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>พัสดุรับประกันถึงวันที่ : &nbsp;<b>{this.props.detail.insuranceExpDate}</b></td>
+                                                <td>พัสดุรับประกันถึงวันที่ : &nbsp;<b>{this.state.item.insuranceExpDate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>พัสดุรับประกันไว้ที่บริษัท : &nbsp;<b>{this.props.detail.insuranceCompany}</b></td>
+                                                <td>พัสดุรับประกันไว้ที่บริษัท : &nbsp;<b>{this.state.item.insuranceCompany}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>วันที่ประกันพัสดุ : &nbsp;<b>{this.props.detail.insuranceDate}</b></td>
+                                                <td>วันที่ประกันพัสดุ : &nbsp;<b>{this.state.item.insuranceDate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มาจาก : &nbsp;<b>{this.props.detail.derivedFrom}</b></td>
+                                                <td>ซื้อ/จ้าง/ได้มาจาก : &nbsp;<b>{this.state.item.derivedFrom}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.props.detail.derivedDate}</b></td>
+                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.state.item.derivedDate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ราคา : &nbsp;<b>{this.props.detail.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
+                                                <td>ราคา : &nbsp;<b>{this.state.item.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
                                             </tr>
                                             <tr>
-                                                <td>งบประมาณของ : &nbsp;<b>{this.props.detail.budgetOf}</b></td>
+                                                <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเหตุ : &nbsp;<b>{this.props.detail.Note}</b></td>
+                                                <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
                                             </tr>
                                         </tbody>
                                     </table>

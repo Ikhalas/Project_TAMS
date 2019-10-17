@@ -5,6 +5,8 @@ export default class LandDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            item: [],
+
             Depreciations: [],
             LandValueIncreases4Years: [],
             Responsibility: [],
@@ -18,49 +20,58 @@ export default class LandDetail extends Component {
     }
 
     componentDidMount() {
-        console.log("Lstatus|"+this.props.detail.status)
-        if (this.props.detail.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
-        else if (this.props.detail.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
-        else if (this.props.detail.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
-        else if (this.props.detail.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
-        else this.setState({ statusClass: 'label label-primary' })
-
-        let itemCode = this.props.detail.itemCode;
-        axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+        let id = this.props.itemId
+        axios.get('http://localhost:3001/items/' + id).then(
             res => {
-                this.setState({ Depreciations: res.data })
-                //console.log(this.state.Depreciations)
+                this.setState({ item: res.data })
+
+                //console.log("Lstatus|"+this.state.item.status)
+                if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
+                else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
+                else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
+                else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
+                else this.setState({ statusClass: 'label label-primary' })
+
+                let itemCode = this.state.item.itemCode;
+                axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Depreciations: res.data })
+                        //console.log(this.state.Depreciations)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/landValueIncreases4Years?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ LandValueIncreases4Years: res.data })
+                        //console.log(this.state.LandValueIncreases4Years)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Responsibility: res.data })
+                        //console.log(this.state.Responsibility)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Exploitation: res.data })
+                        //console.log(this.state.Exploitation)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Maintenance: res.data })
+                        //console.log(this.state.LandValueIncreases4Years)
+                    }).catch(err => console.log(err))
+
+                axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
+                    res => {
+                        this.setState({ Disposal: res.data })
+                        //console.log(this.state.Disposal)
+                    }).catch(err => console.log(err))
+
             }).catch(err => console.log(err))
 
-        axios.get('http://localhost:3001/landValueIncreases4Years?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ LandValueIncreases4Years: res.data })
-                //console.log(this.state.LandValueIncreases4Years)
-            }).catch(err => console.log(err))
 
-        axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Responsibility: res.data })
-                //console.log(this.state.Responsibility)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Exploitation: res.data })
-                //console.log(this.state.Exploitation)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Maintenance: res.data })
-                //console.log(this.state.LandValueIncreases4Years)
-            }).catch(err => console.log(err))
-
-        axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
-            res => {
-                this.setState({ Disposal: res.data })
-                //console.log(this.state.Disposal)
-            }).catch(err => console.log(err))
     }
 
     generateDepreciationsRows() {
@@ -211,14 +222,14 @@ export default class LandDetail extends Component {
                 <section className="content-header">
                     <span style={{ fontSize: 35 }}>รายละเอียดพัสดุครุภัณฑ์</span>
                     <span className="pull-right" style={{ marginTop: 10 }}>
-                        <span className={this.state.statusClass} style={{ fontSize: 23 }}>{this.props.detail.status}</span>&nbsp;&nbsp;
+                        <span className={this.state.statusClass} style={{ fontSize: 23 }}>{this.state.item.status}</span>&nbsp;&nbsp;
                 </span>
                 </section>
 
                 <section className="content">
-                    <span style={{ fontSize: 23 }}>ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.props.detail.itemType}</b></span>
+                    <span style={{ fontSize: 23 }}>ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemType}</b></span>
                     <span className="pull-right" style={{ fontSize: 23 }}>
-                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.props.detail.itemCode}</b>&nbsp;&nbsp;
+                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>&nbsp;&nbsp;
                 </span>
 
 
@@ -232,50 +243,50 @@ export default class LandDetail extends Component {
                                     <table className="table table-striped ">
                                         <tbody>
                                             <tr>
-                                                <td>ชื่อพัสดุ : &nbsp;<b>{this.props.detail.itemName}</b></td>
+                                                <td>ชื่อพัสดุ : &nbsp;<b>{this.state.item.itemName}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ที่ตั้งพัสดุ : &nbsp;<b>{this.props.detail.Location}</b></td>
+                                                <td>ที่ตั้งพัสดุ : &nbsp;<b>{this.state.item.Location}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.props.detail.derivedDate}</b></td>
+                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.state.item.derivedDate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>เลขที่หนังสืออนุมัติ/ลงวันที่ : &nbsp;<b>{this.props.detail.approvalDate}</b></td>
+                                                <td>เลขที่หนังสืออนุมัติ/ลงวันที่ : &nbsp;<b>{this.state.item.approvalDate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ราคา : &nbsp;<b>{this.props.detail.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
+                                                <td>ราคา : &nbsp;<b>{this.state.item.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
                                             </tr>
                                             <tr>
-                                                <td>งบประมาณของ : &nbsp;<b>{this.props.detail.budgetOf}</b></td>
+                                                <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>เอกสิทธิ์พัสดุ : &nbsp;<b>{this.props.detail.Certificate}</b></td>
+                                                <td>เอกสิทธิ์พัสดุ : &nbsp;<b>{this.state.item.Certificate}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ชื่อผู้รับจ้าง/ผู้ขาย/ผู้ให้ : &nbsp;<b>{this.props.detail.sellerName}</b></td>
+                                                <td>ชื่อผู้รับจ้าง/ผู้ขาย/ผู้ให้ : &nbsp;<b>{this.state.item.sellerName}</b></td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    ที่ดิน<span style={{ marginLeft: 40 }}>เนื้อที่ :</span>&nbsp;<b>{this.props.detail.Rai}<span className="pull-right" style={{ marginRight: 50 }}>ไร่</span></b><br />
-                                                    <span style={{ marginLeft: 65 }}>งาน</span> :&nbsp;<b>{this.props.detail.Ngan}<span className="pull-right" style={{ marginRight: 29 }}>ตารางวา</span></b>
+                                                    ที่ดิน<span style={{ marginLeft: 40 }}>เนื้อที่ :</span>&nbsp;<b>{this.state.item.Rai}<span className="pull-right" style={{ marginRight: 50 }}>ไร่</span></b><br />
+                                                    <span style={{ marginLeft: 65 }}>งาน</span> :&nbsp;<b>{this.state.item.Ngan}<span className="pull-right" style={{ marginRight: 29 }}>ตารางวา</span></b>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    โรงเรือน  <span style={{ marginLeft: 20 }}>อาคาร :</span>&nbsp;<b>{this.props.detail.buildingType}</b><br />
-                                                    <span style={{ marginLeft: 66 }}>วัสดุที่ใช้ก่อสร้าง :</span>&nbsp;<b>{this.props.detail.Material}</b><br />
-                                                    <span style={{ marginLeft: 66 }}>จำนวนชั้น :</span>&nbsp;<b>{this.props.detail.Floors}<span className="pull-right" style={{ marginRight: 50 }}>ชั้น</span></b>
+                                                    โรงเรือน  <span style={{ marginLeft: 20 }}>อาคาร :</span>&nbsp;<b>{this.state.item.buildingType}</b><br />
+                                                    <span style={{ marginLeft: 66 }}>วัสดุที่ใช้ก่อสร้าง :</span>&nbsp;<b>{this.state.item.Material}</b><br />
+                                                    <span style={{ marginLeft: 66 }}>จำนวนชั้น :</span>&nbsp;<b>{this.state.item.Floors}<span className="pull-right" style={{ marginRight: 50 }}>ชั้น</span></b>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    อื่น ๆ  <span style={{ marginLeft: 35 }}>ลักษณะ/ชนิด :</span>&nbsp;<b>{this.props.detail.otherType}</b><br />
-                                                    <span style={{ marginLeft: 68 }}>ขนาด :</span>&nbsp;<b>{this.props.detail.otherSize}</b>
+                                                    อื่น ๆ  <span style={{ marginLeft: 35 }}>ลักษณะ/ชนิด :</span>&nbsp;<b>{this.state.item.otherType}</b><br />
+                                                    <span style={{ marginLeft: 68 }}>ขนาด :</span>&nbsp;<b>{this.state.item.otherSize}</b>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเหตุ : &nbsp;<b>{this.props.detail.Note}</b></td>
+                                                <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
                                             </tr>
 
 
