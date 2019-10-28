@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
-export default class LandDetail extends Component {
+class LandDetail extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props)
         this.state = {
@@ -20,54 +23,58 @@ export default class LandDetail extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         let id = this.props.itemId
         axios.get('http://localhost:3001/items/' + id).then(
             res => {
-                this.setState({ item: res.data })
+                if (this._isMounted) {
 
-                //console.log("Lstatus|"+this.state.item.status)
-                if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
-                else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
-                else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
-                else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
-                else this.setState({ statusClass: 'label label-primary' })
+                    this.setState({ item: res.data })
 
-                let itemCode = this.state.item.itemCode;
-                axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Depreciations: res.data })
-                        //console.log(this.state.Depreciations)
-                    }).catch(err => console.log(err))
+                    //console.log("Lstatus|"+this.state.item.status)
+                    if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
+                    else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
+                    else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
+                    else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
+                    else this.setState({ statusClass: 'label label-primary' })
 
-                axios.get('http://localhost:3001/landValueIncreases4Years?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ LandValueIncreases4Years: res.data })
-                        //console.log(this.state.LandValueIncreases4Years)
-                    }).catch(err => console.log(err))
+                    let itemCode = this.state.item.itemCode;
+                    axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Depreciations: res.data })
+                            //console.log(this.state.Depreciations)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Responsibility: res.data })
-                        //console.log(this.state.Responsibility)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/landValueIncreases4Years?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ LandValueIncreases4Years: res.data })
+                            //console.log(this.state.LandValueIncreases4Years)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Exploitation: res.data })
-                        //console.log(this.state.Exploitation)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Responsibility: res.data })
+                            //console.log(this.state.Responsibility)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Maintenance: res.data })
-                        //console.log(this.state.LandValueIncreases4Years)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Exploitation: res.data })
+                            //console.log(this.state.Exploitation)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Disposal: res.data })
-                        //console.log(this.state.Disposal)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Maintenance: res.data })
+                            //console.log(this.state.LandValueIncreases4Years)
+                        }).catch(err => console.log(err))
+
+                    axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Disposal: res.data })
+                            //console.log(this.state.Disposal)
+                        }).catch(err => console.log(err))
+                }
 
             }).catch(err => console.log(err))
 
@@ -214,6 +221,10 @@ export default class LandDetail extends Component {
 
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
 
     render() {
         //console.log(this.state.statusClass)
@@ -227,10 +238,12 @@ export default class LandDetail extends Component {
                 </section>
 
                 <section className="content">
-                    <span style={{ fontSize: 23 }}>ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemType}</b></span>
+                    <span style={{ fontSize: 23 }}>
+                        ประเภท&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemType}</b>
+                    </span>
                     <span className="pull-right" style={{ fontSize: 23 }}>
-                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>&nbsp;&nbsp;
-                </span>
+                        เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>
+                    </span>
 
 
                     <div className="row">
@@ -238,34 +251,48 @@ export default class LandDetail extends Component {
                             <div className="box box-success">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => this.props.history.push('/items/item-detail/land-edit/' + this.state.item.id)}>
+                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div className="box-body no-padding">
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ข้อมูลเบื่องต้นของพัสดุ ----------</b></h1>
+                                    </div>
                                     <table className="table table-striped ">
                                         <tbody>
+
                                             <tr>
                                                 <td>ชื่อพัสดุ : &nbsp;<b>{this.state.item.itemName}</b></td>
                                             </tr>
                                             <tr>
+                                                <td>หน่วยงานที่รับผิดชอบ : &nbsp;<b>{this.state.item.Department}</b></td>
+                                            </tr>
+                                            <tr>
                                                 <td>ที่ตั้งพัสดุ : &nbsp;<b>{this.state.item.Location}</b></td>
                                             </tr>
+
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.state.item.derivedDate}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>เลขที่หนังสืออนุมัติ/ลงวันที่ : &nbsp;<b>{this.state.item.approvalDate}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>ราคา : &nbsp;<b>{this.state.item.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>เอกสิทธิ์พัสดุ : &nbsp;<b>{this.state.item.Certificate}</b></td>
+                                                <td>เอกสารสิทธิ์พัสดุ : &nbsp;<b>{this.state.item.Certificate}</b></td>
                                             </tr>
                                             <tr>
                                                 <td>ชื่อผู้รับจ้าง/ผู้ขาย/ผู้ให้ : &nbsp;<b>{this.state.item.sellerName}</b></td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- เนื้อที่ ----------</b></h1>
+                                    </div>
+                                    <table className="table table-striped ">
+                                        <tbody>
                                             <tr>
                                                 <td>
                                                     ที่ดิน<span style={{ marginLeft: 40 }}>เนื้อที่ :</span>&nbsp;<b>{this.state.item.Rai}<span className="pull-right" style={{ marginRight: 50 }}>ไร่</span></b><br />
@@ -285,14 +312,42 @@ export default class LandDetail extends Component {
                                                     <span style={{ marginLeft: 68 }}>ขนาด :</span>&nbsp;<b>{this.state.item.otherSize}</b>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
-                                            </tr>
-
-
 
                                         </tbody>
                                     </table>
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ที่มาของที่ดิน ----------</b></h1>
+                                    </div>
+                                    <table className="table table-striped ">
+                                        <tbody>
+                                            <tr>
+                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.state.item.derivedDate}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>เลขที่หนังสืออนุมัติ/ลงวันที่ : &nbsp;<b>{this.state.item.approvalDate}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>ราคา : &nbsp;<b>{this.state.item.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- หมายเหตุ ----------</b></h1>
+                                    </div>
+                                    <table className="table table-striped ">
+                                        <tbody>
+                                            <tr>
+                                                <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
                                 </div>
                                 {/* /.box-body */}
                             </div>
@@ -321,6 +376,24 @@ export default class LandDetail extends Component {
                             </div>
                             {/* /.box */}
 
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>การหาผลประโยชน์ในพัสดุ</h1>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: 400, textAlign: 'center' }}>รายการ</td>
+                                                <td style={{ width: 200, textAlign: 'center' }}>ผลประโยชน์ที่ได้รับเป็นรายเดือนหรือรายปี (บาท)</td>
+                                            </tr>
+                                            {this.generateExploitationRows()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>มูลค่าเพิ่มขึ้น 4 ปี</h1>
@@ -343,6 +416,7 @@ export default class LandDetail extends Component {
                         </div>
                         {/* /.col */}
                     </div>
+
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-primary">
@@ -366,28 +440,6 @@ export default class LandDetail extends Component {
                         </div>
                     </div>
 
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>การหาผลประโยชน์ในพัสดุ</h1>
-                                </div>
-                                <div className="box-body">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
-                                                <td style={{ width: 400, textAlign: 'center' }}>รายการ</td>
-                                                <td style={{ width: 250, textAlign: 'center' }}>ผลประโยชน์ที่ได้รับเป็นรายเดือนหรือรายปี (บาท)</td>
-                                            </tr>
-                                            {this.generateExploitationRows()}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {/* /.box */}
-                        </div>
-                    </div>
 
                     <div className="row">
                         <div className="col-md-12">
@@ -464,3 +516,5 @@ export default class LandDetail extends Component {
         )
     }
 }
+
+export default withRouter(LandDetail)

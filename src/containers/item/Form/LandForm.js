@@ -10,7 +10,7 @@ class LandForm extends Component {
             Itemtypes: [],
             Landtypes: [],
             check_1: false,
-            check_2: false 
+            check_2: false
         }
     }
 
@@ -26,8 +26,8 @@ class LandForm extends Component {
                 this.setState({ Departments: res.data })
             }).catch(err => console.log(err))
 
-
-        axios.get('http://localhost:3001/itemType?type='+ this.props.type).then(
+        //console.log(this.props.type)   
+        axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
             res => {
                 this.setState({ Landtypes: res.data })
             }).catch(err => console.log(err))
@@ -79,9 +79,6 @@ class LandForm extends Component {
 
         const landResponsibility = {
             "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
             "Year": this.refs.Year.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
@@ -124,7 +121,7 @@ class LandForm extends Component {
             "Note": ""
         }*/
 
-        
+
 
         /*const landExploitation = {
             "itemCode": this.refs.itemCode.value,
@@ -147,7 +144,7 @@ class LandForm extends Component {
         e.preventDefault();
     }
 
-    
+
 
     /*******************************************************/
     addItem(newLand) {
@@ -156,7 +153,7 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Items',
             data: newLand
         }).then(res => {
-            this.setState({check_1:true})
+            this.setState({ check_1: true })
         }).catch(err => console.log(err));
     }
 
@@ -167,7 +164,7 @@ class LandForm extends Component {
             url: 'http://localhost:3001/Responsibility',
             data: landResponsibility
         }).then(res => {
-            this.setState({check_2:true})
+            this.setState({ check_2: true })
             this.confirmAdd()
         }).catch(err => console.log(err));
     }
@@ -224,13 +221,13 @@ class LandForm extends Component {
     }*/
 
     /*******************************************************/
-    
-    confirmAdd(){
-        if(this.state.check_1 && this.state.check_2){
+
+    confirmAdd() {
+        if (this.state.check_1 && this.state.check_2) {
             this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
         }
-        else{
+        else {
             alert("ผิดพลาด")
         }
     }
@@ -251,93 +248,47 @@ class LandForm extends Component {
                     />
 
                     <div className="box box-success">
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของที่ดิน</b></h1>
+                        </div>
                         {/* /.box-header */}
                         <div className="box-body">
                             <div className="row">
 
                                 <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>หน่วยงานที่รับผิดชอบ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            required
-                                            name="Department" /******/
-                                            ref="Department" /******/
-                                        >
-                                            <option disabled selected="selected" value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                            {this.generateDepartmentOption()}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>เลขที่หนังสืออนุมัติ/ลงวันที่</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-book" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="approvalDate" /*****/
-                                                ref="approvalDate"  /*****/
-                                            />
+                                    <div style={{ marginBottom: '21px' }}>
+                                        <div className="form-group">
+                                            <label>หน่วยงานที่รับผิดชอบ</label>
+                                            <select
+                                                className="form-control select2"
+                                                style={{ width: '100%' }}
+                                                required
+                                                name="Department" /******/
+                                                ref="Department" /******/
+                                            >
+                                                <option disabled selected="selected" value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                                {this.generateDepartmentOption()}
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
-
-                            </div>
-                            {/* /.row */}
-                            {/* /------------------------------------------------------------------------------------------------------ */}
-                            <div className="row">
 
 
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>ชื่อพัสดุ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            required
-                                            name="itemName" /******/
-                                            ref="itemName" /******/
-                                        >
-                                            <option disabled selected="selected" value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
-                                            {this.generateLandtypeOption()}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>ราคา</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-money" />
-                                            </div>
-                                            <input
-                                                type="number"
-                                                placeholder="บาท"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="Price" /*****/
-                                                ref="Price"  /*****/
-                                            />
+                                    <div style={{ marginBottom: '21px' }}>
+                                        <div className="form-group">
+                                            <label>ชื่อพัสดุ</label>
+                                            <select
+                                                className="form-control select2"
+                                                style={{ width: '100%' }}
+                                                required
+                                                name="itemName" /******/
+                                                ref="itemName" /******/
+                                            >
+                                                <option disabled selected="selected" value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
+                                                {this.generateLandtypeOption()}
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
 
-
-
-                            </div>
-                            {/* /------------------------------------------------------------------------------------------------------ */}
-                            <div className="row">
-
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>เลขรหัสพัสดุ</label>
                                         <div className="input-group">
@@ -357,30 +308,7 @@ class LandForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>งบประมาณของ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            name="budgetOf" /******/
-                                            ref="budgetOf" /******/
-                                        >
-                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                            {this.generateDepartmentOption()}
-                                        </select>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-                            </div>
-                            {/* /------------------------------------------------------------------------------------------------------ */}
-                            <div className="row">
+                                {/* /col-md-6 */}
 
                                 <div className="col-md-6">
                                     <div className="form-group">
@@ -398,10 +326,7 @@ class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>เอกสารสิทธิ์พัสดุ</label>
                                         <div className="input-group">
@@ -417,38 +342,7 @@ class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-
-
-                            </div>
-                            {/* /------------------------------------------------------------------------------------------------------ */}
-                            <div className="row">
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>ซื้อ/จ้าง/ได้มา เมื่อวันที่</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                data-inputmask="'alias': 'dd/mm/yyyy'"
-                                                data-mask
-                                                name="derivedDate" /*****/
-                                                ref="derivedDate"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>ชื่อผู้รับจ้าง/ผู้ขาย/ผู้ให้</label>
                                         <div className="input-group">
@@ -464,9 +358,11 @@ class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
+
                                 </div>
+                                {/* /col-md-6 */}
                             </div>
-                            {/* /------------------------------------------------------------------------------------------------------ */}
+                            {/* /.row */}
                         </div>
                         {/* /.box-body */}
                     </div>
@@ -616,9 +512,87 @@ class LandForm extends Component {
 
 
                         <div className="col-md-6">
+
+                            <div className="box box-danger">
+                                <div className="box-header">
+                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>ที่มาของที่ดิน</b></h3>
+                                </div>
+                                <div className="box-body">
+
+                                    <div className="form-group">
+                                        <label>ซื้อ/จ้าง/ได้มา เมื่อวันที่</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-calendar" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                data-inputmask="'alias': 'dd/mm/yyyy'"
+                                                data-mask
+                                                name="derivedDate" /*****/
+                                                ref="derivedDate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+
+                                    <div className="form-group">
+                                        <label>เลขที่หนังสืออนุมัติ/ลงวันที่</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-book" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="approvalDate" /*****/
+                                                ref="approvalDate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>ราคา</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-money" />
+                                            </div>
+                                            <input
+                                                type="number"
+                                                placeholder="บาท"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="Price" /*****/
+                                                ref="Price"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>งบประมาณของ</label>
+                                        <select
+                                            className="form-control select2"
+                                            style={{ width: '100%' }}
+                                            name="budgetOf" /******/
+                                            ref="budgetOf" /******/
+                                        >
+                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                            {this.generateDepartmentOption()}
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+
                             <div className="box box-primary">
                                 <div className="box-header">
-                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ</b></h3>
+                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>ผู้ดูแลรับผิดชอบ</b></h3>
                                 </div>
                                 <div className="box-body">
 

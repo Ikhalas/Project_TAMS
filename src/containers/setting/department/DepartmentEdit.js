@@ -65,7 +65,7 @@ export default class DepartmentEdit extends Component {
 
     render() {
      
-        console.log(this.props.department)
+        //console.log(this.props.department)
         return (
             <div>
                 <div className="content-wrapper title">

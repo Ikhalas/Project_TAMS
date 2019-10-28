@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router';
 import axios from 'axios';
-import { withRouter } from "react-router";
+
 
 class GeneralForm extends Component {
     constructor(props) {
@@ -10,13 +11,12 @@ class GeneralForm extends Component {
             Itemtypes: [],
             check_1: false,
             check_2: false
-       
+
         }
     }
     componentDidMount() {
         //console.log("componentDidMount"+this.props.type)
-     
-       
+
 
         const script = document.createElement('script')
         script.src = '/js/addform.js'
@@ -29,7 +29,7 @@ class GeneralForm extends Component {
                 this.setState({ Departments: res.data })
             }).catch(err => console.log(err))
 
-        
+
         axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
             res => {
                 //console.log(res.data)
@@ -38,10 +38,9 @@ class GeneralForm extends Component {
 
     }
 
-    componentDidUpdate(prevProps){
-
-        if(this.props.type !== prevProps.type){
-            console.log("componentDidUpdate"+this.props.type)
+    componentDidUpdate(prevProps) {
+        if (this.props.type !== prevProps.type) {
+            console.log("componentDidUpdate" + this.props.type)
             axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
                 res => {
                     //console.log(res.data)
@@ -100,9 +99,6 @@ class GeneralForm extends Component {
 
         const ItemResponsibility = {
             "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
             "Year": this.refs.Year.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
@@ -175,19 +171,19 @@ class GeneralForm extends Component {
             url: 'http://localhost:3001/Items',
             data: newItem
         }).then(res => {
-            this.setState({check_1:true})
+            this.setState({ check_1: true })
         }).catch(err => console.log(err));
     }
 
     /*******************************************************/
-    
+
     addItemResponsibility(ItemResponsibility) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Responsibility',
             data: ItemResponsibility
         }).then(res => {
-            this.setState({check_2:true})
+            this.setState({ check_2: true })
             this.confirmAdd()
         }).catch(err => console.log(err));
     }
@@ -204,7 +200,6 @@ class GeneralForm extends Component {
     }*/
 
     /*******************************************************/
-
     /*addItemMaintenance(itemMaintenance) {
         axios.request({
             method: 'post',
@@ -215,9 +210,8 @@ class GeneralForm extends Component {
         }).catch(err => console.log(err));
     }*/
 
-    
-    /*******************************************************/
 
+    /*******************************************************/
     /*addItemExploitation(ItemExploitation) {
         axios.request({
             method: 'post',
@@ -229,7 +223,6 @@ class GeneralForm extends Component {
     }*/
 
     /*******************************************************/
-
     /*addItemDisposal(Disposal) {
         axios.request({
             method: 'post',
@@ -242,13 +235,12 @@ class GeneralForm extends Component {
     }*/
 
     /*******************************************************/
-
-    confirmAdd(){
-        if(this.state.check_1 && this.state.check_2){
+    confirmAdd() {
+        if (this.state.check_1 && this.state.check_2) {
             this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
         }
-        else{
+        else {
             alert("ผิดพลาด")
         }
     }
@@ -269,90 +261,49 @@ class GeneralForm extends Component {
                     />
 
                     <div className="box box-success">
-                        {/* /.box-header */}
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของพัสดุ</b></h1>
+                        </div>
                         <div className="box-body">
                             <div className="row">
 
                                 <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>หน่วยงานที่รับผิดชอบ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            required
-                                            name="Department" /******/
-                                            ref="Department" /******/
-                                        >
-                                            <option disabled selected="selected" value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                            {this.generateDepartmentOption()}
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>หมายเลขกรอบ (ถ้ามี)</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="frameNo" /*****/
-                                                ref="frameNo"  /*****/
-                                            />
+                                    <div style={{ marginBottom: '21px' }}>
+                                        <div className="form-group">
+                                            <label>หน่วยงานที่รับผิดชอบ</label>
+                                            <select
+                                                className ="select2"
+                                                style={{ width: '100%' }}
+                                                required
+                                                name="Department" /******/
+                                                ref="Department" /******/
+                                                defaultValue=""
+                                                
+                                            >
+                                                <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                                {this.generateDepartmentOption()}
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
 
-
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
-
-                            <div className="row">
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>ชื่อพัสดุ</label>
-                                        <select
-                                            className="form-control select2"
-                                            style={{ width: '100%' }}
-                                            required
-                                            name="itemName" /******/
-                                            ref="itemName" /******/
-                                        >
-                                            <option disabled selected="selected" value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
-                                            {this.generateItemtypeOption()}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>หมายเลขจดทะเบียน (ถ้ามี)</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-compass" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="regisNo" /*****/
-                                                ref="regisNo"  /*****/
-                                            />
+                                    <div style={{ marginBottom: '22px' }}>
+                                        <div className="form-group">
+                                            <label>ชื่อพัสดุ</label>
+                                            <select
+                                                className ="select2"
+                                                style={{ width: '100%' }}
+                                                required
+                                                name="itemName" /******/
+                                                ref="itemName" /******/
+                                                defaultValue=""
+                                            >
+                                                <option disabled value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
+                                                {this.generateItemtypeOption()}
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>เลขรหัสพัสดุ</label>
                                         <div className="input-group">
@@ -360,6 +311,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-hashtag" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -371,32 +323,7 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-
-
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>สีของพัสดุ</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-book" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="itemColor" /*****/
-                                                ref="itemColor"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>ใบส่งของที่</label>
                                         <div className="input-group">
@@ -404,6 +331,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-money" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 placeholder="บาท"
                                                 className="form-control"
@@ -413,30 +341,7 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>อื่นๆ (ถ้ามีระบุ)</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-money" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                placeholder="บาท"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="other" /*****/
-                                                ref="other"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>ชื่อ/ยี่ห้อผู้ทำหรือผลิต</label>
                                         <div className="input-group">
@@ -444,6 +349,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -452,30 +358,7 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>เงื่อนไข - การรับประกัน</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-user" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="insuranceTerms" /*****/
-                                                ref="insuranceTerms"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>แบบ/ชนิด/ลักษณะ</label>
                                         <div className="input-group">
@@ -483,6 +366,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -491,30 +375,28 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
+
+                                </div> {/*col-md-6*/}
 
                                 <div className="col-md-6">
+
                                     <div className="form-group">
-                                        <label>พัสดุรับประกันถึงวันที่</label>
+                                        <label>สีของพัสดุ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-user" />
+                                                <i className="fa fa-book" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
-                                                name="insuranceExpDate" /*****/
-                                                ref="insuranceExpDate"  /*****/
+                                                name="itemColor" /*****/
+                                                ref="itemColor"  /*****/
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-                                <div className="col-md-6">
                                     <div className="form-group">
                                         <label>หมายเลขลำดับ</label>
                                         <div className="input-group">
@@ -522,6 +404,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -530,30 +413,42 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>พัสดุรับประกันไว้ที่บริษัท</label>
+                                        <label>หมายเลขกรอบ (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-user" />
+                                                <i className="fa fa-calendar" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
-                                                name="insuranceCompany" /*****/
-                                                ref="insuranceCompany"  /*****/
+                                                name="frameNo" /*****/
+                                                ref="frameNo"  /*****/
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
-                            <div className="row">
-                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>หมายเลขจดทะเบียน (ถ้ามี)</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-compass" />
+                                            </div>
+                                            <input
+                                                
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="regisNo" /*****/
+                                                ref="regisNo"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+                                
                                     <div className="form-group">
                                         <label>หมายเลขเครื่อง (ถ้ามี)</label>
                                         <div className="input-group">
@@ -561,6 +456,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -569,29 +465,27 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>วันที่ประกันพัสดุ</label>
+                                        <label>อื่นๆ (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-money" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
-                                                name="insuranceDate" /*****/
-                                                ref="insuranceDate"  /*****/
+                                                name="other" /*****/
+                                                ref="other"  /*****/
                                             />
                                         </div>
                                     </div>
-                                </div>
 
+                                </div> {/*col-md-6*/}
+                            </div> {/*row*/}
 
-                            </div>
-                            {/*---------------------------------------------------------------------------------------------------*/}
                         </div>
                         {/* /.box-body */}
                     </div>
@@ -601,8 +495,10 @@ class GeneralForm extends Component {
                     <div className="row">
                         <div className="col-md-6">
                             <div className="box box-danger">
+                                <div className="box-header">
+                                    <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ที่มาของพัสดุ</b></h1>
+                                </div>
                                 <div className="box-body">
-                                    <br/>
                                     <div className="form-group">
                                         <label>ซื้อ/จ้าง/ได้มา จาก</label>
                                         <div className="input-group">
@@ -610,6 +506,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -626,6 +523,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -636,7 +534,6 @@ class GeneralForm extends Component {
                                     </div>
 
 
-
                                     <div className="form-group">
                                         <label>ราคา</label>
                                         <div className="input-group">
@@ -644,6 +541,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
+                                                
                                                 type="number"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -656,31 +554,97 @@ class GeneralForm extends Component {
                                     <div className="form-group">
                                         <label>งบประมาณของ</label>
                                         <select
-                                            className="form-control select2"
+                                            className ="select2"
                                             style={{ width: '100%' }}
                                             name="budgetOf" /******/
                                             ref="budgetOf" /******/
+                                            defaultValue=""
                                         >
-                                            <option disabled selected="selected" value="ยังไม่ได้เลือก" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
+                                            <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
                                             {this.generateDepartmentOption()}
                                         </select>
+                                        <br/>
+                                    </div>
+
+                                </div>
+
+                                <div className="box-header">
+                                    <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>การประกันพัสดุ</b></h1>
+                                </div>
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>เงื่อนไข - การรับประกัน</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-user" />
+                                            </div>
+                                            <input
+                                                
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="insuranceTerms" /*****/
+                                                ref="insuranceTerms"  /*****/
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="form-group">
-                                        <label>หมายเหตุเพิ่มเติม</label>
-
-                                        <textarea
-                                            className="form-control"
-                                            rows="3"
-                                            style={{ fontSize: 20 }}
-                                            placeholder="หมายเหตุ ..."
-                                            name="Note" /*****/
-                                            ref="Note"  /*****/
-                                        >
-                                        </textarea>
-
+                                        <label>พัสดุรับประกันถึงวันที่</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-user" />
+                                            </div>
+                                            <input
+                                                
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="insuranceExpDate" /*****/
+                                                ref="insuranceExpDate"  /*****/
+                                            />
+                                        </div>
                                     </div>
+
+                                    <div className="form-group">
+                                        <label>พัสดุรับประกันไว้ที่บริษัท</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-user" />
+                                            </div>
+                                            <input
+                                                
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="insuranceCompany" /*****/
+                                                ref="insuranceCompany"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>วันที่ประกันพัสดุ</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-certificate" />
+                                            </div>
+                                            <input
+                                                
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="insuranceDate" /*****/
+                                                ref="insuranceDate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
                                 </div>
+
+
+
+
 
                             </div>
                             {/* /.box */}
@@ -703,6 +667,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-calendar" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -719,6 +684,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-home" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -735,6 +701,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-address-card" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -751,6 +718,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-address-card" />
                                             </div>
                                             <input
+                                                
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -764,6 +732,25 @@ class GeneralForm extends Component {
                                 {/* /.box-body */}
                             </div>
                             {/* /.box */}
+
+                            <div className="box box-default">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>หมายเหตุเพิ่มเติม</label>
+
+                                        <textarea
+                                            component="textarea"
+                                            className="form-control"
+                                            rows="3"
+                                            style={{ fontSize: 20 }}
+                                            placeholder="หมายเหตุ ..."
+                                            name="Note" /*****/
+                                            ref="Note"  /*****/
+                                        />
+
+                                    </div>
+                                </div>
+                            </div>
 
 
                         </div>

@@ -13,7 +13,7 @@ export default class Menu extends Component {
       {/* Sidebar user panel */}
       <div className="user-panel">
         <div className="pull-left image">
-          <img src="/public/image/logo.jpg" className="img-circle" alt="THAKHAM" />
+          <img src="../../public/image/logo.png" className="img-circle" alt="THAKHAM" />
         </div>
         <div className="pull-left info">
           <p className="title">&nbsp;อิคลาศ หมันหนุน</p>

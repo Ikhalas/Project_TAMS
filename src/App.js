@@ -21,12 +21,12 @@ import TypeAdd from './containers/setting/type/TypeAdd'
 import TypeDetail from './containers/setting/type/TypeDetail'
 import TypeEdit from './containers/setting/type/TypeEdit'
 
-
-
 import Items from './containers/item/Showitems/Items'
 import ItemDetail from './containers/item/Showitems/ItemDetail'
 import FormContainer from './containers/item/Form/FormContainer'
 
+import LandEdit from './containers/item/Showitems/Land/LandEdit'
+import GeneralEdit from './containers/item/Showitems/General/GeneralEdit'
 
 
 export default class Main extends Component {
@@ -54,6 +54,9 @@ export default class Main extends Component {
 
         <Route exact path="/items/item-detail/:id" component={ItemDetail}/>
         <Route exact path="/items/item-add" component={FormContainer}/>
+
+        <Route exact path="/items/item-detail/land-edit/:id" component={LandEdit}/>
+        <Route exact path="/items/item-detail/general-edit/:id" component={GeneralEdit}/>
 
       </Switch>
     )

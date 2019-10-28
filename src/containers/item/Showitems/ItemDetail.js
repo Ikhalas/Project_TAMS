@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import LandDetail from './LandDetail'
-import GeneralDetail from './GeneralDetail'
+import LandDetail from './Land/LandDetail'
+import GeneralDetail from './General/GeneralDetail'
 
 
 export default class ItemDetail extends Component {

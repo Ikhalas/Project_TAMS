@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
-export default class GeneralDetail extends Component {
+class GeneralDetail extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props)
         this.state = {
@@ -18,50 +21,54 @@ export default class GeneralDetail extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         let id = this.props.itemId
         axios.get('http://localhost:3001/items/' + id).then(
             res => {
-                this.setState({ item: res.data })
+                if (this._isMounted) {
+                    this.setState({ item: res.data })
 
-                //console.log("Gstatus|"+this.state.item.status)
-                if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
-                else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
-                else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
-                else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
-                else this.setState({ statusClass: 'label label-primary' })
+                    //console.log("Gstatus|"+this.state.item.status)
+                    if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
+                    else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
+                    else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
+                    else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
+                    else this.setState({ statusClass: 'label label-primary' })
 
-                //console.log(this.state.item)
-                let itemCode = this.state.item.itemCode;
-                //console.log(this.state.item.itemCode)
-                axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Depreciations: res.data })
-                        //console.log(this.state.Depreciations)
-                    }).catch(err => console.log(err))
+                    //console.log(this.state.item)
+                    let itemCode = this.state.item.itemCode;
+                    //console.log(this.state.item.itemCode)
+                    axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Depreciations: res.data })
+                            //console.log(this.state.Depreciations)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ itemMaintenance: res.data })
-                        //console.log(this.state.LandValueIncreases4Years)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ itemMaintenance: res.data })
+                            //console.log(this.state.LandValueIncreases4Years)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Responsibility: res.data })
-                        //console.log(this.state.Responsibility)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Responsibility: res.data })
+                            //console.log(this.state.Responsibility)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Exploitation: res.data })
-                        //console.log(this.state.Exploitation)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Exploitation: res.data })
+                            //console.log(this.state.Exploitation)
+                        }).catch(err => console.log(err))
 
-                axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
-                    res => {
-                        this.setState({ Disposal: res.data })
-                        //console.log(this.state.Disposal)
-                    }).catch(err => console.log(err))
+                    axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
+                        res => {
+                            this.setState({ Disposal: res.data })
+                            //console.log(this.state.Disposal)
+                        }).catch(err => console.log(err))
+                }
 
             }).catch(err => console.log(err))
 
@@ -182,6 +189,10 @@ export default class GeneralDetail extends Component {
 
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render() {
         //console.log(this.state.item)
         return (
@@ -205,9 +216,24 @@ export default class GeneralDetail extends Component {
                             <div className="box box-success">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => this.props.history.push('/items/item-detail/general-edit/' + this.state.item.id)}>
+                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div className="box-body no-padding">
-                                    <table className="table table-striped ">
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ข้อมูลเบื่องต้นของพัสดุ ----------</b></h1>
+                                    </div>
+
+                                    <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
                                                 <td>ชื่อพัสดุ : &nbsp;<b>{this.state.item.itemName}</b></td>
@@ -239,6 +265,15 @@ export default class GeneralDetail extends Component {
                                             <tr>
                                                 <td>อื่น ๆ : &nbsp;<b>{this.state.item.other}</b></td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- การประกันพัสดุ ----------</b></h1>
+                                    </div>
+                                    <table className="table table-striped with-border">
+                                        <tbody>
                                             <tr>
                                                 <td>เงือนไข - การประกัน : &nbsp;<b>{this.state.item.insuranceTerms}</b></td>
                                             </tr>
@@ -251,6 +286,15 @@ export default class GeneralDetail extends Component {
                                             <tr>
                                                 <td>วันที่ประกันพัสดุ : &nbsp;<b>{this.state.item.insuranceDate}</b></td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ที่มาของพัสดุ ----------</b></h1>
+                                    </div>
+                                    <table className="table table-striped with-border">
+                                        <tbody>
                                             <tr>
                                                 <td>ซื้อ/จ้าง/ได้มาจาก : &nbsp;<b>{this.state.item.derivedFrom}</b></td>
                                             </tr>
@@ -263,11 +307,23 @@ export default class GeneralDetail extends Component {
                                             <tr>
                                                 <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
+                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- หมายเหตุ ----------</b></h1>
+                                    </div>
+
+                                    <table className="table table-striped with-border">
+                                        <tbody>
                                             <tr>
                                                 <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
                                             </tr>
                                         </tbody>
                                     </table>
+
+
                                 </div>
                                 {/* /.box-body */}
                             </div>
@@ -294,24 +350,6 @@ export default class GeneralDetail extends Component {
                                 </div>
                             </div>
 
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ</h1>
-                                </div>
-                                <div className="box-body">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
-                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อส่วนราชการ (สำนัก, กอง, ฝ่าย)</td>
-                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อหัวหน้าส่วนราชการ</td>
-                                            </tr>
-                                            {this.generateResponsibilityRows()}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {/* /.box */}
 
                             <div className="box box-primary">
                                 <div className="box-header with-border">
@@ -337,6 +375,29 @@ export default class GeneralDetail extends Component {
 
                     </div>
                     {/* /.row */}
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ</h1>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อส่วนราชการ (สำนัก, กอง, ฝ่าย)</td>
+                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อหัวหน้าส่วนราชการ</td>
+                                            </tr>
+                                            {this.generateResponsibilityRows()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {/* /.box */}
+                        </div>
+                    </div>
 
                     <div className="row">
                         <div className="col-md-12">
@@ -411,3 +472,5 @@ export default class GeneralDetail extends Component {
         )
     }
 }
+
+export default withRouter(GeneralDetail)
