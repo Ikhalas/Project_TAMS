@@ -335,6 +335,15 @@ class GeneralDetail extends Component {
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 18 }}
+                                            onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.state.item.id)}>
+                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-bordered">

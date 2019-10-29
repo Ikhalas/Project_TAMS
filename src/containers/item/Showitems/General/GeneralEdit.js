@@ -457,6 +457,7 @@ export default class GeneralEdit extends Component {
 
                                                     <div className="box-header">
                                                         <h1 className="box-title" style={{ fontSize: 25 }}><b>---------- ที่มาของพัสดุ ----------</b></h1>
+                                                        
                                                     </div>
 
                                                     <div className="form-group">

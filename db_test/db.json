@@ -204,7 +204,16 @@
       "id": 14
     }
   ],
-  "Depreciations": [],
+  "Depreciations": [
+    {
+      "itemCode": "888-88-8888",
+      "Year": "2018",
+      "Percent": "5%",
+      "Balance": "15200",
+      "Note": "No",
+      "id": 1
+    }
+  ],
   "Exploitation": [],
   "Disposal": [],
   "landValueIncreases4Years": [],

@@ -7,6 +7,8 @@ import Footer from './components/Footer'
 
 import Home from "./containers/dashboard/Home";
 
+import NotFound from "./containers/error/NotFound"
+
 import Setting from './containers/setting/Setting';
 
 import DepartmentAdd from './containers/setting/department/DepartmentAdd'
@@ -27,6 +29,9 @@ import FormContainer from './containers/item/Form/FormContainer'
 
 import LandEdit from './containers/item/Showitems/Land/LandEdit'
 import GeneralEdit from './containers/item/Showitems/General/GeneralEdit'
+
+import Depreciation from './containers/depreciation/Depreciation'
+import Itemdepreciation from './containers/depreciation/Itemdepreciation'
 
 
 export default class Main extends Component {
@@ -57,6 +62,12 @@ export default class Main extends Component {
 
         <Route exact path="/items/item-detail/land-edit/:id" component={LandEdit}/>
         <Route exact path="/items/item-detail/general-edit/:id" component={GeneralEdit}/>
+
+        <Route exact path="/depreciation" component={Depreciation}/>
+        <Route exact path="/depreciation/item-depreciation/:id" component={Itemdepreciation}/>
+
+
+        <Route component={NotFound}/>
 
       </Switch>
     )

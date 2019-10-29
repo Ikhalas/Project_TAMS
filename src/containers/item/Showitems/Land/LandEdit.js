@@ -28,7 +28,7 @@ class LandEdit extends Component {
             Note: '',
 
             Departments: [],
-            detail: []
+     
         }
     }
 
@@ -64,7 +64,7 @@ class LandEdit extends Component {
                     otherSize: res.data.otherSize,
                     Note: res.data.Note,
 
-                    detail: res.data
+                   
                 })
 
                 axios.get('http://localhost:3001/Department').then(
