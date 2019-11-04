@@ -359,32 +359,22 @@ class LandDetail extends Component {
                         <div className="col-md-6">
                             <div className="box box-danger">
                                 <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
-                                    <div className="box-tools pull-right">
-                                        <button
-                                            type="button"
-                                            className="btn btn-box-tool"
-                                            style={{ fontSize: 18 }}
-                                            onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.state.item.id)}>
-                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
-                                        </button>
-                                    </div>
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>มูลค่าเพิ่มขึ้น 4 ปี</h1>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>ปีที่</td>
-                                                <td style={{ width: 120, textAlign: 'center' }}>อัตราค่าเสื่อม (%)</td>
+                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: 120, textAlign: 'center' }}>มูลค่าเพิ่มขึ้น (%)</td>
                                                 <td style={{ width: 200, textAlign: 'center' }}>ราคาคงเหลือ</td>
                                             </tr>
-                                            {this.generateDepreciationsRows()}
+                                            {this.generateLandValueIncreases4YearsRows()}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             {/* /.box */}
-
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>การหาผลประโยชน์ในพัสดุ</h1>
@@ -403,24 +393,7 @@ class LandDetail extends Component {
                                 </div>
                             </div>
 
-                            <div className="box box-danger">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>มูลค่าเพิ่มขึ้น 4 ปี</h1>
-                                </div>
-                                <div className="box-body">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
-                                                <td style={{ width: 120, textAlign: 'center' }}>มูลค่าเพิ่มขึ้น (%)</td>
-                                                <td style={{ width: 200, textAlign: 'center' }}>ราคาคงเหลือ</td>
-                                            </tr>
-                                            {this.generateLandValueIncreases4YearsRows()}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {/* /.box */}
+
 
                         </div>
                         {/* /.col */}

@@ -502,11 +502,29 @@ class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
-
                                 </div>
-
                             </div>
                             {/* /.box */}
+
+                            <div className="box box-default">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>หมายเหตุเพิ่มเติม</label>
+
+                                        <textarea
+                                            className="form-control"
+                                            rows="3"
+                                            style={{ fontSize: 20 }}
+                                            placeholder="หมายเหตุ ..."
+                                            name="Note" /*****/
+                                            ref="Note"  /*****/
+                                        >
+                                        </textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                         {/* /.col (left) */}
 
@@ -649,24 +667,7 @@ class LandForm extends Component {
                             </div>
                             {/* /.box */}
 
-                            <div className="box box-default">
-                                <div className="box-body">
-                                    <div className="form-group">
-                                        <label>หมายเหตุเพิ่มเติม</label>
 
-                                        <textarea
-                                            className="form-control"
-                                            rows="3"
-                                            style={{ fontSize: 20 }}
-                                            placeholder="หมายเหตุ ..."
-                                            name="Note" /*****/
-                                            ref="Note"  /*****/
-                                        >
-                                        </textarea>
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         {/* /.col (right) */}
                     </div>

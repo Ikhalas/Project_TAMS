@@ -10,14 +10,12 @@ class GeneralForm extends Component {
             Departments: [],
             Itemtypes: [],
             check_1: false,
-            check_2: false
-
+            check_2: false,
+            check_3: false
         }
     }
     componentDidMount() {
         //console.log("componentDidMount"+this.props.type)
-
-
         const script = document.createElement('script')
         script.src = '/js/addform.js'
         script.async = true
@@ -70,6 +68,8 @@ class GeneralForm extends Component {
     }
 
     onSubmit = (e) => {
+        //console.log(this.refs.derivedDate.value.substring(6,10))
+
         const newItem = {
             "status": "ใช้งานได้ดี",
             "itemType": this.refs.itemType.value,                       //ประเภท
@@ -99,23 +99,56 @@ class GeneralForm extends Component {
 
         const ItemResponsibility = {
             "itemCode": this.refs.itemCode.value,
-            "Year": this.refs.Year.value,
+            "Year": this.refs.derivedDate.value.substring(6, 10),
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "responsibilityUserName": this.refs.responsibilityUserName.value,
             "Note": ""
         }
 
-        /*const ItemDepreciations = {
+        var price,per,valueYear,perYear,month,valueMonth,perMonth,C,Cumulative
+
+        if(this.refs.yearRate.value>0){
+            price = this.refs.Price.value
+            per = this.refs.Percent.value
+            valueYear = (price * per)/100
+            perYear = valueYear.toFixed(2)
+
+            month = this.refs.monthRate.value
+            valueMonth = (month * valueYear)/12
+            perMonth = valueMonth.toFixed(2)
+
+            C = valueYear + valueMonth
+            Cumulative = C.toFixed(2)
+        }
+        else{
+            price = this.refs.Price.value
+            per = this.refs.Percent.value
+            valueYear = (price * per)/100
+            perYear = 0
+
+            month = this.refs.monthRate.value
+            valueMonth = (month * valueYear)/12
+            perMonth = valueMonth.toFixed(2)
+
+            C = valueMonth
+            Cumulative = C.toFixed(2)
+        }
+
+        const ItemDepreciations = {
             "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "Year": "",
-            "Percent": "",
-            "Balance": "",
-            "Note": ""
-        }*/
+            "seq": 0,
+            "Year": this.refs.derivedDate.value,
+            "Percent": this.refs.Percent.value,
+            "lifeTime": this.refs.Percent.value,
+            "monthRate": this.refs.monthRate.value,
+            "yearRate": this.refs.yearRate.value,
+            "Balance": this.refs.Price.value,
+            "perYear": perYear,
+            "perMonth": perMonth,
+            "Cumulative": Cumulative,
+            "dNote": this.refs.dNote.value
+        }
 
 
         /*const ItemExploitation = {
@@ -157,7 +190,8 @@ class GeneralForm extends Component {
 
         this.addItem(newItem)
         this.addItemResponsibility(ItemResponsibility)
-        //this.addItemDepreciations(ItemDepreciations)
+        this.addItemDepreciations(ItemDepreciations)
+
         //this.addItemMaintenance(ItemMaintenance)
         //this.addItemExploitation(ItemExploitation)
         //this.addItemDisposal(Disposal)
@@ -189,15 +223,16 @@ class GeneralForm extends Component {
     }
 
     /*******************************************************/
-    /*addItemDepreciations(ItemDepreciations) {
+    addItemDepreciations(ItemDepreciations) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Depreciations',
             data: ItemDepreciations
         }).then(res => {
-            //console.log(res.data)
+            this.setState({ check_3: true })
+            this.confirmAdd()
         }).catch(err => console.log(err));
-    }*/
+    }
 
     /*******************************************************/
     /*addItemMaintenance(itemMaintenance) {
@@ -236,7 +271,7 @@ class GeneralForm extends Component {
 
     /*******************************************************/
     confirmAdd() {
-        if (this.state.check_1 && this.state.check_2) {
+        if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
             this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
         }
@@ -273,13 +308,13 @@ class GeneralForm extends Component {
                                         <div className="form-group">
                                             <label>หน่วยงานที่รับผิดชอบ</label>
                                             <select
-                                                className ="select2"
+                                                className="select2"
                                                 style={{ width: '100%' }}
                                                 required
                                                 name="Department" /******/
                                                 ref="Department" /******/
                                                 defaultValue=""
-                                                
+
                                             >
                                                 <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
                                                 {this.generateDepartmentOption()}
@@ -291,7 +326,7 @@ class GeneralForm extends Component {
                                         <div className="form-group">
                                             <label>ชื่อพัสดุ</label>
                                             <select
-                                                className ="select2"
+                                                className="select2"
                                                 style={{ width: '100%' }}
                                                 required
                                                 name="itemName" /******/
@@ -311,7 +346,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-hashtag" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -331,9 +366,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-money" />
                                             </div>
                                             <input
-                                                
                                                 type="text"
-                                                placeholder="บาท"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="waybillCode" /*****/
@@ -349,7 +382,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -366,7 +399,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -387,7 +420,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-book" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -404,7 +437,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -421,7 +454,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-calendar" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -438,7 +471,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-compass" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -448,7 +481,7 @@ class GeneralForm extends Component {
                                         </div>
                                     </div>
 
-                                
+
                                     <div className="form-group">
                                         <label>หมายเลขเครื่อง (ถ้ามี)</label>
                                         <div className="input-group">
@@ -456,7 +489,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -473,7 +506,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-money" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -494,7 +527,8 @@ class GeneralForm extends Component {
 
                     <div className="row">
                         <div className="col-md-6">
-                            <div className="box box-danger">
+                            {/* ที่มาของพัสดุ */}
+                            <div className="box box-primary">
                                 <div className="box-header">
                                     <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ที่มาของพัสดุ</b></h1>
                                 </div>
@@ -506,7 +540,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -523,9 +557,9 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
-                                                
                                                 type="text"
                                                 className="form-control"
+                                                id="datepicker"
                                                 style={{ fontSize: 20 }}
                                                 name="derivedDate" /*****/
                                                 ref="derivedDate"  /*****/
@@ -541,20 +575,20 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
-                                                
-                                                type="number"
+                                                type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="Price" /*****/
                                                 ref="Price"  /*****/
                                             />
+                                            <span className="input-group-addon">บาท</span>
                                         </div>
                                     </div>
 
                                     <div className="form-group">
                                         <label>งบประมาณของ</label>
                                         <select
-                                            className ="select2"
+                                            className="select2"
                                             style={{ width: '100%' }}
                                             name="budgetOf" /******/
                                             ref="budgetOf" /******/
@@ -563,7 +597,7 @@ class GeneralForm extends Component {
                                             <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
                                             {this.generateDepartmentOption()}
                                         </select>
-                                        <br/>
+                                        <br />
                                     </div>
 
                                 </div>
@@ -579,7 +613,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-user" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -596,7 +630,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-user" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -613,7 +647,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-user" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -630,9 +664,9 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-certificate" />
                                             </div>
                                             <input
-                                                
                                                 type="text"
                                                 className="form-control"
+                                                id="datepicker2"
                                                 style={{ fontSize: 20 }}
                                                 name="insuranceDate" /*****/
                                                 ref="insuranceDate"  /*****/
@@ -641,42 +675,37 @@ class GeneralForm extends Component {
                                     </div>
 
                                 </div>
-
-
-
-
-
                             </div>
                             {/* /.box */}
+                            <div className="box box-default">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>หมายเหตุเพิ่มเติม(ของพัสดุชิ้นนี้)</label>
 
+                                        <textarea
+                                            component="textarea"
+                                            className="form-control"
+                                            rows="3"
+                                            style={{ fontSize: 20 }}
+                                            placeholder="หมายเหตุ ..."
+                                            name="Note" /*****/
+                                            ref="Note"  /*****/
+                                        />
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         {/* /.col (left) */}
 
 
                         <div className="col-md-6">
+                            {/* ชื่อผู้ใช้ - ดูแล - รับผิดชอบพัสดุ */}
                             <div className="box box-primary">
                                 <div className="box-header">
                                     <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>ชื่อผู้ใช้ - ดูแล - รับผิดชอบพัสดุ</b></h3>
                                 </div>
                                 <div className="box-body">
-
-                                    <div className="form-group">
-                                        <label>พ.ศ.</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
-                                            </div>
-                                            <input
-                                                
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="Year" /*****/
-                                                ref="Year"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-
                                     <div className="form-group">
                                         <label>ชื่อส่วนราชการ</label>
                                         <div className="input-group">
@@ -684,7 +713,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-home" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -701,7 +730,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-address-card" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -718,7 +747,7 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-address-card" />
                                             </div>
                                             <input
-                                                
+
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -733,24 +762,112 @@ class GeneralForm extends Component {
                             </div>
                             {/* /.box */}
 
-                            <div className="box box-default">
-                                <div className="box-body">
-                                    <div className="form-group">
-                                        <label>หมายเหตุเพิ่มเติม</label>
 
+                            {/* อัตราค่าเสื่อมราคา */}
+                            <div className="box box-primary">
+                                <div className="box-header">
+                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>อัตราค่าเสื่อมราคา</b></h3>
+                                </div>
+                                <div className="box-body">
+
+                                    <div className="form-group">
+                                        <label>อัตราค่าเสื่อมสภาพ</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-calendar" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="Percent" /*****/
+                                                ref="Percent"  /*****/
+                                            />
+                                            <span className="input-group-addon">%</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>อายุการใช้งาน</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-home" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="lifeTime" /*****/
+                                                ref="lifeTime"  /*****/
+                                            />
+                                            <span className="input-group-addon">ปี</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-xs-6">
+                                            <div className="form-group">
+                                                <label>รายปี</label>
+                                                <div className="input-group">
+                                                    <div className="input-group-addon">
+                                                        <i className="fa fa-address-card" />
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        style={{ fontSize: 20 }}
+                                                        name="yearRate" /*****/
+                                                        ref="yearRate"  /*****/
+                                                    />
+                                                    <span className="input-group-addon">ปี</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div className="col-xs-6">
+                                            <div className="form-group">
+                                                <label>รายเดือน</label>
+                                                <div className="input-group">
+                                                    <div className="input-group-addon">
+                                                        <i className="fa fa-address-card" />
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        style={{ fontSize: 20 }}
+                                                        name="monthRate" /*****/
+                                                        ref="monthRate"  /*****/
+                                                    />
+                                                    <span className="input-group-addon">เดือน</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>หมายเหตุ</label>
                                         <textarea
                                             component="textarea"
                                             className="form-control"
-                                            rows="3"
+                                            rows="2"
                                             style={{ fontSize: 20 }}
                                             placeholder="หมายเหตุ ..."
-                                            name="Note" /*****/
-                                            ref="Note"  /*****/
+                                            name="dNote" /*****/
+                                            ref="dNote"  /*****/
                                         />
-
                                     </div>
+
+
                                 </div>
+                                {/* /.box-body */}
                             </div>
+                            {/* /.box */}
+
+
 
 
                         </div>
