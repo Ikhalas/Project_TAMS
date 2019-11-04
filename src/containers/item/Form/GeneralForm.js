@@ -349,7 +349,7 @@ class GeneralForm extends Component {
 
                                                 type="text"
                                                 className="form-control"
-                                                style={{ fontSize: 20 }}
+                                                style={{ fontSize: 30 }}
                                                 data-inputmask="'mask': ['999-99-9999']"
                                                 data-mask
                                                 required
@@ -558,8 +558,9 @@ class GeneralForm extends Component {
                                             </div>
                                             <input
                                                 type="text"
-                                                className="form-control"
-                                                id="datepicker"
+                                                className="form-control datepicker"
+                                                id="inputdatepicker"
+                                                data-date-format="dd/mm/yyyy"
                                                 style={{ fontSize: 20 }}
                                                 name="derivedDate" /*****/
                                                 ref="derivedDate"  /*****/
@@ -575,13 +576,14 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-arrows-alt" />
                                             </div>
                                             <input
-                                                type="text"
+                                                type="number"
+                                                min="0"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="Price" /*****/
                                                 ref="Price"  /*****/
                                             />
-                                            <span className="input-group-addon">บาท</span>
+                                            <span className="input-group-addon" style={{ fontSize: 20 }}>บาท</span>
                                         </div>
                                     </div>
 
@@ -624,23 +626,6 @@ class GeneralForm extends Component {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>พัสดุรับประกันถึงวันที่</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-user" />
-                                            </div>
-                                            <input
-
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="insuranceExpDate" /*****/
-                                                ref="insuranceExpDate"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group">
                                         <label>พัสดุรับประกันไว้ที่บริษัท</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -665,14 +650,38 @@ class GeneralForm extends Component {
                                             </div>
                                             <input
                                                 type="text"
-                                                className="form-control"
-                                                id="datepicker2"
+                                                className="form-control datepicker"
+                                                id="inputdatepicker"
+                                                data-date-format="dd/mm/yyyy"
                                                 style={{ fontSize: 20 }}
                                                 name="insuranceDate" /*****/
                                                 ref="insuranceDate"  /*****/
                                             />
                                         </div>
                                     </div>
+
+                                    <div className="form-group">
+                                        <label>พัสดุรับประกันถึงวันที่</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-user" />
+                                            </div>
+                                            <input
+
+                                                type="text"
+                                                className="form-control datepicker"
+                                                id="inputdatepicker"
+                                                data-date-format="dd/mm/yyyy"
+                                                style={{ fontSize: 20 }}
+                                                name="insuranceExpDate" /*****/
+                                                ref="insuranceExpDate"  /*****/
+                                            />
+                                        </div>
+                                    </div>
+
+                                    
+
+                                    
 
                                 </div>
                             </div>
@@ -783,7 +792,7 @@ class GeneralForm extends Component {
                                                 name="Percent" /*****/
                                                 ref="Percent"  /*****/
                                             />
-                                            <span className="input-group-addon">%</span>
+                                            <span className="input-group-addon" style={{ fontSize: 20 }}>%</span>
                                         </div>
                                     </div>
 
@@ -800,7 +809,7 @@ class GeneralForm extends Component {
                                                 name="lifeTime" /*****/
                                                 ref="lifeTime"  /*****/
                                             />
-                                            <span className="input-group-addon">ปี</span>
+                                            <span className="input-group-addon" style={{ fontSize: 20 }}>ปี</span>
                                         </div>
                                     </div>
 
@@ -819,7 +828,7 @@ class GeneralForm extends Component {
                                                         name="yearRate" /*****/
                                                         ref="yearRate"  /*****/
                                                     />
-                                                    <span className="input-group-addon">ปี</span>
+                                                    <span className="input-group-addon" style={{ fontSize: 20 }}>ปี</span>
                                                 </div>
                                             </div>
 
@@ -839,7 +848,7 @@ class GeneralForm extends Component {
                                                         name="monthRate" /*****/
                                                         ref="monthRate"  /*****/
                                                     />
-                                                    <span className="input-group-addon">เดือน</span>
+                                                    <span className="input-group-addon" style={{ fontSize: 20 }}>เดือน</span>
                                                 </div>
                                             </div>
 
