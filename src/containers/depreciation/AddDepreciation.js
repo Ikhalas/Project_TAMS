@@ -2,52 +2,53 @@ import React, { Component } from 'react'
 import axios from 'axios';
 
 export default class AddDepreciation extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-
-        }
-
+    componentDidMount() {
+        const script = document.createElement('script')
+        script.src = '/js/addform.js'
+        script.async = true
+        document.body.appendChild(script)
     }
 
     onSubmit = (e) => {
         const newVal = {
             "itemCode": this.refs.itemCode.value,
+            "seq": this.refs.seq.value+1,
             "Year": this.refs.Year.value,
-            "Percent": this.refs.Percent.value,
             "Balance": this.refs.Balance.value,
             "Note": this.refs.Note.value
         }
         //console.log(newVal)
         e.preventDefault()
 
-        this.addDepreciation(newVal)  
+        this.addDepreciation(newVal)
     }
 
-    addDepreciation(newVal){
+    addDepreciation(newVal) {
         axios.request({
             method: 'post',
             url: 'http://localhost:3001/Depreciations',
             data: newVal
         }).then(res => {
             alert("เพิ่มข้อมูลสำเร็จ")
+            window.location.reload();
         }).catch(err => console.log(err));
     }
 
 
     renderList() {
+        console.log(this.props.depreciations)
         if (this.props.depreciations) {
             var depreciation = this.props.depreciations.map(depreciation => (depreciation))
             var maxIndex = depreciation.length - 1
 
-            var lastYear = this.props.depreciations.map(depreciation => (depreciation.Year))
-            var lastPer = this.props.depreciations.map(depreciation => (depreciation.Percent))
+            var seq = this.props.depreciations.map(depreciation => (depreciation.seq))
+            var Cumulative = this.props.depreciations.map(depreciation => (depreciation.Cumulative))
             var lastBalance = this.props.depreciations.map(depreciation => (depreciation.Balance))
 
-            var Nag = (lastBalance[maxIndex] * lastPer[maxIndex]) / 100
-            var Balance = lastBalance[maxIndex] - Nag
+            var B = lastBalance[maxIndex]-Cumulative[0] 
+            var Balance = B.toFixed(2)
 
-            //console.log(Balance)
+            console.log(Cumulative[0])
             return (
                 <div>
                     <form onSubmit={this.onSubmit.bind(this)}>
@@ -56,32 +57,24 @@ export default class AddDepreciation extends Component {
                                 <tr>
                                     <td style={{ width: '15%', textAlign: 'center' }}>
                                         <input type="hidden" name="itemCode" ref="itemCode" value={this.props.itemCode} readOnly />
+                                        <input type="hidden" name="seq" ref="seq" value={seq[maxIndex]} readOnly />
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className="form-control datepicker"
+                                            id="inputdatepicker"
+                                            data-date-format="dd/mm/yyyy"
                                             style={{ fontSize: 20 }}
-                                            value={lastYear[maxIndex] + 1}
-                                            readOnly
                                             name="Year"
                                             ref="Year" />
                                     </td>
+                                    
                                     <td style={{ width: '15%', textAlign: 'center' }}>
                                         <input
                                             type="text"
                                             className="form-control"
                                             style={{ fontSize: 20 }}
-                                            value={lastPer[maxIndex]}
-                                            readOnly
-                                            name="Percent"
-                                            ref="Percent" />
-                                    </td>
-                                    <td style={{ width: '15%', textAlign: 'center' }}>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            style={{ fontSize: 20 }}
-                                            readOnly
-                                            value={Balance}
+                                          
+                                            defaultValue={Balance}
                                             name="Balance"
                                             ref="Balance" />
                                     </td>
@@ -108,6 +101,7 @@ export default class AddDepreciation extends Component {
                 </div>
             )
         }
+       
     }
 
 

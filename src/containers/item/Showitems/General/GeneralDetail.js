@@ -84,7 +84,6 @@ class GeneralDetail extends Component {
             return (
                 <tr>
                     <td style={{ textAlign: 'center' }}><b>-</b></td>
-                    <td style={{ textAlign: 'center' }}><b>-</b></td>
                     <td style={{ textAlign: 'center' }}><span className="label label-danger">--&nbsp;ยังไม่มีรายการ&nbsp;--</span></td>
                 </tr>
             )
@@ -94,7 +93,6 @@ class GeneralDetail extends Component {
             this.state.Depreciations.map(Depreciation => (
                 <tr key={Depreciation.id}>
                     <td style={{ textAlign: 'center' }}><b>{Depreciation.Year}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{Depreciation.Percent}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{Depreciation.Balance}</b></td>
                 </tr>
             ))
@@ -349,9 +347,8 @@ class GeneralDetail extends Component {
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>ปีที่</td>
-                                                <td style={{ width: 120, textAlign: 'center' }}>อัตราค่าเสื่อม (%)</td>
-                                                <td style={{ width: 200, textAlign: 'center' }}>ราคาคงเหลือ</td>
+                                                <td style={{ width: '20%', textAlign: 'center' }}>วันที่</td>
+                                                <td style={{ width: '80%', textAlign: 'center' }}>ราคาคงเหลือ</td>
                                             </tr>
                                             {this.generateDepreciationsRows()}
                                         </tbody>

@@ -218,7 +218,6 @@ class GeneralForm extends Component {
             data: ItemResponsibility
         }).then(res => {
             this.setState({ check_2: true })
-            this.confirmAdd()
         }).catch(err => console.log(err));
     }
 
@@ -272,10 +271,11 @@ class GeneralForm extends Component {
     /*******************************************************/
     confirmAdd() {
         if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
-            this.props.history.push('/items')
+            //this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
         }
         else {
+            //this.props.history.push('/items')
             alert("ผิดพลาด")
         }
     }
@@ -786,7 +786,8 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-calendar" />
                                             </div>
                                             <input
-                                                type="text"
+                                                type="number"
+                                                min="0"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="Percent" /*****/
@@ -803,7 +804,8 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-home" />
                                             </div>
                                             <input
-                                                type="text"
+                                                type="number"
+                                                min="0"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="lifeTime" /*****/
@@ -822,7 +824,8 @@ class GeneralForm extends Component {
                                                         <i className="fa fa-address-card" />
                                                     </div>
                                                     <input
-                                                        type="text"
+                                                        type="number"
+                                                        min="0"
                                                         className="form-control"
                                                         style={{ fontSize: 20 }}
                                                         name="yearRate" /*****/
@@ -842,7 +845,8 @@ class GeneralForm extends Component {
                                                         <i className="fa fa-address-card" />
                                                     </div>
                                                     <input
-                                                        type="text"
+                                                        type="number"
+                                                        min="0"
                                                         className="form-control"
                                                         style={{ fontSize: 20 }}
                                                         name="monthRate" /*****/
