@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import AddDepreciation from './AddDepreciation'
 
 class ItemDepreciation extends Component {
@@ -36,7 +36,11 @@ class ItemDepreciation extends Component {
                         //console.log(this.state.seq0)
                     }).catch(err => console.log(err))
 
-            }).catch(err => console.log(err))
+            }).catch(err => {
+                console.log(err)
+                this.props.history.push('/NotFound')
+            })
+            
     }
 
     renderDetail() {
@@ -193,5 +197,5 @@ class ItemDepreciation extends Component {
     }
 }
 
-export default ItemDepreciation
+export default withRouter(ItemDepreciation)
 

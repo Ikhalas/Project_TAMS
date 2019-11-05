@@ -21,7 +21,6 @@
       "other": "ไม่มีไรจ้า",
       "id": 7
     }
-    
   ],
   "Type": [
     {
@@ -211,6 +210,60 @@
       "Note": "test",
       "thumbnail": "",
       "id": 4
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ทั่วไป",
+      "Department": "อบต.ท่าข้าม",
+      "itemCode": "444-44-4444",
+      "itemName": "ลานกีฬา",
+      "waybillCode": "test",
+      "itemBrand": "test",
+      "itemStyle": "test",
+      "orderNo": "test",
+      "bodyNo": "test",
+      "frameNo": "test",
+      "regisNo": "test",
+      "itemColor": "test",
+      "other": "test",
+      "insuranceTerms": "test",
+      "insuranceExpDate": "30/11/2562",
+      "insuranceCompany": "test",
+      "insuranceDate": "23/11/2562",
+      "derivedFrom": "test",
+      "derivedDate": "16/11/2562",
+      "Price": "102000",
+      "budgetOf": "ศูนย์พัฒนาเด็กเล็ก",
+      "Note": "test",
+      "thumbnail": "",
+      "id": 5
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ทั่วไป",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemCode": "270-66-666",
+      "itemName": "เสาธง",
+      "waybillCode": "test",
+      "itemBrand": "test",
+      "itemStyle": "test",
+      "orderNo": "test",
+      "bodyNo": "test",
+      "frameNo": "test",
+      "regisNo": "test",
+      "itemColor": "test",
+      "other": "test",
+      "insuranceTerms": "test",
+      "insuranceExpDate": "28/11/2562",
+      "insuranceCompany": "test",
+      "insuranceDate": "15/11/2562",
+      "derivedFrom": "test",
+      "derivedDate": "26/11/2562",
+      "Price": "1000",
+      "budgetOf": "ศูนย์พัฒนาเด็กเล็ก",
+      "Note": "test",
+      "thumbnail": "",
+      "id": 6
     }
   ],
   "Responsibility": [
@@ -249,6 +302,24 @@
       "responsibilityUserName": "test",
       "Note": "",
       "id": 4
+    },
+    {
+      "itemCode": "444-44-4444",
+      "Year": "2562",
+      "responsibilityDepartmentName": "test",
+      "responsibilityDepartmentHead": "test",
+      "responsibilityUserName": "test",
+      "Note": "",
+      "id": 5
+    },
+    {
+      "itemCode": "270-66-666",
+      "Year": "2562",
+      "responsibilityDepartmentName": "test",
+      "responsibilityDepartmentHead": "test",
+      "responsibilityUserName": "test",
+      "Note": "",
+      "id": 6
     }
   ],
   "Depreciations": [
@@ -383,6 +454,44 @@
       "Cumulative": "16.67",
       "dNote": "",
       "id": 13
+    },
+    {
+      "itemCode": "444-44-4444",
+      "seq": 0,
+      "Year": "16/11/2562",
+      "Percent": "5",
+      "lifeTime": "5",
+      "monthRate": "2",
+      "yearRate": "1",
+      "Balance": "102000",
+      "perYear": "5100.00",
+      "perMonth": "850.00",
+      "Cumulative": "5950.00",
+      "dNote": "test",
+      "id": 14
+    },
+    {
+      "itemCode": "270-66-666",
+      "seq": 0,
+      "Year": "26/11/2562",
+      "Percent": "10",
+      "lifeTime": "10",
+      "monthRate": "1",
+      "yearRate": "10",
+      "Balance": "1000",
+      "perYear": "100.00",
+      "perMonth": "8.33",
+      "Cumulative": "108.33",
+      "dNote": "test",
+      "id": 15
+    },
+    {
+      "itemCode": "270-66-666",
+      "seq": "01",
+      "Year": "06/11/2562",
+      "Balance": "891.67",
+      "Note": "",
+      "id": 16
     }
   ],
   "Exploitation": [],

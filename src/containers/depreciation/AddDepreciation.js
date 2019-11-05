@@ -4,7 +4,7 @@ import axios from 'axios';
 export default class AddDepreciation extends Component {
     componentDidMount() {
         const script = document.createElement('script')
-        script.src = '/js/addform.js'
+        script.src = '/js/depreciationPage.js'
         script.async = true
         document.body.appendChild(script)
     }
