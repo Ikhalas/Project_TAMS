@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router';
 import axios from 'axios';
+import Select from 'react-select';
 
 
 class GeneralForm extends Component {
@@ -9,6 +10,9 @@ class GeneralForm extends Component {
         this.state = {
             Departments: [],
             Itemtypes: [],
+            departmentsOption1: null,
+            departmentsOption2: null,
+            itemNameOption: null,
             check_1: false,
             check_2: false,
             check_3: false
@@ -47,35 +51,15 @@ class GeneralForm extends Component {
         }
     }
 
-    generateDepartmentOption() {
-        return (
-            this.state.Departments.map(Department => (
-                <option key={Department.id}>{Department.name}</option>
-            ))
-        )
-    }
-
-    generateItemtypeOption() {
-        let newItemtype = this.state.Itemtypes.filter(item => {
-            return item.type !== "ที่ดิน"
-        })
-        return (
-            newItemtype.map(Itemtype => (
-                <option key={Itemtype.id}>{Itemtype.name}</option>
-            ))
-        )
-
-    }
-
+  
     onSubmit = (e) => {
-        //console.log(this.refs.derivedDate.value.substring(6,10))
 
         const newItem = {
             "status": "ใช้งานได้ดี",
             "itemType": this.refs.itemType.value,                       //ประเภท
-            "Department": this.refs.Department.value,                   //หน่วยงาน      
+            "Department": this.state.departmentsOption1.value,              //หน่วยงาน      
             "itemCode": this.refs.itemCode.value,                       //เลขรหัส
-            "itemName": this.refs.itemName.value,                       //ชื่อ
+            "itemName": this.state.itemNameOption.value,                       //ชื่อ
             "waybillCode": this.refs.waybillCode.value,                 //ใบส่งของ
             "itemBrand": this.refs.itemBrand.value,                     //ยี่ห้อ
             "itemStyle": this.refs.itemStyle.value,                     //แบบ/ชนิด
@@ -92,10 +76,12 @@ class GeneralForm extends Component {
             "derivedFrom": this.refs.derivedFrom.value,                 //ได้มาจาก               
             "derivedDate": this.refs.derivedDate.value,                 //ได้มาวันที่
             "Price": this.refs.Price.value,                             //ราคา
-            "budgetOf": this.refs.budgetOf.value,                       //งบของ
+            "budgetOf": this.state.departmentsOption2.value,            //งบของ
             "Note": this.refs.Note.value,                               //หมายเหตุ
-            "thumbnail": ""                                              //รูป
+            "thumbnail": ""                                             //รูป
         }
+
+        console.log(newItem)
 
         const ItemResponsibility = {
             "itemCode": this.refs.itemCode.value,
@@ -106,29 +92,29 @@ class GeneralForm extends Component {
             "Note": ""
         }
 
-        var price,per,valueYear,perYear,month,valueMonth,perMonth,C,Cumulative
+        var price, per, valueYear, perYear, month, valueMonth, perMonth, C, Cumulative
 
-        if(this.refs.yearRate.value>0){
+        if (this.refs.yearRate.value > 0) {
             price = this.refs.Price.value
             per = this.refs.Percent.value
-            valueYear = (price * per)/100
+            valueYear = (price * per) / 100
             perYear = valueYear.toFixed(2)
 
             month = this.refs.monthRate.value
-            valueMonth = (month * valueYear)/12
+            valueMonth = (month * valueYear) / 12
             perMonth = valueMonth.toFixed(2)
 
             C = valueYear + valueMonth
             Cumulative = C.toFixed(2)
         }
-        else{
+        else {
             price = this.refs.Price.value
             per = this.refs.Percent.value
-            valueYear = (price * per)/100
+            valueYear = (price * per) / 100
             perYear = 0
 
             month = this.refs.monthRate.value
-            valueMonth = (month * valueYear)/12
+            valueMonth = (month * valueYear) / 12
             perMonth = valueMonth.toFixed(2)
 
             C = valueMonth
@@ -281,8 +267,34 @@ class GeneralForm extends Component {
     }
 
 
+
+    handleChange = departmentsOption1 => {
+        this.setState(
+            { departmentsOption1 },
+            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
+        );
+    };
+
+
+    handleChange2 = departmentsOption2 => {
+        this.setState(
+            { departmentsOption2 },
+            //() => console.log(`Option selected2:`, this.state.departmentsOption2.value)
+        );
+    };
+
+    handleChangeCode = itemNameOption => {
+        this.setState(
+            { itemNameOption },
+            //() => console.log(`Option selected3:`, this.state.itemNameOption.value)
+        );
+    };
+
+
     render() {
-        //console.log(this.props.type)
+        //console.log(this.state.Itemtypes)
+        const { departmentsOption1,departmentsOption2,itemNameOption } = this.state;
+
         return (
             <div>
                 <form onSubmit={this.onSubmit.bind(this)}>
@@ -292,7 +304,6 @@ class GeneralForm extends Component {
                         name="itemType" /******/
                         ref="itemType"  /******/
                         value={this.props.type}
-
                     />
 
                     <div className="box box-success">
@@ -304,38 +315,31 @@ class GeneralForm extends Component {
 
                                 <div className="col-md-6">
 
-                                    <div style={{ marginBottom: '21px' }}>
+
+                                    <div>
                                         <div className="form-group">
                                             <label>หน่วยงานที่รับผิดชอบ</label>
-                                            <select
-                                                className="select2"
-                                                style={{ width: '100%' }}
+                                            <Select
                                                 required
-                                                name="Department" /******/
-                                                ref="Department" /******/
-                                                defaultValue=""
-
-                                            >
-                                                <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                                {this.generateDepartmentOption()}
-                                            </select>
+                                                options={this.state.Departments}
+                                                value={departmentsOption1}
+                                                onChange={this.handleChange}
+                                                placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                            />
                                         </div>
                                     </div>
 
-                                    <div style={{ marginBottom: '22px' }}>
+
+                                    <div>
                                         <div className="form-group">
                                             <label>ชื่อพัสดุ</label>
-                                            <select
-                                                className="select2"
-                                                style={{ width: '100%' }}
+                                            <Select
                                                 required
-                                                name="itemName" /******/
-                                                ref="itemName" /******/
-                                                defaultValue=""
-                                            >
-                                                <option disabled value="" >-- โปรดเลือกรายการพัสดุครุภัณฑ์ --</option>
-                                                {this.generateItemtypeOption()}
-                                            </select>
+                                                options={this.state.Itemtypes}
+                                                value={itemNameOption}
+                                                onChange={this.handleChangeCode}
+                                                placeholder="--- โปรดเลือกรายการพัสดุครุภัณฑ์ ---"
+                                            />
                                         </div>
                                     </div>
 
@@ -346,10 +350,10 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-hashtag" />
                                             </div>
                                             <input
-
+                                           
                                                 type="text"
                                                 className="form-control"
-                                                style={{ fontSize: 30 }}
+                                                style={{ fontSize: 30, zIndex:0  }}
                                                 data-inputmask="'mask': ['999-99-9999']"
                                                 data-mask
                                                 required
@@ -368,7 +372,7 @@ class GeneralForm extends Component {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                style={{ fontSize: 20 }}
+                                                style={{ fontSize: 20, zIndex:0 }}
                                                 name="waybillCode" /*****/
                                                 ref="waybillCode"  /*****/
                                             />
@@ -385,7 +389,7 @@ class GeneralForm extends Component {
 
                                                 type="text"
                                                 className="form-control"
-                                                style={{ fontSize: 20 }}
+                                                style={{ fontSize: 20, zIndex:0 }}
                                                 name="itemBrand" /*****/
                                                 ref="itemBrand"  /*****/
                                             />
@@ -402,7 +406,7 @@ class GeneralForm extends Component {
 
                                                 type="text"
                                                 className="form-control"
-                                                style={{ fontSize: 20 }}
+                                                style={{ fontSize: 20, zIndex:0 }}
                                                 name="itemStyle" /*****/
                                                 ref="itemStyle"  /*****/
                                             />
@@ -561,6 +565,7 @@ class GeneralForm extends Component {
                                                 className="form-control datepicker"
                                                 id="inputdatepicker"
                                                 data-date-format="dd/mm/yyyy"
+                                                placeholder="วัน/เดือน/ปี"
                                                 style={{ fontSize: 20 }}
                                                 name="derivedDate" /*****/
                                                 ref="derivedDate"  /*****/
@@ -589,16 +594,13 @@ class GeneralForm extends Component {
 
                                     <div className="form-group">
                                         <label>งบประมาณของ</label>
-                                        <select
-                                            className="select2"
-                                            style={{ width: '100%' }}
-                                            name="budgetOf" /******/
-                                            ref="budgetOf" /******/
-                                            defaultValue=""
-                                        >
-                                            <option disabled value="" >-- โปรดเลือกหน่วยงานที่รับผิดชอบ --</option>
-                                            {this.generateDepartmentOption()}
-                                        </select>
+                                        <Select
+                                            required
+                                            options={this.state.Departments}
+                                            value={departmentsOption2}
+                                            onChange={this.handleChange2}
+                                            placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                        />
                                         <br />
                                     </div>
 
@@ -653,6 +655,7 @@ class GeneralForm extends Component {
                                                 className="form-control datepicker"
                                                 id="inputdatepicker"
                                                 data-date-format="dd/mm/yyyy"
+                                                placeholder="วัน/เดือน/ปี"
                                                 style={{ fontSize: 20 }}
                                                 name="insuranceDate" /*****/
                                                 ref="insuranceDate"  /*****/
@@ -667,11 +670,11 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-user" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control datepicker"
                                                 id="inputdatepicker"
                                                 data-date-format="dd/mm/yyyy"
+                                                placeholder="วัน/เดือน/ปี"
                                                 style={{ fontSize: 20 }}
                                                 name="insuranceExpDate" /*****/
                                                 ref="insuranceExpDate"  /*****/
@@ -679,9 +682,9 @@ class GeneralForm extends Component {
                                         </div>
                                     </div>
 
-                                    
 
-                                    
+
+
 
                                 </div>
                             </div>

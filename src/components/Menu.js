@@ -6,7 +6,8 @@ export default class Menu extends Component {
     const font18 = { fontSize: 18 }
     return (
       <div>
-        <aside className="main-sidebar">
+
+        <aside className="main-sidebar" style={{height: 1000}}>
           {/* sidebar: style can be found in sidebar.less */}
 
           <section className="sidebar">
@@ -91,23 +92,13 @@ export default class Menu extends Component {
                 </Link>
               </li>
 
-              <li className="header title" style={font18}> <br /><br /><br /><br /><br /><br /> </li>
-
-
-
-
-
-
-
-
-
-
-
+              
 
             </ul>
           </section>
           {/* /.sidebar */}
         </aside>
+
       </div>
 
     )
