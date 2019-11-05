@@ -11,6 +11,11 @@ export default class ItemtypeAdd extends Component {
     }
 
     componentDidMount() {
+        const script = document.createElement('script')
+        script.src = '/js/addform.js'
+        script.async = true
+        document.body.appendChild(script)
+
         axios.get(TYPES).then(
             res => {
                 //console.log(res)
@@ -66,11 +71,13 @@ export default class ItemtypeAdd extends Component {
                             <div className="col-xs-12">
 
                                 <form onSubmit={this.onSubmit.bind(this)}>
+
                                     <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
-                                    <select name="type" ref="type" className="form-control selectpicker" style={{ fontSize: 20 }} required>
+                                    <select name="type" ref="type" className="form-control select2" style={{ fontSize: 20 }} required>
                                             <option value="">&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
                                             {this.generateTypeRows()}
                                     </select>
+                                    <br/>
                                     <br/>
                                     <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
                                     <input
@@ -78,6 +85,8 @@ export default class ItemtypeAdd extends Component {
                                         name="code"
                                         ref="code"
                                         className="form-control"
+                                        data-inputmask="'mask': ['999']"
+                                        data-mask
                                         style={{ fontSize: 20 }}
                                         required
                                     />

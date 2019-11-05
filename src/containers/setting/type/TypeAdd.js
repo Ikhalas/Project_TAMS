@@ -3,7 +3,7 @@ import axios from 'axios';
 import {  TYPES } from '../../../common/APIutl'
 
 export default class TypeAdd extends Component {
-
+    
     addDepartment(newType) {
         //console.log(newDepartment)
         axios.request({
