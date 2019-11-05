@@ -16,6 +16,11 @@ export default class ItemtypeEdit extends Component {
     }
 
     componentDidMount(){
+        const script = document.createElement('script')
+        script.src = '/js/addform.js'
+        script.async = true
+        document.body.appendChild(script)
+
         this.getItemtype()
         
         axios.get(TYPES).then(
@@ -114,6 +119,8 @@ export default class ItemtypeEdit extends Component {
                                         name="code"
                                         ref="code"
                                         className="form-control"
+                                        data-inputmask="'mask': ['999']"
+                                        data-mask
                                         value={this.state.code}
                                         onChange={this.handleInputChange.bind(this)}
                                         style={{ fontSize: 20 }}
