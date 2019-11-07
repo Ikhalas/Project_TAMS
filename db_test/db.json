@@ -288,6 +288,30 @@
       "Note": "test",
       "thumbnail": "",
       "id": 7
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ที่ดิน",
+      "Department": "ศูนย์พัฒนาเด็กเล็ก",
+      "itemName": "ที่ดินที่มีหลักฐาน น.ส. 3",
+      "itemCode": "002-77-7777",
+      "Location": "test",
+      "derivedDate": "23/11/2562",
+      "approvalDate": "test",
+      "Price": "10000",
+      "budgetOf": "ศูนย์พัฒนาเด็กเล็ก",
+      "Certificate": "test",
+      "sellerName": "test",
+      "Rai": "10",
+      "Ngan": "10",
+      "buildingType": "อาคารเดี่ยว",
+      "Material": "ไม้",
+      "Floors": "10",
+      "otherType": "test",
+      "otherSize": "test",
+      "Note": "test",
+      "thumbnail": "",
+      "id": 8
     }
   ],
   "Responsibility": [
@@ -352,6 +376,15 @@
       "responsibilityDepartmentHead": "test",
       "Note": "",
       "id": 7
+    },
+    {
+      "itemCode": "002-77-7777",
+      "seq": 0,
+      "Year": "23/11/2562",
+      "responsibilityDepartmentName": "test",
+      "responsibilityDepartmentHead": "test",
+      "Note": "",
+      "id": 8
     }
   ],
   "Depreciations": [
@@ -528,6 +561,34 @@
   ],
   "Exploitation": [],
   "Disposal": [],
-  "landValueIncreases4Years": [],
+  "landValueIncreases4Years": [
+    {
+      "itemCode": "002-77-7777",
+      "seq": 0,
+      "Year": "23/11/2562",
+      "Percent": "-",
+      "Balance": "10000",
+      "Note": "-- ราคาเริ่มต้น --",
+      "id": 1
+    },
+    {
+      "itemCode": "002-77-7777",
+      "seq": "01",
+      "Year": "08/11/2562",
+      "Percent": "20",
+      "Balance": "12000",
+      "Note": "รวย",
+      "id": 2
+    },
+    {
+      "itemCode": "002-77-7777",
+      "seq": "011",
+      "Year": "08/11/2562",
+      "Percent": "100",
+      "Balance": "24000",
+      "Note": "รวยๆๆๆ",
+      "id": 3
+    }
+  ],
   "Maintenance": []
 }

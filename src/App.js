@@ -31,8 +31,8 @@ import FormContainer from './containers/item/Form/FormContainer'
 import LandEdit from './containers/item/Showitems/Land/LandEdit'
 import GeneralEdit from './containers/item/Showitems/General/GeneralEdit'
 
-
 import Itemdepreciation from './containers/depreciation/ItemDepreciation'
+import LandValue from './containers/landValue/LandValue'
 
 
 export default class Main extends Component {
@@ -65,6 +65,8 @@ export default class Main extends Component {
         <Route exact path="/items/item-detail/general-edit/:id" component={GeneralEdit}/>
 
         <Route exact path="/depreciation/item-depreciation/:id" component={Itemdepreciation}/>
+
+        <Route exact path="/landvalue/:id" component={LandValue}/>
         
 
 

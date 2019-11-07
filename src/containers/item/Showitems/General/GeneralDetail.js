@@ -218,9 +218,9 @@ class GeneralDetail extends Component {
                                         <button
                                             type="button"
                                             className="btn btn-box-tool"
-                                            style={{ fontSize: 18 }}
+                                            style={{ fontSize: 20 }}
                                             onClick={() => this.props.history.push('/items/item-detail/general-edit/' + this.state.item.id)}>
-                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                            <i className="fa fa-edit" />แก้ไข&nbsp;&nbsp;
                                         </button>
                                     </div>
                                 </div>
@@ -337,9 +337,9 @@ class GeneralDetail extends Component {
                                         <button
                                             type="button"
                                             className="btn btn-box-tool"
-                                            style={{ fontSize: 18 }}
+                                            style={{ fontSize: 20 }}
                                             onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.state.item.id)}>
-                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                            <i className="fa fa-info" />&nbsp;รายละเอียด&nbsp;&nbsp;
                                         </button>
                                     </div>
                                 </div>

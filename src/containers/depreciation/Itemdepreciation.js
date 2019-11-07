@@ -116,7 +116,6 @@ class ItemDepreciation extends Component {
         this.setState({
             displayCompenent: !this.state.displayCompenent
         })
-
         //console.log(this.state.displayCompenent)
     }
 

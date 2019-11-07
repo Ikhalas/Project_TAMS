@@ -16,7 +16,8 @@ class LandForm extends Component {
             materialType: null,
             itemCode: '',
             check_1: false,
-            check_2: false
+            check_2: false,
+            check_3: false
         }
     }
 
@@ -70,10 +71,20 @@ class LandForm extends Component {
 
         const landResponsibility = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
+            "seq": 0,
             "Year": this.refs.derivedDate.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "Note": ""
+        }
+
+        const landValueIncreases4Years = {
+            "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
+            "seq": 0,
+            "Year": this.refs.derivedDate.value,
+            "Percent": "-",
+            "Balance": this.refs.Price.value,
+            "Note": "-- ราคาเริ่มต้น --"
         }
 
         /*const Disposal = {
@@ -101,16 +112,7 @@ class LandForm extends Component {
             "Note": ""
         }*/
 
-        /*const landValueIncreases4Years = {
-            "itemCode": this.refs.itemCode.value,
-            "itemName": this.refs.itemName.value,
-            "itemType": this.refs.itemType.value, 
-            "Department": this.refs.Department.value, 
-            "Year": "",
-            "Percent": "",
-            "Balance": "",
-            "Note": ""
-        }*/
+        
 
 
 
@@ -127,8 +129,8 @@ class LandForm extends Component {
 
         this.addItem(newLand)
         this.addlandResponsibility(landResponsibility)
+        this.addlandValueIncreases4Years(landValueIncreases4Years)
         //this.addlandDepreciations(landDepreciations)
-        //this.addlandValueIncreases4Years(landValueIncreases4Years)
         //this.addlandExploitation(landExploitation)
         //this.addlandDisposal(Disposal)
 
@@ -156,10 +158,19 @@ class LandForm extends Component {
             data: landResponsibility
         }).then(res => {
             this.setState({ check_2: true })
-            this.confirmAdd()
         }).catch(err => console.log(err));
     }
     /*******************************************************/
+    addlandValueIncreases4Years(landValueIncreases4Years) {
+        axios.request({
+            method: 'post',
+            url: 'http://localhost:3001/landValueIncreases4Years',
+            data: landValueIncreases4Years
+        }).then(res => {
+            this.setState({check_3:true}) 
+            this.confirmAdd()  
+        }).catch(err => console.log(err));
+    }
 
     /*addlandDisposal(Disposal) {
         axios.request({
@@ -187,16 +198,7 @@ class LandForm extends Component {
 
     /*******************************************************/
 
-    /*addlandValueIncreases4Years(landValueIncreases4Years) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/landValueIncreases4Years',
-            data: landValueIncreases4Years
-        }).then(res => {
-            this.setState({check_3:true}) 
-            this.confirmAdd()  
-        }).catch(err => console.log(err));
-    }*/
+    
 
     /*******************************************************/
 
@@ -214,7 +216,7 @@ class LandForm extends Component {
     /*******************************************************/
 
     confirmAdd() {
-        if (this.state.check_1 && this.state.check_2) {
+        if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
             this.props.history.push('/items')
             alert("เพิ่มข้อมูลสำเร็จ")
         }

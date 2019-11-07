@@ -255,9 +255,10 @@ class LandDetail extends Component {
                                         <button
                                             type="button"
                                             className="btn btn-box-tool"
-                                            style={{ fontSize: 18 }}
+                                            style={{ fontSize: 20 }}
                                             onClick={() => this.props.history.push('/items/item-detail/land-edit/' + this.state.item.id)}>
-                                            &nbsp;&nbsp;แก้ไข&nbsp;&nbsp;
+                                            <i className="fa fa-edit" />แก้ไข&nbsp;&nbsp;
+                                            
                                         </button>
                                     </div>
                                 </div>
@@ -360,12 +361,21 @@ class LandDetail extends Component {
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>มูลค่าเพิ่มขึ้น 4 ปี</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 20 }}
+                                            onClick={() => this.props.history.push('/landvalue/' + this.state.item.id)}>
+                                            <i className="fa fa-line-chart" />&nbsp;รายละเอียด&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: 50, textAlign: 'center' }}>วัน/เดือน/ปี</td>
                                                 <td style={{ width: 120, textAlign: 'center' }}>มูลค่าเพิ่มขึ้น (%)</td>
                                                 <td style={{ width: 200, textAlign: 'center' }}>ราคาคงเหลือ</td>
                                             </tr>
@@ -383,7 +393,7 @@ class LandDetail extends Component {
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: 50, textAlign: 'center' }}>วัน/เดือน/ปี</td>
                                                 <td style={{ width: 400, textAlign: 'center' }}>รายการ</td>
                                                 <td style={{ width: 200, textAlign: 'center' }}>ผลประโยชน์ที่ได้รับเป็นรายเดือนหรือรายปี (บาท)</td>
                                             </tr>

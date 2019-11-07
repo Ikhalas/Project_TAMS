@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 
-export default class AddDepreciation extends Component {
+
+export default class AddLandValue extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            total: '',
+        };
+    }
+
     componentDidMount() {
         const script = document.createElement('script')
         script.src = '/js/thaidate.js'
@@ -14,19 +22,20 @@ export default class AddDepreciation extends Component {
             "itemCode": this.refs.itemCode.value,
             "seq": this.refs.seq.value + 1,
             "Year": this.refs.Year.value,
+            "Percent": this.refs.Percent.value,
             "Balance": this.refs.Balance.value,
             "Note": this.refs.Note.value
         }
         //console.log(newVal)
         e.preventDefault()
 
-        this.addDepreciation(newVal)
+        this.landValueIncreases4Years(newVal)
     }
 
-    addDepreciation(newVal) {
+    landValueIncreases4Years(newVal) {
         axios.request({
             method: 'post',
-            url: 'http://localhost:3001/Depreciations',
+            url: 'http://localhost:3001/landValueIncreases4Years',
             data: newVal
         }).then(res => {
             alert("เพิ่มข้อมูลสำเร็จ")
@@ -34,21 +43,40 @@ export default class AddDepreciation extends Component {
         }).catch(err => console.log(err));
     }
 
+    calBalance = (e) => {
+        let landValue = this.props.landValue.map(landValue => (landValue))
+        let maxIndex = landValue.length - 1
+
+        let B = this.props.landValue.map(landValue => (landValue.Balance))
+        let Balance = B[maxIndex]
+        //console.log("Balance| "+Balance[maxIndex])
+        //console.log(e.target.value)
+        let percent = e.target.value
+
+        let b = (Number(Balance) * Number(percent)) / 100
+        let balance = Number(Balance) + b
+        //console.log(balance)
+        this.setState({ total: balance })
+
+        if(!percent){
+            this.setState({ total: 0 })
+        }
+
+    }
 
     renderList() {
-        //console.log(this.props.depreciations)
-        if (this.props.depreciations) {
-            var depreciation = this.props.depreciations.map(depreciation => (depreciation))
-            var maxIndex = depreciation.length - 1
 
-            var seq = this.props.depreciations.map(depreciation => (depreciation.seq))
-            var Cumulative = this.props.depreciations.map(depreciation => (depreciation.Cumulative))
-            var lastBalance = this.props.depreciations.map(depreciation => (depreciation.Balance))
+        if (this.props.landValue.length) {
 
-            var B = lastBalance[maxIndex] - Cumulative[0]
-            var Balance = B.toFixed(2)
+            var landValue = this.props.landValue.map(landValue => (landValue))
+            var maxIndex = landValue.length - 1
+            //console.log(maxIndex)
+            var seq = this.props.landValue.map(landValue => (landValue.seq))
+            //console.log("seq| "+seq[maxIndex])
 
-            //console.log(Cumulative[0])
+         
+          
+
             return (
                 <div>
                     <form onSubmit={this.onSubmit.bind(this)}>
@@ -70,14 +98,28 @@ export default class AddDepreciation extends Component {
 
                                     <td style={{ width: '15%', textAlign: 'center' }}>
                                         <input
+                                            type="number"                                            
+                                            className="form-control"
+                                            style={{ fontSize: 20 }}
+                                            placeholder="%"
+                                            name="Percent"
+                                            ref="Percent"
+                                            onChange={this.calBalance.bind(this)}
+                                        />
+                                    </td>
+
+                                    <td style={{ width: '15%', textAlign: 'center' }}>
+                                        <input
                                             type="text"
                                             className="form-control"
                                             style={{ fontSize: 20 }}
-                                            defaultValue={Balance}
+                                            placeholder="คงเหลือ"
+                                            defaultValue={this.state.total}
                                             name="Balance"
                                             ref="Balance" />
                                     </td>
-                                    <td style={{ width: '55%', textAlign: 'center' }}>
+
+                                    <td style={{ width: '45%', textAlign: 'center' }}>
                                         <input
                                             type="text"
                                             className="form-control"
@@ -93,17 +135,15 @@ export default class AddDepreciation extends Component {
                         <div className="box-tools pull-right">
                             <button className="btn btn-success title" type="submit" style={{ fontSize: 20 }}>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            </button>
+                        </button>
                         </div>
                     </form>
 
                 </div>
+
             )
         }
-
     }
-
-
 
     render() {
         return (
@@ -123,11 +163,7 @@ export default class AddDepreciation extends Component {
                         </div>
                     </div>
                 </section>
-
             </div>
         )
     }
 }
-
-
-
