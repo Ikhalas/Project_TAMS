@@ -373,7 +373,7 @@ class GeneralForm extends Component {
                                         <label>ใบส่งของที่</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-money" />
+                                                <i className="fa fa-edit" />
                                             </div>
                                             <input
                                                 type="text"
@@ -389,7 +389,7 @@ class GeneralForm extends Component {
                                         <label>ชื่อ/ยี่ห้อผู้ทำหรือผลิต</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-trademark" />
                                             </div>
                                             <input
 
@@ -406,7 +406,7 @@ class GeneralForm extends Component {
                                         <label>แบบ/ชนิด/ลักษณะ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-archive" />
                                             </div>
                                             <input
 
@@ -427,7 +427,7 @@ class GeneralForm extends Component {
                                         <label>สีของพัสดุ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-book" />
+                                                <i className="fa fa-bullseye" />
                                             </div>
                                             <input
 
@@ -444,7 +444,7 @@ class GeneralForm extends Component {
                                         <label>หมายเลขลำดับ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-bars" />
                                             </div>
                                             <input
 
@@ -461,7 +461,7 @@ class GeneralForm extends Component {
                                         <label>หมายเลขกรอบ (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
+                                                <i className="fa fa-info" />
                                             </div>
                                             <input
 
@@ -478,7 +478,7 @@ class GeneralForm extends Component {
                                         <label>หมายเลขจดทะเบียน (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-compass" />
+                                                <i className="fa fa-info" />
                                             </div>
                                             <input
 
@@ -496,7 +496,7 @@ class GeneralForm extends Component {
                                         <label>หมายเลขเครื่อง (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-info" />
                                             </div>
                                             <input
 
@@ -513,7 +513,7 @@ class GeneralForm extends Component {
                                         <label>อื่นๆ (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-money" />
+                                                <i className="fa fa-info" />
                                             </div>
                                             <input
 
@@ -547,7 +547,7 @@ class GeneralForm extends Component {
                                         <label>ซื้อ/จ้าง/ได้มา จาก</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-arrows-alt" />
+                                                <i className="fa fa-cart-arrow-down" />
                                             </div>
                                             <input
 
@@ -564,7 +564,7 @@ class GeneralForm extends Component {
                                         <label>ซื้อ/จ้าง/ได้มา เมื่อวันที่</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-arrows-alt" />
+                                                <i className="fa fa-cart-plus" />
                                             </div>
                                             <input
                                                 type="text"
@@ -584,7 +584,7 @@ class GeneralForm extends Component {
                                         <label>ราคา</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-arrows-alt" />
+                                                <i className="fa fa-money" />
                                             </div>
                                             <input
                                                 type="number"
@@ -620,7 +620,7 @@ class GeneralForm extends Component {
                                         <label>เงื่อนไข - การรับประกัน</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-user" />
+                                                <i className="fa fa-check-square-o" />
                                             </div>
                                             <input
 
@@ -637,10 +637,9 @@ class GeneralForm extends Component {
                                         <label>พัสดุรับประกันไว้ที่บริษัท</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-user" />
+                                                <i className="fa fa-building-o" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -654,7 +653,7 @@ class GeneralForm extends Component {
                                         <label>วันที่ประกันพัสดุ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-certificate" />
+                                                <i className="fa fa-calendar-check-o" />
                                             </div>
                                             <input
                                                 type="text"
@@ -673,7 +672,7 @@ class GeneralForm extends Component {
                                         <label>พัสดุรับประกันถึงวันที่</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-user" />
+                                                <i className="fa fa-calendar-times-o" />
                                             </div>
                                             <input
                                                 type="text"
@@ -771,7 +770,7 @@ class GeneralForm extends Component {
                                         <label>อัตราค่าเสื่อมสภาพ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
+                                                <i className="fa fa-sort-amount-desc" />
                                             </div>
                                             <input
                                                 type="number"
@@ -789,7 +788,7 @@ class GeneralForm extends Component {
                                         <label>อายุการใช้งาน</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
-                                                <i className="fa fa-home" />
+                                                <i className="fa fa-clock-o" />
                                             </div>
                                             <input
                                                 type="number"
@@ -809,7 +808,7 @@ class GeneralForm extends Component {
                                                 <label>รายปี</label>
                                                 <div className="input-group">
                                                     <div className="input-group-addon">
-                                                        <i className="fa fa-address-card" />
+                                                        <i className="fa fa-history" />
                                                     </div>
                                                     <input
                                                         type="number"
@@ -830,7 +829,7 @@ class GeneralForm extends Component {
                                                 <label>รายเดือน</label>
                                                 <div className="input-group">
                                                     <div className="input-group-addon">
-                                                        <i className="fa fa-address-card" />
+                                                        <i className="fa fa-history"/>
                                                     </div>
                                                     <input
                                                         type="number"
