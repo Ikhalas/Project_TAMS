@@ -264,6 +264,30 @@
       "Note": "test",
       "thumbnail": "",
       "id": 6
+    },
+    {
+      "status": "ใช้งานได้ดี",
+      "itemType": "ที่ดิน",
+      "Department": "อบต.ท่าข้าม",
+      "itemName": "ที่ดินที่มีโฉนด",
+      "itemCode": "001-59-120",
+      "Location": "test",
+      "derivedDate": "08/11/2562",
+      "approvalDate": "test",
+      "Price": "2000",
+      "budgetOf": "ศูนย์พัฒนาเด็กเล็ก",
+      "Certificate": "test",
+      "sellerName": "test",
+      "Rai": "10",
+      "Ngan": "10",
+      "buildingType": "อาคารเดี่ยว",
+      "Material": "ตึก",
+      "Floors": "10",
+      "otherType": "test",
+      "otherSize": "test",
+      "Note": "test",
+      "thumbnail": "",
+      "id": 7
     }
   ],
   "Responsibility": [
@@ -320,6 +344,14 @@
       "responsibilityUserName": "test",
       "Note": "",
       "id": 6
+    },
+    {
+      "itemCode": "001-59-120",
+      "Year": "08/11/2562",
+      "responsibilityDepartmentName": "test",
+      "responsibilityDepartmentHead": "test",
+      "Note": "",
+      "id": 7
     }
   ],
   "Depreciations": [

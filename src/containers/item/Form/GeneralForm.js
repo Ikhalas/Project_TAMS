@@ -43,7 +43,7 @@ class GeneralForm extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.type !== prevProps.type) {
-            console.log("componentDidUpdate" + this.props.type)
+            //console.log("componentDidUpdate" + this.props.type)
             axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
                 res => {
                     //console.log(res.data)
@@ -86,7 +86,7 @@ class GeneralForm extends Component {
 
         const ItemResponsibility = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
-            "Year": this.refs.derivedDate.value.substring(6, 10),
+            "Year": this.refs.derivedDate.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "responsibilityUserName": this.refs.responsibilityUserName.value,
@@ -296,7 +296,7 @@ class GeneralForm extends Component {
     };
 
     render() {
-        console.log(this.state.itemCode)
+        //console.log(this.state.itemCode)
         //console.log(this.state.Itemtypes)
         const { departmentsOption1, departmentsOption2, itemNameOption } = this.state;
 
@@ -346,7 +346,7 @@ class GeneralForm extends Component {
                                         </div>
                                     </div>
 
-                                    
+
                                     <div className="form-group" >
                                         <label>เลขรหัสพัสดุ</label>
                                         <div className="input-group">
@@ -360,7 +360,7 @@ class GeneralForm extends Component {
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 30, zIndex: 0, height: 46 }}
-                                                data-inputmask="'mask': ['-99-999']"
+                                                data-inputmask="'mask': ['-99-9999']"
                                                 data-mask
                                                 required
                                                 name="itemCode" /*****/
@@ -440,7 +440,7 @@ class GeneralForm extends Component {
                                         </div>
                                     </div>
 
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ marginTop: 28 }}>
                                         <label>หมายเลขลำดับ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -474,7 +474,7 @@ class GeneralForm extends Component {
                                         </div>
                                     </div>
 
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ marginTop: 28 }}>
                                         <label>หมายเลขจดทะเบียน (ถ้ามี)</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -695,24 +695,6 @@ class GeneralForm extends Component {
                                 </div>
                             </div>
                             {/* /.box */}
-                            <div className="box box-default">
-                                <div className="box-body">
-                                    <div className="form-group">
-                                        <label>หมายเหตุเพิ่มเติม(ของพัสดุชิ้นนี้)</label>
-
-                                        <textarea
-                                            component="textarea"
-                                            className="form-control"
-                                            rows="3"
-                                            style={{ fontSize: 20 }}
-                                            placeholder="หมายเหตุ ..."
-                                            name="Note" /*****/
-                                            ref="Note"  /*****/
-                                        />
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         {/* /.col (left) */}
 
@@ -721,7 +703,7 @@ class GeneralForm extends Component {
                             {/* ชื่อผู้ใช้ - ดูแล - รับผิดชอบพัสดุ */}
                             <div className="box box-primary">
                                 <div className="box-header">
-                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>ชื่อผู้ใช้ - ดูแล - รับผิดชอบพัสดุ</b></h3>
+                                    <h3 className="box-title" style={{ fontSize: 30, marginTop: 10 }}><b>ผู้ดูแลรับผิดชอบ</b></h3>
                                 </div>
                                 <div className="box-body">
                                     <div className="form-group">
@@ -794,7 +776,7 @@ class GeneralForm extends Component {
                                             <input
                                                 type="number"
                                                 min="0"
-                                                className="form-control"                                          
+                                                className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="Percent" /*****/
                                                 ref="Percent"  /*****/
@@ -812,7 +794,7 @@ class GeneralForm extends Component {
                                             <input
                                                 type="number"
                                                 min="0"
-                                                className="form-control"             
+                                                className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="lifeTime" /*****/
                                                 ref="lifeTime"  /*****/
@@ -832,7 +814,7 @@ class GeneralForm extends Component {
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        className="form-control"                                                      
+                                                        className="form-control"
                                                         style={{ fontSize: 20 }}
                                                         name="yearRate" /*****/
                                                         ref="yearRate"  /*****/
@@ -854,7 +836,7 @@ class GeneralForm extends Component {
                                                         type="number"
                                                         min="0"
                                                         max="12"
-                                                        className="form-control"                                  
+                                                        className="form-control"
                                                         style={{ fontSize: 20 }}
                                                         name="monthRate" /*****/
                                                         ref="monthRate"  /*****/
@@ -892,6 +874,29 @@ class GeneralForm extends Component {
 
                         </div>
                         {/* /.col (right) */}
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="box box-default">
+                                <div className="box-body">
+                                    <div className="form-group">
+                                        <label>หมายเหตุเพิ่มเติม(ของพัสดุชิ้นนี้)</label>
+
+                                        <textarea
+                                            component="textarea"
+                                            className="form-control"
+                                            rows="3"
+                                            style={{ fontSize: 20 }}
+                                            placeholder="หมายเหตุ ..."
+                                            name="Note" /*****/
+                                            ref="Note"  /*****/
+                                        />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
