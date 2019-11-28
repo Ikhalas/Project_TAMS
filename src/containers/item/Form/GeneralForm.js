@@ -292,7 +292,6 @@ class GeneralForm extends Component {
 
             }
         );
-
     };
 
     render() {
@@ -464,7 +463,6 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-info" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -481,7 +479,6 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-info" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -499,7 +496,6 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-info" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
@@ -516,7 +512,6 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-info" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}

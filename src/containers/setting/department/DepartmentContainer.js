@@ -17,7 +17,7 @@ class SettingContainer extends Component {
                 <tr key={department.id}>
                     <td style={{ fontSize: 20 }}>
                         <Link to={'/setting/department-detail/' + department.id}>
-                            &nbsp;{department.name}
+                            &nbsp;{department.value}
                         </Link>
                     </td>
                 </tr>

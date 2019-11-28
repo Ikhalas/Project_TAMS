@@ -367,7 +367,7 @@ class LandDetail extends Component {
                                             className="btn btn-box-tool"
                                             style={{ fontSize: 20 }}
                                             onClick={() => this.props.history.push('/landvalue/' + this.state.item.id)}>
-                                            <i className="fa fa-line-chart" />&nbsp;รายละเอียด&nbsp;&nbsp;
+                                            <i className="fa fa-line-chart"/>&nbsp;รายละเอียด&nbsp;&nbsp;
                                         </button>
                                     </div>
                                 </div>
@@ -388,6 +388,15 @@ class LandDetail extends Component {
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>การหาผลประโยชน์ในพัสดุ</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 20 }}
+                                            onClick={() => this.props.history.push('/landvalue/' + this.state.item.id)}>
+                                            <i className="fa fa-line-chart" />>&nbsp;รายละเอียด&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-bordered">
