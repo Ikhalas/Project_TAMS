@@ -43,6 +43,7 @@ export default class Main extends Component {
         <Route exact path="/" component={Home}/>
 
         <Route exact path="/setting" component={Setting}/>
+        <Route exact path="/resetting/:result" component={Setting}/>
 
         <Route exact path="/setting/department-add" component={DepartmentAdd}/>
         <Route exact path="/setting/department-detail/:id" component={DepartmentDetail}/>

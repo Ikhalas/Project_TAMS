@@ -1,71 +1,59 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import {  DEPARTMENT } from '../../../common/APIutl'
+import { db } from '../../../common/firebaseConfig'
 
 export default class DepartmentEdit extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            id : '',
-            name : '',
-            address : '',
-            other : ''
+            code: '',
+            label: '',
+            address: '',
+            note: '',
+
+            departmentId: this.props.match.params.id,
+            modalIsOpen: false
         }
     }
 
-    componentDidMount(){
-        this.getDepartment()
+    componentDidMount() {
+        db.collection('departments').doc(this.state.departmentId).get().then(doc => {
+            //console.log('Document data:', doc.data());
+            this.setState({
+                code: doc.data().code,
+                label: doc.data().label,
+                address: doc.data().address,
+                note: doc.data().note
+            })
+        }).catch(err => console.log('Error getting document', err))
     }
 
-    handleInputChange(e){
+    handleInputChange(e) {
         const target = e.target
         const value = target.value
         const name = target.name
 
         this.setState({
-            [name] : value
+            [name]: value
         })
     }
 
-    getDepartment(){
-        let departmentId = this.props.match.params.id;
-        axios.get( DEPARTMENT + '/' + departmentId ).then(
-            res => {
-                this.setState({
-                    id : res.data.id,
-                    name : res.data.name,
-                    address : res.data.address,
-                    other : res.data.other
-                }, () => console.log(this.state))
-            
-            })
-        .catch(err => console.log(err))
-    }
-
-    editDepartment(newDepartment){
-        axios.request({
-            method: 'put',
-            url: DEPARTMENT + '/' + this.state.id,
-            data: newDepartment
-        }).then(res => {
-            this.props.history.push('/setting/department-detail/'+ this.state.id)
-        }).catch(err => console.log(err));
-    }
-
     onSubmit = (e) => {
-        //console.log(this.refs.name.value)
-        const newDepartment = {
-            name: this.refs.name.value,
-            address: this.refs.address.value,
-            other: this.refs.other.value,
-        }
-        this.editDepartment(newDepartment)
         e.preventDefault();
+
+        let departmentName = this.refs.label.value
+        db.collection("departments").doc(this.state.departmentId).update({
+            code: this.refs.code.value,
+            value: departmentName,
+            label: departmentName,
+            address: this.refs.address.value,
+            note: this.refs.note.value,
+        }).then(() => {
+            this.props.history.push('/setting/department-detail/' + this.state.departmentId)
+        })
     }
 
     render() {
-     
-        //console.log(this.props.department)
+
         return (
             <div>
                 <div className="content-wrapper title">
@@ -78,21 +66,30 @@ export default class DepartmentEdit extends Component {
                         <div className="row">
                             <div className="col-xs-12">
 
-
                                 <form onSubmit={this.onSubmit.bind(this)}>
-                                    <label className="title" style={{fontSize:25}}>ชื่อหน่วยงาน</label>
+                                    <label className="title" style={{ fontSize: 20 }}>เลขรหัสหน่วยงาน</label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        ref="name"
+                                        name="code"
+                                        ref="code"
                                         className="form-control"
-                                        value={this.state.name}
+                                        value={this.state.code}
                                         onChange={this.handleInputChange.bind(this)}
                                         style={{ fontSize: 20 }}
                                         required
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:25}}>ที่อยู่หน่วยงาน</label>
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>ชื่อหน่วยงาน</label>
+                                    <input
+                                        type="text"
+                                        name="label"
+                                        ref="label"
+                                        className="form-control"
+                                        value={this.state.label}
+                                        onChange={this.handleInputChange.bind(this)}
+                                        style={{ fontSize: 20 }}
+                                        required
+                                    />
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>ที่อยู่หน่วยงาน</label>
                                     <input
                                         type="text"
                                         name="address"
@@ -102,22 +99,36 @@ export default class DepartmentEdit extends Component {
                                         onChange={this.handleInputChange.bind(this)}
                                         style={{ fontSize: 20 }}
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:25}}>รายละเอียดอื่น ๆ</label>
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>รายละเอียดอื่น ๆ</label>
                                     <input
                                         type="text"
-                                        name="other"
-                                        ref="other"
+                                        name="note"
+                                        ref="note"
                                         className="form-control"
-                                        value={this.state.other}
+                                        value={this.state.note}
                                         onChange={this.handleInputChange.bind(this)}
                                         style={{ fontSize: 20 }}
-
                                     />
+
                                     <br />
-                                    <button className="btn btn-info title" type="submit">
-                                        &nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </button>
+
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            <button
+                                                className="btn btn-primary btn-sm title pull-left"
+                                                onClick={() => this.props.history.push('/setting')}>
+                                                &nbsp;ย้อนกลับ&nbsp;
+                                            </button>
+
+                                            <div className="pull-right">
+                                                <button
+                                                    className="btn btn btn-block btn-success btn-lg title"
+                                                    type="submit">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
 
                             </div>

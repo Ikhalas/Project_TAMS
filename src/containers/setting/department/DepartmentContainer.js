@@ -13,11 +13,16 @@ class SettingContainer extends Component {
 
     generateDepartmentRows() {
         return (
-            this.props.departments.map(department => (
+            this.props.departments && this.props.departments.map(department => (
                 <tr key={department.id}>
                     <td style={{ fontSize: 20 }}>
                         <Link to={'/setting/department-detail/' + department.id}>
-                            &nbsp;{department.value}
+                            &nbsp;{department.data().code}
+                        </Link>
+                    </td>
+                    <td style={{ fontSize: 20 }}>
+                        <Link to={'/setting/department-detail/' + department.id}>
+                            &nbsp;{department.data().label}
                         </Link>
                     </td>
                 </tr>
@@ -33,7 +38,7 @@ class SettingContainer extends Component {
                         <div className="col-xs-12">
                             <div className="box">
                                 <div className="box-header">
-                                    <h3 className="box-title" style={{fontSize:30}}>รายการชื่อหน่วยงาน</h3>
+                                    <h3 className="box-title" style={{ fontSize: 30 }}>รายการชื่อหน่วยงาน</h3>
                                     <button
                                         className="btn btn-success btn-sm title pull-right"
                                         onClick={() => this.props.history.push('/setting/department-add')}
@@ -46,6 +51,7 @@ class SettingContainer extends Component {
                                     <table className="table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th>&nbsp;เลขรหัสหน่วยงาน</th>
                                                 <th>&nbsp;ชื่อหน่วยงาน</th>
                                             </tr>
                                         </thead>
