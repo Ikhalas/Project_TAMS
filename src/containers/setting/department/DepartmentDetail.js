@@ -22,15 +22,22 @@ export default class DepartmentDetail extends Component {
             departmentId: this.props.match.params.id
         }
 
+        this._isMounted = false;
+
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
     }
 
     componentDidMount() {
+        this._isMounted = true;  //for cancel subscriptions and asynchronous tasks
+        this._isMounted && this.getDepartmentData()
+    }
+
+    getDepartmentData() {
         //console.log(departmentId)
         db.collection('departments').doc(this.state.departmentId).get().then(doc => {
             //console.log('Document data:', doc.data());
-            this.setState({ detail: doc.data() })
+            this._isMounted && this.setState({ detail: doc.data() })
         }).catch(err => console.log('Error getting document', err))
     }
 
@@ -47,6 +54,10 @@ export default class DepartmentDetail extends Component {
         db.collection('departments').doc(departmentId).delete().then(
             this.props.history.push('/setting')
         )
+    }
+
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
     }
 
     render() {

@@ -10,12 +10,15 @@ export default class DepartmentEdit extends Component {
             address: '',
             note: '',
 
-            departmentId: this.props.match.params.id,
-            modalIsOpen: false
+            departmentId: this.props.match.params.id
         }
     }
 
     componentDidMount() {
+        this.getDepartmentData()
+    }
+
+    getDepartmentData() {
         db.collection('departments').doc(this.state.departmentId).get().then(doc => {
             //console.log('Document data:', doc.data());
             this.setState({

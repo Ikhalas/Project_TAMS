@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
-import { withRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
-class SettingContainer extends Component {
+export default class SettingContainer extends Component {
 
     componentDidMount() {
+        this.scriptForTable()
+    }
+
+    scriptForTable() {
         const script = document.createElement('script')
         script.src = 'js/itemlist.js'
         script.async = true
@@ -16,14 +20,10 @@ class SettingContainer extends Component {
             this.props.departments && this.props.departments.map(department => (
                 <tr key={department.id}>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/setting/department-detail/' + department.id}>
-                            &nbsp;{department.data().code}
-                        </Link>
+                        <Link to={'/setting/department-detail/' + department.id}>&nbsp;{department.data().code}</Link>
                     </td>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/setting/department-detail/' + department.id}>
-                            &nbsp;{department.data().label}
-                        </Link>
+                        <Link to={'/setting/department-detail/' + department.id}>&nbsp;{department.data().label}</Link>
                     </td>
                 </tr>
             ))
@@ -55,7 +55,6 @@ class SettingContainer extends Component {
                                                 <th>&nbsp;ชื่อหน่วยงาน</th>
                                             </tr>
                                         </thead>
-
                                         <tbody>
                                             {this.generateDepartmentRows()}
                                         </tbody>
@@ -73,5 +72,3 @@ class SettingContainer extends Component {
         )
     }
 }
-
-export default withRouter(SettingContainer)
