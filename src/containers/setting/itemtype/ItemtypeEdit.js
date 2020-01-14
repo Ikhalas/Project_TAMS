@@ -1,97 +1,123 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import { ITEMTYPE, TYPES } from '../../../common/APIutl'
+import Select from 'react-select';
+import { withRouter } from 'react-router-dom';
+import { db } from '../../../common/firebaseConfig'
 
-export default class ItemtypeEdit extends Component {
-    constructor(props){
+class ItemtypeEdit extends Component {
+    constructor(props) {
         super(props)
         this.state = {
-            id : '',
-            code : '',
-            type : '',
-            name : '',
-            other : '',
-            types : []
+            itemTypeId: this.props.match.params.id,
+
+            code: '',
+            type: '',
+            name: '',
+            note: '',
+            itemTypes: [],
+
+            types: [],
+            currentObject: [],
+            selectedOption: [],
+            codeCheck: true
         }
+        this._isMounted = false;
+
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
-    componentDidMount(){
-        const script = document.createElement('script')
-        script.src = '/js/addform.js'
-        script.async = true
-        document.body.appendChild(script)
-
-        this.getItemtype()
-        
-        axios.get(TYPES).then(
-            res => {
-                //console.log(res)
-                this.setState({ types: res.data })
-            }
-        )
-            .catch(err => console.log(err))
+    componentDidMount() {
+        this._isMounted = true;
+        this._isMounted && this.getItemType()
+        this._isMounted && this.getTypeData()
     }
 
-    generateTypeRows() {
-        //console.log(this.state.types)
-        return (
-            this.state.types.map(typeI => (
-                <option key={typeI.id}>{typeI.name}</option>
-            ))
-        )
+    getTypeData() {  //for option
+        db.collection('types').orderBy('label').get().then(snapshot => {
+            let types = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                types.push(data)
+            })
+            this._isMounted && this.setState({ types: types })
+            console.log(this.state.types)
+        }).catch(error => console.log(error))
     }
 
-    handleInputChange(e){
+    async getItemType() {
+        await db.collection('itemTypes').doc(this.state.itemTypeId).get().then(doc => {
+            //console.log('Document data:', doc.data());
+            this.setState({
+                code: doc.data().code,
+                type: doc.data().type,
+                name: doc.data().name,
+                note: doc.data().note,
+                currentObject: { value: doc.data().type, label: doc.data().type } //old type
+            })
+        }).catch(err => console.log('Error getting document', err))
+        console.log("currentObject| " + this.state.currentObject)
+    }
+
+    handleInputChange(e) {
         const target = e.target
         const value = target.value
         const name = target.name
 
         this.setState({
-            [name] : value
+            [name]: value
         })
     }
 
-    getItemtype(){
-        let itemtypeId = this.props.match.params.id;
-        axios.get(ITEMTYPE + '/' + itemtypeId ).then(
-            res => {
-                this.setState({
-                    id : res.data.id,
-                    code : res.data.code,
-                    type : res.data.type,
-                    name : res.data.name,
-                    other : res.data.other
-                }, () => console.log(this.state))
-            
-            })
-        .catch(err => console.log(err))
-    }
-
-    editDepartment(newItemtype){
-        axios.request({
-            method: 'put',
-            url: ITEMTYPE + '/' + this.state.id,
-            data: newItemtype
-        }).then(res => {
-            this.props.history.push('/setting/itemtype-detail/'+ this.state.id);
-        }).catch(err => console.log(err));
-    }
-
     onSubmit = (e) => {
-        //console.log(this.refs.name.value)
-        const newItemtype = {
-            code: this.refs.code.value,
-            type: this.refs.type.value,
-            name: this.refs.name.value,
-            other: this.refs.other.value
-        }
-        this.editDepartment(newItemtype)
         e.preventDefault();
+
+        db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+            snapshot.forEach(doc => {
+                let data = doc.data()
+
+                if (this.refs.code.value === data.code) {
+                    console.log("Duplicate name")
+                    this.setState({ codeCheck: false })
+                    console.log(this.state.codeCheck)
+                }
+                else {
+                    this.setState({ codeCheck: true })
+                    console.log("pass")
+                    console.log(this.state.codeCheck)
+                }
+            })
+        }).catch(error => console.log(error))
+
+        if (this.state.codeCheck === true) {
+            db.collection("itemTypes").doc(this.state.itemTypeId).update({
+                code: this.refs.code.value,
+                type: this.state.currentObject.value,
+                name: this.refs.name.value,
+                note: this.refs.note.value
+            }).then(() => {
+                this.props.history.push('/setting/itemtype-detail/' + this.state.itemTypeId)
+            })
+        }
+
+        else {
+            console.log("fail to upload")
+        }
+    }
+
+
+
+    addNewValue(value) {
+        this.setState({
+            currentObject: value
+        })
+    }
+
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
     }
 
     render() {
-     
-        //console.log(this.props.itemtype)
+
         return (
             <div>
                 <div className="content-wrapper title">
@@ -104,16 +130,18 @@ export default class ItemtypeEdit extends Component {
                         <div className="row">
                             <div className="col-xs-12">
 
+                                <form onSubmit={this.onSubmit}>
 
-                                <form onSubmit={this.onSubmit.bind(this)}>
+                                    <label className="title" style={{ fontSize: 20 }}>ประเภทพัสดุครุภัณฑ์</label>
 
-                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
-                                    <select name="type" ref="type" className="form-control selectpicker" style={{ fontSize: 20 }} required>
-                                            <option value={this.state.type}>&nbsp;{this.state.type} (เดิม)</option>
-                                            {this.generateTypeRows()}
-                                    </select>
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
+                                    <Select
+                                        value={this.state.currentObject}
+                                        onChange={newValue => this.addNewValue(newValue)}
+                                        options={this.state.types}
+                                        autoFocus={true}
+                                    />
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>เลขรหัสพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="code"
@@ -122,31 +150,37 @@ export default class ItemtypeEdit extends Component {
                                         data-inputmask="'mask': ['999']"
                                         data-mask
                                         value={this.state.code}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={this.handleInputChange}
                                         style={{ fontSize: 20 }}
                                         required
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ชื่อพัสดุครุภัณฑ์</label>
+
+                                    {!this.state.codeCheck &&
+                                        <div style={{ marginTop: 10 }} className="callout callout-warning">
+                                            <p style={{ fontSize: 17 }}>เลขรหัสพัสดุครุภัณฑ์มีอยู่ในระบบแล้ว</p>
+                                        </div>
+                                    }
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>ชื่อพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="name"
                                         ref="name"
                                         className="form-control"
                                         value={this.state.name}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={this.handleInputChange}
                                         style={{ fontSize: 20 }}
                                         required
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>รายละเอียดอื่น ๆ</label>
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>รายละเอียดอื่น ๆ</label>
                                     <input
                                         type="text"
-                                        name="other"
-                                        ref="other"
+                                        name="note"
+                                        ref="note"
                                         className="form-control"
-                                        value={this.state.other}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        value={this.state.note}
+                                        onChange={this.handleInputChange}
                                         style={{ fontSize: 20 }}
 
                                     />
@@ -164,4 +198,6 @@ export default class ItemtypeEdit extends Component {
         )
     }
 }
+
+export default withRouter(ItemtypeEdit)
 

@@ -18,14 +18,16 @@ export default class DepartmentDetail extends Component {
         super(props)
         this.state = {
             modalIsOpen: false,
-            detail: '',
-            departmentId: this.props.match.params.id
+            departmentId: this.props.match.params.id,
+
+            detail: ''
         }
 
         this._isMounted = false;
 
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     componentDidMount() {
@@ -50,8 +52,7 @@ export default class DepartmentDetail extends Component {
     }
 
     onDelete() {
-        let departmentId = this.props.match.params.id;
-        db.collection('departments').doc(departmentId).delete().then(
+        db.collection('departments').doc(this.state.departmentId).delete().then(
             this.props.history.push('/setting')
         )
     }
@@ -121,10 +122,9 @@ export default class DepartmentDetail extends Component {
                                 </div>
                                 <div className="col-xs-6">
 
-                                    <button className="btn btn-block btn-danger title" onClick={this.onDelete.bind(this)}>ยืนยัน</button>
+                                    <button className="btn btn-block btn-danger title" onClick={this.onDelete}>ยืนยัน</button>
                                 </div>
                             </div>
-
                         </Modal>
 
                     </section>

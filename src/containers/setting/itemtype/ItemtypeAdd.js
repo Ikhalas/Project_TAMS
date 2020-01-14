@@ -1,63 +1,89 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import { TYPES, ITEMTYPE } from '../../../common/APIutl'
+import Select from 'react-select';
+import { db } from '../../../common/firebaseConfig'
 
 export default class ItemtypeAdd extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            types : []
+            codeCheck: true,  //false = Duplicate
+            types: [],
+            selectedOption: null
         }
+        this._isMounted = false;
+
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     componentDidMount() {
-        const script = document.createElement('script')
-        script.src = '/js/addform.js'
-        script.async = true
-        document.body.appendChild(script)
-
-        axios.get(TYPES).then(
-            res => {
-                //console.log(res)
-                this.setState({ types: res.data })
-            }
-        )
-            .catch(err => console.log(err))
+        this._isMounted = true;
+        this._isMounted && this.getTypeData()
     }
 
-    generateTypeRows() {
-        //console.log(this.state.types)
-        return (
-            this.state.types.map(type => (
-                <option key={type.id}>{type.name}</option>
-            ))
-        )
+    getTypeData() {
+        db.collection('types').orderBy('label').get().then(snapshot => {
+            let types = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                types.push(data)
+            })
+            this._isMounted && this.setState({ types: types })
+            //console.log(this.state.types)
+
+        }).catch(error => console.log(error))
     }
 
-    addDepartment(newItemtype) {
-        //console.log(newItemtype)
-        axios.request({
-            method: 'post',
-            url: ITEMTYPE,
-            data: newItemtype
-        }).then(res => {
-            this.props.history.push('/setting');
-        }).catch(err => console.log(err));
+    handleChange = selectedOption => {
+        this.setState({ selectedOption });
+        console.log(`Option selected:`, this.state.selectedOption);
+    };
+
+
+    async onSubmit(e) {
+        e.preventDefault();
+
+        await db.collection('itemTypes').get().then(snapshot => {
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                if (this.refs.code.value === data.code) {
+                    console.log("Duplicate name")
+                    this.setState({ codeCheck: false })
+                    //console.log(this.state.codeCheck)
+                }
+                else {
+                    this.setState({ codeCheck: true })
+                    //console.log(this.state.codeCheck) 
+                }
+            })
+        }).catch(error => console.log(error))
+
+        if (this.state.codeCheck === true) {
+            this.addItemtype()
+        }
     }
 
-    onSubmit = (e) => {
-        console.log(this.refs.code.value)
+    addItemtype() {
         const newItemtype = {
             code: this.refs.code.value,
-            type: this.refs.type.value,
+            type: this.state.selectedOption.value,
             name: this.refs.name.value,
-            other: this.refs.other.value
+            note: this.refs.note.value
         }
-        this.addDepartment(newItemtype)
-        e.preventDefault();
+
+        let result = "itemType"
+        db.collection('itemTypes').add(newItemtype).then(() => {
+            console.log("add complete !!")
+            this.props.history.push('/resetting/' + result)
+        })
+
+    }
+
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
     }
 
     render() {
+        const { selectedOption } = this.state;
         return (
             <div>
                 <div className="content-wrapper title">
@@ -70,16 +96,18 @@ export default class ItemtypeAdd extends Component {
                         <div className="row">
                             <div className="col-xs-12">
 
-                                <form onSubmit={this.onSubmit.bind(this)}>
+                                <form onSubmit={this.onSubmit}>
 
-                                    <label className="title" style={{fontSize:20}}>ประเภทพัสดุครุภัณฑ์</label>
-                                    <select name="type" ref="type" className="form-control select2" style={{ fontSize: 20 }} required>
-                                            <option value="">&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
-                                            {this.generateTypeRows()}
-                                    </select>
-                                    <br/>
-                                    <br/>
-                                    <label className="title" style={{fontSize:20}}>เลขรหัสพัสดุครุภัณฑ์</label>
+                                    <label className="title" style={{ fontSize: 20 }}>ประเภทพัสดุครุภัณฑ์</label>
+
+                                    <Select
+                                        value={selectedOption}
+                                        onChange={this.handleChange}
+                                        options={this.state.types}
+                                    />
+
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>เลขรหัสพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="code"
@@ -90,8 +118,14 @@ export default class ItemtypeAdd extends Component {
                                         style={{ fontSize: 20 }}
                                         required
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>ชื่อพัสดุครุภัณฑ์</label>
+
+                                    {!this.state.codeCheck &&
+                                        <div style={{ marginTop: 10 }} className="callout callout-warning">
+                                            <p style={{ fontSize: 17 }}>เลขรหัสพัสดุครุภัณฑ์มีอยู่ในระบบแล้ว</p>
+                                        </div>
+                                    }
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>ชื่อพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -100,20 +134,26 @@ export default class ItemtypeAdd extends Component {
                                         style={{ fontSize: 20 }}
                                         required
                                     />
-                                    <br />
-                                    <label className="title" style={{fontSize:20}}>รายละเอียดอื่น ๆ</label>
+
+                                    <label className="title" style={{ fontSize: 20, marginTop: 10 }}>รายละเอียดอื่น ๆ</label>
                                     <input
                                         type="text"
-                                        name="other"
-                                        ref="other"
+                                        name="note"
+                                        ref="note"
                                         className="form-control"
                                         style={{ fontSize: 20 }}
                                     />
                                     <br />
 
-                                    <button className="btn btn-info title" type="submit">
-                                        &nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </button>
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            <button className="btn btn-primary btn-sm title pull-left" onClick={() => this.props.history.push('/setting')}>&nbsp;ย้อนกลับ&nbsp;</button>
+
+                                            <div className="pull-right">
+                                                <button className="btn btn-success btn-sm title" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
 
                             </div>

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 
-export default class SettingContainer extends Component {
+class DepartmentContainer extends Component {
 
     componentDidMount() {
         this.scriptForTable()
@@ -20,10 +20,14 @@ export default class SettingContainer extends Component {
             this.props.departments && this.props.departments.map(department => (
                 <tr key={department.id}>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/setting/department-detail/' + department.id}>&nbsp;{department.data().code}</Link>
+                        <Link to={'/setting/department-detail/' + department.id}>
+                            &nbsp;{department.data().code}
+                        </Link>
                     </td>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/setting/department-detail/' + department.id}>&nbsp;{department.data().label}</Link>
+                        <Link to={'/setting/department-detail/' + department.id}>
+                            &nbsp;{department.data().label}
+                        </Link>
                     </td>
                 </tr>
             ))
@@ -37,6 +41,14 @@ export default class SettingContainer extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box">
+
+                                {this.props.addResult === "department" ?
+                                    <div style={{ backgroundColor: "#5cb85c", paddingTop: 1, paddingBottom: 1 }}>
+                                        <h4 style={{ color: 'white', fontSize: 23 }}>&nbsp;&nbsp;<i className="icon fa fa-check"></i>&nbsp;เพิ่มรายการสำเร็จ</h4>
+                                    </div>
+                                    : null
+                                }
+
                                 <div className="box-header">
                                     <h3 className="box-title" style={{ fontSize: 30 }}>รายการชื่อหน่วยงาน</h3>
                                     <button
@@ -72,3 +84,5 @@ export default class SettingContainer extends Component {
         )
     }
 }
+
+export default withRouter(DepartmentContainer)

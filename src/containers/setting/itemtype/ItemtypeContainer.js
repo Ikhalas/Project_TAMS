@@ -5,49 +5,57 @@ import { withRouter, Link } from 'react-router-dom';
 class ItemtypeContainer extends Component {
 
     componentDidMount() {
+        this.scriptForTable()
+    }
+
+    scriptForTable() {
         const script = document.createElement('script')
         script.src = 'js/itemlist.js'
         script.async = true
         document.body.appendChild(script)
-
-
     }
 
     generateItemtypeRows() {
         return (
-            this.props.itemtypes.map(itemtype => (
+            this.props.itemtypes && this.props.itemtypes.map(itemtype => (
                 <tr key={itemtype.id}>
                     <td style={{ fontSize: 20 }}>
                         <Link to={'/setting/itemtype-detail/' + itemtype.id}>
-                            &nbsp;{itemtype.code}
+                            &nbsp;{itemtype.data().code}
                         </Link>
                     </td>
                     <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.type}
+                        <Link to={'/setting/itemtype-detail/' + itemtype.id}>
+                            &nbsp;{itemtype.data().type}
+                        </Link>
                     </td>
                     <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.name}
-                    </td>
-                    <td style={{ fontSize: 20 }}>
-                        &nbsp;{itemtype.other}
+                        <Link to={'/setting/itemtype-detail/' + itemtype.id}>
+                            &nbsp;{itemtype.data().name}
+                        </Link>
                     </td>
                 </tr>
             ))
-
         )
     }
 
-
     render() {
-        //console.log(this.props.itemTypes)
         return (
             <div>
                 <section className="content">
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box">
+
+                                {this.props.addResult === "itemType" ?
+                                    <div style={{ backgroundColor: "#5cb85c", paddingTop: 1, paddingBottom: 1 }}>
+                                        <h4 style={{ color: 'white', fontSize: 23 }}>&nbsp;&nbsp;<i className="icon fa fa-check"></i>&nbsp;เพิ่มรายการสำเร็จ</h4>
+                                    </div>
+                                    : null
+                                }
+
                                 <div className="box-header">
-                                    <h3 className="box-title" style={{fontSize:30}}>รายการเลขรหัสประเภทพัสดุครุภัณฑ์</h3>
+                                    <h3 className="box-title" style={{ fontSize: 30 }}>รายการเลขรหัสประเภทพัสดุครุภัณฑ์</h3>
                                     <button
                                         className="btn btn-success btn-sm title pull-right"
                                         onClick={() => this.props.history.push('/setting/itemtype-add')}
@@ -62,8 +70,7 @@ class ItemtypeContainer extends Component {
                                             <tr>
                                                 <th>เลขรหัสพัสดุครุภัณฑ์</th>
                                                 <th>ประเภทพัสดุครุภัณฑ์</th>
-                                                <th>ชื่อพัสดุครุภัณฑ์</th>
-                                                <th>หมายเหตุ</th>
+                                                <th>ชื่อพัสดุครุภัณฑ์</th>              
                                             </tr>
                                         </thead>
 

@@ -11,7 +11,9 @@ export default class Setting extends Component {
         super(props)
         this.state = {
             addResult: false,
-            departments: ''
+            departments: '',
+            types: '',
+            itemTypes: ''
         }
 
         this._isMounted = false;
@@ -22,6 +24,8 @@ export default class Setting extends Component {
 
         this._isMounted = true;  //for cancel subscriptions and asynchronous tasks
         this._isMounted && this.getDepartmentData()
+        this._isMounted && this.getTypeData()
+        this._isMounted && this.getitemTypeData()
 
         setTimeout(() => this.setState({ addResult: null }), 3000)
         this.props.history.push('/setting')
@@ -39,6 +43,30 @@ export default class Setting extends Component {
         }).catch(error => console.log(error))
     }
 
+    getTypeData() {
+        db.collection('types').orderBy('label').get().then(snapshot => {
+            let types = []
+            snapshot.forEach(doc => {
+                //let data = doc.data()
+                types.push(doc)
+            })
+            this._isMounted && this.setState({ types: types })
+            //console.log(this.state.types)
+        }).catch(error => console.log(error))
+    }
+
+    getitemTypeData() {
+        db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+            let itemTypes = []
+            snapshot.forEach(doc => {
+                //let data = doc.data()
+                itemTypes.push(doc)
+            })
+            this._isMounted && this.setState({ itemTypes: itemTypes })
+            //console.log("State"+this.state.types)
+        }).catch(error => console.log(error))
+    }
+
     componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
         this._isMounted = false;
     }
@@ -48,30 +76,21 @@ export default class Setting extends Component {
         //console.log(this.props.itemTypes)
         return (
             <div>
-                
+
                 <div className="content-wrapper title">
 
-                    {this.state.addResult &&
-
-                        <div style={{ backgroundColor: "#5cb85c", paddingTop: 1, paddingBottom: 1 }}>
-                            <h4 style={{ color: 'white', fontSize: 23 }}>&nbsp;&nbsp;<i className="icon fa fa-check"></i>&nbsp;เพิ่มรายการสำเร็จ</h4>
-                        </div>
-                    }
 
                     <section className="content-header">
                         <h1> <span style={{ fontSize: 35 }}>&nbsp;การตั้งค่า</span> </h1>
                     </section>
 
-                    <DepartmentContainer departments={this.state.departments} />
-                    
-                    
+                    <DepartmentContainer departments={this.state.departments} addResult={this.state.addResult} />
+                    <TypeContainer types={this.state.types} addResult={this.state.addResult} />
+                    <ItemtypeContainer itemtypes={this.state.itemTypes} addResult={this.state.addResult} />
+
                 </div>
             </div>
         )
     }
 }
 
-/*
-<TypeContainer types={this.props.types} />
-<ItemtypeContainer itemtypes={this.props.itemTypes} />
-*/

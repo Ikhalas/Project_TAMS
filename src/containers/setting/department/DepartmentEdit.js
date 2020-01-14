@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom';
 import { db } from '../../../common/firebaseConfig'
 
-export default class DepartmentEdit extends Component {
+class DepartmentEdit extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -119,7 +120,7 @@ export default class DepartmentEdit extends Component {
                                         <div className="col-xs-12">
                                             <button
                                                 className="btn btn-primary btn-sm title pull-left"
-                                                onClick={() => this.props.history.push('/setting')}>
+                                                onClick={() => this.props.history.push('/setting/department-detail/'+ this.state.departmentId)}>
                                                 &nbsp;ย้อนกลับ&nbsp;
                                             </button>
 
@@ -142,3 +143,5 @@ export default class DepartmentEdit extends Component {
         )
     }
 }
+
+export default withRouter(DepartmentEdit)

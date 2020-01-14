@@ -11,7 +11,6 @@ export default class DepartmentAdd extends Component {
         //console.log("con|" + this.state.codeCheck)
     }
 
-
     async onSubmit(e) {
         e.preventDefault();
         await db.collection('departments').get().then(snapshot => {
@@ -22,10 +21,18 @@ export default class DepartmentAdd extends Component {
                     this.setState({ codeCheck: false })
                     //console.log(this.state.codeCheck)
                 }
+                else {
+                    this.setState({ codeCheck: true })
+                    //console.log(this.state.codeCheck)
+                }
                 if (this.refs.name.value === data.label) {
                     console.log("Duplicate name")
                     this.setState({ labelCheck: false })
                     //console.log(this.state.codeCheck)
+                }
+                else {
+                    this.setState({ labelCheck: true })
+                    //console.log(this.state.codeCheck)    
                 }
             })
         }).catch(error => console.log(error))
@@ -40,12 +47,10 @@ export default class DepartmentAdd extends Component {
             }
             this.addDepartment(newDepartment)
         }
-
-
     }
 
     addDepartment(newDepartment) {
-        let result = true
+        let result = "department"
         db.collection('departments').add(newDepartment).then(() => {
             console.log("add complete !!")
             this.props.history.push('/resetting/' + result)
@@ -119,7 +124,7 @@ export default class DepartmentAdd extends Component {
                                     <div className="row">
                                         <div className="col-xs-12">
                                             <button className="btn btn-primary btn-sm title pull-left" onClick={() => this.props.history.push('/setting')}>&nbsp;ย้อนกลับ&nbsp;</button>
-                                            
+
                                             <div className="pull-right">
                                                 <button className="btn btn-success btn-sm title" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                             </div>
