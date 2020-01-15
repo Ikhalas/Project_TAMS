@@ -15,6 +15,7 @@ export default class ItemAdd extends Component {
         }
 
         this._isMounted = false
+        this._getSuccess = false
         this.currentOption = null
 
         this.handleChange = this.handleChange.bind(this);
@@ -31,10 +32,12 @@ export default class ItemAdd extends Component {
             snapshot.forEach(doc => {
                 let data = doc.data()
                 types.push(data)
+                this._getSuccess = true
             })
             this._isMounted && this.setState({ types: types })
             //console.log(this.state.types)
         }).catch(error => console.log(error))
+
     }
 
     handleChange(selectedOption) {
@@ -65,38 +68,29 @@ export default class ItemAdd extends Component {
     render() {
         const { selectedOption } = this.state;
         return (
-            <div>
-                {this.state.types &&
-                    <div className="content-wrapper title">
-                        <section className="content-header">
-                            <h1>
-                                <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการพัสดุครุภัณฑ์</span>
-                            </h1>
-                        </section>
-                        <section className="content">
+            <div className="content-wrapper title">
+                <section className="content-header">
+                    <h1>
+                        <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการพัสดุครุภัณฑ์</span>
+                    </h1>
+                </section>
 
-                            <div className="selectContainer">
-                                <div className="input-group">
-                                    <span style={{ fontSize: 20 }} className="input-group-addon "><b>ประเภท</b></span>
-
-                                    <Select
-                                        value={selectedOption}
-                                        onChange={this.handleChange}
-                                        options={this.state.types}
-                                        placeholder=" โปรดเลือกประเภทของพัสดุครุภัณฑ์ "
-                                    />
-
-                                </div>
-                            </div>
-                            <hr />
-
-                            {this.showForm()}
-
-
-                        </section>
-
-                    </div>
+                {this._getSuccess &&   //get data from DB success before render
+                    <section className="content">
+                            <div className="input-group">
+                                <span style={{ fontSize: 20 }} className="input-group-addon "><b>ประเภท</b></span>
+                                <Select
+                                    value={selectedOption}
+                                    onChange={this.handleChange}
+                                    options={this.state.types}
+                                    placeholder=" โปรดเลือกประเภทของพัสดุครุภัณฑ์ "
+                                />
+                            </div>            
+                        <hr />
+                        {this.showForm()}
+                    </section>
                 }
+                
             </div>
         )
     }
