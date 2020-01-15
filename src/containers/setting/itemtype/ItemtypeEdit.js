@@ -104,8 +104,6 @@ class ItemtypeEdit extends Component {
         }
     }
 
-
-
     addNewValue(value) {
         this.setState({
             currentObject: value

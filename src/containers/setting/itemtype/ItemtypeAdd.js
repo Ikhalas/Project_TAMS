@@ -29,13 +29,12 @@ export default class ItemtypeAdd extends Component {
             })
             this._isMounted && this.setState({ types: types })
             //console.log(this.state.types)
-
         }).catch(error => console.log(error))
     }
 
     handleChange = selectedOption => {
         this.setState({ selectedOption });
-        console.log(`Option selected:`, this.state.selectedOption);
+        //console.log(`Option selected:`, this.state.selectedOption);  
     };
 
 

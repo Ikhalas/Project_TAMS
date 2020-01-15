@@ -1,112 +1,102 @@
 import React, { Component } from 'react'
-import axios from 'axios';
+import Select from 'react-select';
 import LandForm from './LandForm'
 import AssetForm from './GeneralForm'
-import { TYPES } from '../../../common/APIutl'
-
+import { db } from '../../../common/firebaseConfig'
 
 export default class ItemAdd extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Types: [],
+            types: [],
             formType: "",
-            typeProps: "",
-            forReRender: false
+            selectedOption: null,
+
         }
+
+        this._isMounted = false
+        this.currentOption = null
 
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
-        
-        axios.get(TYPES).then(
-            res => {
-                //console.log(res)
-                this.setState({ Types: res.data })
-            }
-        )
-            .catch(err => console.log(err))
+        this._isMounted = true
+        this._isMounted && this.getTypeData()
     }
 
-    generateItemtypeRows() {
-        //console.log(this.state.itemTypes)
-        return (
-            this.state.Types.map(Type => (
-                <option key={Type.id} value={Type.name}>{Type.name}</option>
-            ))
-        )
+    getTypeData() {
+        db.collection('types').orderBy('label').get().then(snapshot => {
+            let types = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                types.push(data)
+            })
+            this._isMounted && this.setState({ types: types })
+            //console.log(this.state.types)
+        }).catch(error => console.log(error))
     }
 
-    handleChange(event) {
-        //console.log(event.target.value)
-        this.setState({ typeProps : event.target.value})
-        if (event.target.value === 'ที่ดิน') {
-            this.setState({ formType: 'land' })
-        }
+    handleChange(selectedOption) {
+        this.setState({ selectedOption })
+        this.selectForm(selectedOption.value)
+    }
 
-        else if (event.target.value === 'none'){
-            this.setState({ formType: 'none' })
-        }
+    selectForm(selectedType) {
+        //console.log("selectedType| " + selectedType)
+        if (selectedType === 'ที่ดิน') this.setState({ formType: 'land' })
+        else if (selectedType === 'none') this.setState({ formType: 'none' })
+        else this.setState({ formType: 'asset' })
 
-        else {
-            this.setState({ formType: 'asset' })
-        }
+        this.currentOption = selectedType
     }
 
     showForm() {
-        if (this.state.formType === 'land') {
-            return (
-                <LandForm type={this.state.typeProps} />
-            )
-        }
-
-        else if (this.state.formType === "asset") {
-            //console.log("state"+this.state.typeProps)
-            return (
-                <AssetForm type={this.state.typeProps} />
-            )
-        }
-
-       
-        else {
-            return (
-                <p>กรุณาเลือกประเภท</p>
-            )
-        }
-
+        //console.log("currentOption |"+this.currentOption)
+        if (this.state.formType === 'land') return (<LandForm type={this.currentOption} />)
+        else if (this.state.formType === "asset") return (<AssetForm type={this.currentOption} />)
+        else return (<p>กรุณาเลือกประเภท</p>)
     }
 
-    
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
+    }
 
     render() {
+        const { selectedOption } = this.state;
         return (
             <div>
-                <div className="content-wrapper title">
-                    <section className="content-header">
-                        <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการพัสดุครุภัณฑ์</span>
-                        </h1>
-                    </section>
-                    <section className="content">
-                       
+                {this.state.types &&
+                    <div className="content-wrapper title">
+                        <section className="content-header">
+                            <h1>
+                                <span style={{ fontSize: 35 }}>&nbsp;เพิ่มรายการพัสดุครุภัณฑ์</span>
+                            </h1>
+                        </section>
+                        <section className="content">
+
                             <div className="selectContainer">
                                 <div className="input-group">
                                     <span style={{ fontSize: 20 }} className="input-group-addon "><b>ประเภท</b></span>
-                                    <select id="sort-item" className="form-control selectpicker" style={{ fontSize: 20 }} onChange={this.handleChange}  >
-                                        <option value="none" >&nbsp;-- โปรดเลือกประเภทของพัสดุครุภัณฑ์ --</option>
-                                        {this.generateItemtypeRows()}
-                                    </select>
+
+                                    <Select
+                                        value={selectedOption}
+                                        onChange={this.handleChange}
+                                        options={this.state.types}
+                                        placeholder=" โปรดเลือกประเภทของพัสดุครุภัณฑ์ "
+                                    />
+
                                 </div>
                             </div>
                             <hr />
-                           
-                            {this.showForm()}
-                    
-                        
-                    </section>
 
-                </div>
+                            {this.showForm()}
+
+
+                        </section>
+
+                    </div>
+                }
             </div>
         )
     }

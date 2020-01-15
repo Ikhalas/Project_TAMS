@@ -26,6 +26,7 @@ class GeneralForm extends Component {
         script.async = true
         document.body.appendChild(script)
 
+        /*
         axios.get('http://localhost:3001/Department').then(
             res => {
                 //console.log(res)
@@ -38,6 +39,7 @@ class GeneralForm extends Component {
                 //console.log(res.data)
                 this.setState({ Itemtypes: res.data })
             }).catch(err => console.log(err))
+            */
 
     }
 

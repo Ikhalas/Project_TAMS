@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import Itemlist from './Itemlist'
-import { connect } from 'react-redux'
-import { itemFetch } from '../../../redux/actions'
+
+
 
 class Items extends Component {
     
     componentDidMount(){
-        this.props.itemFetch()
+        //this.props.itemFetch()
     }
 
     render() {
@@ -27,8 +27,5 @@ class Items extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return { items: state.items }
-}
 
-export default  connect(mapStateToProps, { itemFetch }) (Items)
+export default Items
