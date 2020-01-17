@@ -65,7 +65,8 @@ export default class ItemtypeAdd extends Component {
         const newItemtype = {
             code: this.refs.code.value,
             type: this.state.selectedOption.value,
-            name: this.refs.name.value,
+            label: this.refs.name.value,
+            value: this.refs.name.value,
             note: this.refs.note.value
         }
 

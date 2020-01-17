@@ -31,7 +31,7 @@ class ItemtypeContainer extends Component {
                     </td>
                     <td style={{ fontSize: 20 }}>
                         <Link to={'/setting/itemtype-detail/' + itemtype.id}>
-                            &nbsp;{itemtype.data().name}
+                            &nbsp;{itemtype.data().label}
                         </Link>
                     </td>
                 </tr>

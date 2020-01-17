@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router';
+import { db } from '../../../common/firebaseConfig'
 import axios from 'axios';
 import Select from 'react-select';
 
@@ -8,54 +9,79 @@ class GeneralForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Departments: [],
-            Itemtypes: [],
-            departmentsOption1: null,
-            departmentsOption2: null,
-            itemNameOption: null,
+            departments: [],
+            itemTypes: [],
+
+            departmentsOption1: "",
+            departmentsOption2: "",
+            itemNameOption: "",
             itemCode: '',
             check_1: false,
             check_2: false,
             check_3: false
         }
+
+        this._isMounted = false
     }
     componentDidMount() {
-        //console.log("componentDidMount"+this.props.type)
+        //console.log("type props |"+this.props.type)
+        this.loadScript() //for inputmask
+        this._isMounted = true
+        this._isMounted && this.getDepartmentData();
+        this._isMounted && this.getItemTypeData();
+    }
+
+    loadScript() {
         const script = document.createElement('script')
         script.src = '/js/addform.js'
         script.async = true
         document.body.appendChild(script)
-
-        /*
-        axios.get('http://localhost:3001/Department').then(
-            res => {
-                //console.log(res)
-                this.setState({ Departments: res.data })
-            }).catch(err => console.log(err))
-
-
-        axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
-            res => {
-                //console.log(res.data)
-                this.setState({ Itemtypes: res.data })
-            }).catch(err => console.log(err))
-            */
-
     }
 
-    componentDidUpdate(prevProps) {
+    getDepartmentData() {
+        db.collection('departments').orderBy('code').get().then(snapshot => {
+            let departments = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                departments.push(data)
+            })
+            this._isMounted && this.setState({ departments: departments })
+            console.log("departments |" + this.state.departments)
+        }).catch(error => console.log(error))
+    }
+
+    getItemTypeData() {
+        db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+            let itemTypes = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                itemTypes.push(data)
+            })
+            this._isMounted && this.setState({ itemTypes: itemTypes })
+            console.log("itemTypes |" + this.state.itemTypes)
+        }).catch(error => console.log(error))
+    }
+
+   
+    /*componentDidUpdate(prevProps) {
         if (this.props.type !== prevProps.type) {
-            //console.log("componentDidUpdate" + this.props.type)
-            axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
-                res => {
-                    //console.log(res.data)
-                    this.setState({ Itemtypes: res.data })
-                }).catch(err => console.log(err))
+            db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+                let itemTypes = []
+                snapshot.forEach(doc => {
+                    let data = doc.data()
+                    itemTypes.push(data)
+                })
+                this._isMounted && this.setState({ itemTypes: itemTypes })
+                console.log("itemTypes |" + this.state.itemTypes)
+            }).catch(error => console.log(error))
         }
     }
+    */
+
 
 
     onSubmit = (e) => {
+        e.preventDefault();
 
         const newItem = {
             "status": "ใช้งานได้ดี",
@@ -86,7 +112,7 @@ class GeneralForm extends Component {
 
         //console.log(newItem)
 
-        const ItemResponsibility = {
+        const itemResponsibility = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "Year": this.refs.derivedDate.value,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
@@ -95,6 +121,7 @@ class GeneralForm extends Component {
             "Note": ""
         }
 
+        //Calculate Depreciations
         var price, per, valueYear, perYear, month, valueMonth, perMonth, C, Cumulative
 
         if (this.refs.yearRate.value > 0) {
@@ -124,7 +151,7 @@ class GeneralForm extends Component {
             Cumulative = C.toFixed(2)
         }
 
-        const ItemDepreciations = {
+        const itemDepreciations = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "seq": 0,
             "Year": this.refs.derivedDate.value,
@@ -177,85 +204,39 @@ class GeneralForm extends Component {
             "disposalNote": "",                                         //หมายเหตุจการจำหน่าย
         }*/
 
+        console.log(newItem)
+        console.log(itemResponsibility)
+        console.log(itemDepreciations)
+
         this.addItem(newItem)
-        this.addItemResponsibility(ItemResponsibility)
-        this.addItemDepreciations(ItemDepreciations)
+        this.addItemResponsibility(itemResponsibility)
+        this.addItemDepreciations(itemDepreciations)
 
         //this.addItemMaintenance(ItemMaintenance)
         //this.addItemExploitation(ItemExploitation)
         //this.addItemDisposal(Disposal)
-
-        e.preventDefault();
     }
 
     addItem(newItem) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Items',
-            data: newItem
-        }).then(res => {
-            this.setState({ check_1: true })
-        }).catch(err => console.log(err));
+        db.collection('items').add(newItem).then(() => {
+            console.log("add item complete !!")
+            //this.props.history.push('/resetting/' + result)
+        })
     }
 
-    /*******************************************************/
-    addItemResponsibility(ItemResponsibility) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Responsibility',
-            data: ItemResponsibility
-        }).then(res => {
-            this.setState({ check_2: true })
-        }).catch(err => console.log(err));
+    addItemResponsibility(itemResponsibility) {
+        db.collection('itemResponsibility').add(itemResponsibility).then(() => {
+            console.log("add itemResponsibility complete !!")
+            //this.props.history.push('/resetting/' + result)
+        })
     }
 
-    /*******************************************************/
-    addItemDepreciations(ItemDepreciations) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Depreciations',
-            data: ItemDepreciations
-        }).then(res => {
-            this.setState({ check_3: true })
-            this.confirmAdd()
-        }).catch(err => console.log(err));
+    addItemDepreciations(itemDepreciations) {
+        db.collection('itemDepreciations').add(itemDepreciations).then(() => {
+            console.log("add itemResponsibility complete !!")
+            //this.props.history.push('/resetting/' + result)
+        }) 
     }
-
-    /*******************************************************/
-    /*addItemMaintenance(itemMaintenance) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/itemMaintenance',
-            data: itemMaintenance
-        }).then(res => {
-            //console.log(res.data)
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
-    /*addItemExploitation(ItemExploitation) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Exploitation',
-            data: ItemExploitation
-        }).then(res => {
-            
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
-    /*addItemDisposal(Disposal) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Disposaln',
-            data: Disposal
-        }).then(res => {
-            this.props.history.push('/items');
-            alert("เพิ่มข้อมูลสำเร็จ")
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
 
     confirmAdd() {
         if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
@@ -269,17 +250,15 @@ class GeneralForm extends Component {
     }
 
     handleChange = departmentsOption1 => {
-        this.setState(
-            { departmentsOption1 },
-            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
+        this.setState({ departmentsOption1 },
+            () => console.log(`Option selected:`, this.state.departmentsOption1.value)
         );
     };
 
 
     handleChange2 = departmentsOption2 => {
-        this.setState(
-            { departmentsOption2 },
-            //() => console.log(`Option selected2:`, this.state.departmentsOption2.value)
+        this.setState({ departmentsOption2 },
+            () => console.log(`Option selected2:`, this.state.departmentsOption2.value)
         );
     };
 
@@ -287,7 +266,7 @@ class GeneralForm extends Component {
         this.setState(
             { itemNameOption },
             () => {
-                //console.log(`Option selected3:`, this.state.itemNameOption.code)
+                console.log(`Option selected3:`, this.state.itemNameOption.code)
                 this.setState({
                     itemCode: this.state.itemNameOption.code
                 })
@@ -296,9 +275,12 @@ class GeneralForm extends Component {
         );
     };
 
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
+    }
+
     render() {
-        //console.log(this.state.itemCode)
-        //console.log(this.state.Itemtypes)
+
         const { departmentsOption1, departmentsOption2, itemNameOption } = this.state;
 
         return (
@@ -314,7 +296,7 @@ class GeneralForm extends Component {
 
                     <div className="box box-success">
                         <div className="box-header">
-                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของพัสดุ</b></h1>
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของพัสดุครุภัณฑ์</b></h1>
                         </div>
                         <div className="box-body">
                             <div className="row">
@@ -323,27 +305,46 @@ class GeneralForm extends Component {
                                     <div>
                                         <div className="form-group">
                                             <label>หน่วยงานที่รับผิดชอบ</label>
-                                            <Select
-                                                required
-                                                options={this.state.Departments}
-                                                value={departmentsOption1}
-                                                onChange={this.handleChange}
-                                                placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
-                                            />
+                                            <Fragment>
+                                                <Select
+                                                    required
+                                                    options={this.state.departments}
+                                                    value={departmentsOption1}
+                                                    onChange={this.handleChange}
+                                                    placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                                />
+                                                <input
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    style={{ opacity: 0, height: 0 }}
+                                                    value={departmentsOption1}
+                                                    readOnly
+                                                    required
+                                                />
+                                            </Fragment>
                                         </div>
                                     </div>
-
 
                                     <div>
                                         <div className="form-group">
                                             <label>ชื่อพัสดุ</label>
-                                            <Select
-                                                required
-                                                options={this.state.Itemtypes}
-                                                value={itemNameOption}
-                                                onChange={this.handleChangeCode}
-                                                placeholder="--- โปรดเลือกรายการพัสดุครุภัณฑ์ ---"
-                                            />
+                                            <Fragment>
+                                                <Select
+                                                    required
+                                                    options={this.state.itemTypes}
+                                                    value={itemNameOption}
+                                                    onChange={this.handleChangeCode}
+                                                    placeholder="--- โปรดเลือกรายการพัสดุครุภัณฑ์ ---"
+                                                />
+                                                <input
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    style={{ opacity: 0, height: 0 }}
+                                                    value={departmentsOption1}
+                                                    readOnly
+                                                    required
+                                                />
+                                            </Fragment>
                                         </div>
                                     </div>
 
@@ -599,7 +600,7 @@ class GeneralForm extends Component {
                                         <label>งบประมาณของ</label>
                                         <Select
                                             required
-                                            options={this.state.Departments}
+                                            options={this.state.departments}
                                             value={departmentsOption2}
                                             onChange={this.handleChange2}
                                             placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
@@ -826,7 +827,7 @@ class GeneralForm extends Component {
                                                 <label>รายเดือน</label>
                                                 <div className="input-group">
                                                     <div className="input-group-addon">
-                                                        <i className="fa fa-history"/>
+                                                        <i className="fa fa-history" />
                                                     </div>
                                                     <input
                                                         type="number"

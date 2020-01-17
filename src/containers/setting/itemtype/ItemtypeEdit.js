@@ -11,7 +11,7 @@ class ItemtypeEdit extends Component {
 
             code: '',
             type: '',
-            name: '',
+            label: '',
             note: '',
             itemTypes: [],
 
@@ -50,7 +50,7 @@ class ItemtypeEdit extends Component {
             this.setState({
                 code: doc.data().code,
                 type: doc.data().type,
-                name: doc.data().name,
+                label: doc.data().label,
                 note: doc.data().note,
                 currentObject: { value: doc.data().type, label: doc.data().type } //old type
             })
@@ -92,7 +92,8 @@ class ItemtypeEdit extends Component {
             db.collection("itemTypes").doc(this.state.itemTypeId).update({
                 code: this.refs.code.value,
                 type: this.state.currentObject.value,
-                name: this.refs.name.value,
+                label: this.refs.label.value,
+                value: this.refs.label.value,
                 note: this.refs.note.value
             }).then(() => {
                 this.props.history.push('/setting/itemtype-detail/' + this.state.itemTypeId)
@@ -162,10 +163,10 @@ class ItemtypeEdit extends Component {
                                     <label className="title" style={{ fontSize: 20, marginTop: 10 }}>ชื่อพัสดุครุภัณฑ์</label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        ref="name"
+                                        name="label"
+                                        ref="label"
                                         className="form-control"
-                                        value={this.state.name}
+                                        value={this.state.label}
                                         onChange={this.handleInputChange}
                                         style={{ fontSize: 20 }}
                                         required

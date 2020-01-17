@@ -84,7 +84,7 @@ export default class ItemtypeDetail extends Component {
                                         {this.state.detail.code}
                                     </li>
                                     <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>ชื่อพัสดุครุภัณฑ์</b> &nbsp;: &nbsp;</span>
-                                        {this.state.detail.name}
+                                        {this.state.detail.label}
                                     </li>
                                     <li className="list-group-item title"><span style={{ fontSize: 20 }}><b>รายละเอียดอื่น ๆ</b> &nbsp;: &nbsp;</span>
                                         {this.state.detail.note}
@@ -113,7 +113,7 @@ export default class ItemtypeDetail extends Component {
                             <div className="alert alert-dismissible" style={{ width: 500, height: 100 }}>
                                 <h4><i className="icon fa fa-warning"></i>ยืนยันการลบ</h4>
                                 <span style={{ fontSize: 20 }}>ลบรายการชื่อพัสดุครุภัณฑ์ "</span>
-                                <span style={{ fontSize: 30 }}>{this.state.detail.name}</span>
+                                <span style={{ fontSize: 30 }}>{this.state.detail.label}</span>
                                 <span style={{ fontSize: 20 }}>" หรือไม่</span>
                             </div>
 
