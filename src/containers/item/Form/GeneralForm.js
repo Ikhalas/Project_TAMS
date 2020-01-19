@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router';
-import { db } from '../../../common/firebaseConfig'
-import axios from 'axios';
+import { db, storage } from '../../../common/firebaseConfig'
 import Select from 'react-select';
 
 
@@ -16,15 +15,24 @@ class GeneralForm extends Component {
             departmentsOption2: "",
             itemNameOption: "",
             itemCode: '',
-            check_1: false,
-            check_2: false,
-            check_3: false
+
+            image: null,
+            codeCheck: true
         }
 
+
         this._isMounted = false
+
+        this._check1 = false
+        this._check2 = false
+        this._check3 = false
+        this._check4 = false
+
+        this.onSubmit = this.onSubmit.bind(this)
     }
+
     componentDidMount() {
-        //console.log("type props |"+this.props.type)
+        console.log("codeCheck DidMount |" + this.state.codeCheck)
         this.loadScript() //for inputmask
         this._isMounted = true
         this._isMounted && this.getDepartmentData();
@@ -46,7 +54,7 @@ class GeneralForm extends Component {
                 departments.push(data)
             })
             this._isMounted && this.setState({ departments: departments })
-            console.log("departments |" + this.state.departments)
+            //console.log("departments |" + this.state.departments)
         }).catch(error => console.log(error))
     }
 
@@ -58,11 +66,10 @@ class GeneralForm extends Component {
                 itemTypes.push(data)
             })
             this._isMounted && this.setState({ itemTypes: itemTypes })
-            console.log("itemTypes |" + this.state.itemTypes)
+            //console.log("itemTypes |" + this.state.itemTypes)
         }).catch(error => console.log(error))
     }
 
-   
     /*componentDidUpdate(prevProps) {
         if (this.props.type !== prevProps.type) {
             db.collection('itemTypes').orderBy('code').get().then(snapshot => {
@@ -78,10 +85,26 @@ class GeneralForm extends Component {
     }
     */
 
+    async onSubmit(e) {
 
-
-    onSubmit = (e) => {
         e.preventDefault();
+
+        /*check duplicate code */
+        await db.collection('items').where('itemCode', '==', this.state.itemCode.concat(this.refs.itemCode.value))
+            .get().then(snapshot => {
+                if (snapshot.empty) {
+                    console.log('No matching documents.' + 'can submit');
+                    this.setState({ codeCheck: true }) //can submit
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    let data = doc.data()
+                    console.log(this.state.itemCode.concat(this.refs.itemCode.value) + "|" + data.itemCode + "can't submit")
+                    this.setState({ codeCheck: false }) //can't submit
+                })
+            }).catch(error => console.log(error))
+
 
         const newItem = {
             "status": "ใช้งานได้ดี",
@@ -107,10 +130,7 @@ class GeneralForm extends Component {
             "Price": this.refs.Price.value,                             //ราคา
             "budgetOf": this.state.departmentsOption2.value,            //งบของ
             "Note": this.refs.Note.value,                               //หมายเหตุ
-            "thumbnail": ""                                             //รูป
         }
-
-        //console.log(newItem)
 
         const itemResponsibility = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
@@ -204,13 +224,17 @@ class GeneralForm extends Component {
             "disposalNote": "",                                         //หมายเหตุจการจำหน่าย
         }*/
 
-        console.log(newItem)
-        console.log(itemResponsibility)
-        console.log(itemDepreciations)
+        //console.log(newItem)
+        //console.log(itemResponsibility)
+        //console.log(itemDepreciations)
 
-        this.addItem(newItem)
-        this.addItemResponsibility(itemResponsibility)
-        this.addItemDepreciations(itemDepreciations)
+
+        if (this.state.codeCheck) {
+            this.uploadImg()
+            this.addItem(newItem)
+            this.addItemResponsibility(itemResponsibility)
+            this.addItemDepreciations(itemDepreciations)
+        }
 
         //this.addItemMaintenance(ItemMaintenance)
         //this.addItemExploitation(ItemExploitation)
@@ -220,45 +244,60 @@ class GeneralForm extends Component {
     addItem(newItem) {
         db.collection('items').add(newItem).then(() => {
             console.log("add item complete !!")
-            //this.props.history.push('/resetting/' + result)
+            this._check1 = true
+            this.confirmAdd()
         })
     }
 
     addItemResponsibility(itemResponsibility) {
         db.collection('itemResponsibility').add(itemResponsibility).then(() => {
             console.log("add itemResponsibility complete !!")
-            //this.props.history.push('/resetting/' + result)
+            this._check2 = true
+            this.confirmAdd()
         })
     }
 
     addItemDepreciations(itemDepreciations) {
         db.collection('itemDepreciations').add(itemDepreciations).then(() => {
             console.log("add itemResponsibility complete !!")
-            //this.props.history.push('/resetting/' + result)
-        }) 
+            this._check3 = true
+            this.confirmAdd()
+        })
+    }
+
+    uploadImg() {
+        let imgCode = this.state.itemCode.concat(this.refs.itemCode.value)
+        let seq = 1
+        if (this.state.image) {
+            this.state.image.forEach((image) => {
+                storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
+                console.log(`uploaded ${seq}`);
+                seq = seq + 1;
+            })
+            this._check4 = true
+            this.confirmAdd()
+        }
     }
 
     confirmAdd() {
-        if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
+        if (this._check1 && this._check2 && this._check3 && this._check4) {
             this.props.history.push('/items')
-            alert("เพิ่มข้อมูลสำเร็จ")
+            console.log("เพิ่มข้อมูลสำเร็จ")
         }
         else {
-            this.props.history.push('/items')
-            alert("ผิดพลาด")
+            console.log("ผิดพลาด")
         }
     }
 
     handleChange = departmentsOption1 => {
         this.setState({ departmentsOption1 },
-            () => console.log(`Option selected:`, this.state.departmentsOption1.value)
+            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
         );
     };
 
-
     handleChange2 = departmentsOption2 => {
         this.setState({ departmentsOption2 },
-            () => console.log(`Option selected2:`, this.state.departmentsOption2.value)
+            //() => console.log(`Option selected2:`, this.state.departmentsOption2.value)
         );
     };
 
@@ -266,7 +305,7 @@ class GeneralForm extends Component {
         this.setState(
             { itemNameOption },
             () => {
-                console.log(`Option selected3:`, this.state.itemNameOption.code)
+                //console.log(`Option selected3:`, this.state.itemNameOption.code)
                 this.setState({
                     itemCode: this.state.itemNameOption.code
                 })
@@ -275,17 +314,22 @@ class GeneralForm extends Component {
         );
     };
 
+    handleImgChange = e => {
+        if (e.target.files[0]) {
+            const image = Array.from(e.target.files)
+            this.setState({ image })
+        }
+    }
+
     componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
         this._isMounted = false;
     }
 
     render() {
-
         const { departmentsOption1, departmentsOption2, itemNameOption } = this.state;
-
         return (
             <div>
-                <form onSubmit={this.onSubmit.bind(this)}>
+                <form onSubmit={this.onSubmit}>
 
                     <input
                         type="hidden"
@@ -370,6 +414,12 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
+
+                                    {!this.state.codeCheck &&
+                                        <div style={{ marginTop: 10 }} className="callout callout-warning">
+                                            <p style={{ fontSize: 17 }}>เลขรหัสพัสดุมีอยู่ในระบบแล้ว</p>
+                                        </div>
+                                    }
 
                                     <div className="form-group">
                                         <label>ใบส่งของที่</label>
@@ -532,6 +582,14 @@ class GeneralForm extends Component {
                     </div>
                     {/* /.box box-default */}
 
+                    <div className="box box-success">
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>อัพโหลดรูปภาพ</b></h1>
+                        </div>
+                        <div className="box-body" onChange={this.handleImgChange}>
+                            <input id="file" type="file" accept="image/*" multiple />
+                        </div>
+                    </div>
 
                     <div className="row">
                         <div className="col-md-6">
@@ -896,10 +954,19 @@ class GeneralForm extends Component {
                         </div>
                     </div>
 
-
                     <button className="btn btn-block btn-info title" type="submit" style={{ fontSize: 25 }}>
                         บันทึก
                     </button>
+
+                    {!this.state.codeCheck &&
+                        <div style={{ backgroundColor: "#ffc107", paddingTop: 0.1, paddingBottom: 0.1, marginTop: 5 }}>
+                            <h4 style={{ color: 'white', fontSize: 17 }}>&nbsp;&nbsp;
+                                <i className="icon fa fa-alert"></i>
+                                &nbsp;เกิดข้อผิดพลาด กรุณาทำตามคำแนะนำที่ปรากฎข้างต้น
+                                </h4>
+                        </div>
+                    }
+
 
                 </form>
 
