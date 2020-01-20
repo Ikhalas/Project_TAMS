@@ -19,20 +19,16 @@ class GeneralForm extends Component {
             image: null,
             codeCheck: true
         }
-
-
         this._isMounted = false
 
         this._check1 = false
         this._check2 = false
         this._check3 = false
-        this._check4 = false
 
         this.onSubmit = this.onSubmit.bind(this)
     }
 
     componentDidMount() {
-        console.log("codeCheck DidMount |" + this.state.codeCheck)
         this.loadScript() //for inputmask
         this._isMounted = true
         this._isMounted && this.getDepartmentData();
@@ -59,31 +55,62 @@ class GeneralForm extends Component {
     }
 
     getItemTypeData() {
-        db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+        db.collection('itemTypes').where('type', '==', this.props.type).get().then(snapshot => {
+            if (snapshot.empty) {
+                console.log('No matching documents.');
+                return;
+            }
+
             let itemTypes = []
             snapshot.forEach(doc => {
                 let data = doc.data()
                 itemTypes.push(data)
             })
             this._isMounted && this.setState({ itemTypes: itemTypes })
-            //console.log("itemTypes |" + this.state.itemTypes)
+
+            /*
+            let json = JSON.stringify(this.state.itemTypes)
+            let obj = JSON.parse(json);
+            let result = obj.map((obj) => {
+                return obj.type
+            })
+            let stringType = String(result)
+            console.log("now |" +stringType)
+            */
+
         }).catch(error => console.log(error))
     }
 
-    /*componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {
+
         if (this.props.type !== prevProps.type) {
-            db.collection('itemTypes').orderBy('code').get().then(snapshot => {
+            this.cancelCourse()
+            db.collection('itemTypes').where('type', '==', this.props.type).get().then(snapshot => {
+                if (snapshot.empty) {
+                    console.log('No matching documents.');
+                    return;
+                }
                 let itemTypes = []
                 snapshot.forEach(doc => {
                     let data = doc.data()
                     itemTypes.push(data)
                 })
                 this._isMounted && this.setState({ itemTypes: itemTypes })
-                console.log("itemTypes |" + this.state.itemTypes)
+
             }).catch(error => console.log(error))
         }
+
     }
-    */
+
+    cancelCourse = () => { //clear form
+        document.getElementById("form").reset();
+        this.setState({
+            departmentsOption1: '',
+            departmentsOption2: '',
+            itemNameOption: '',
+            itemCode: ''
+        })
+    }
 
     async onSubmit(e) {
 
@@ -104,7 +131,6 @@ class GeneralForm extends Component {
                     this.setState({ codeCheck: false }) //can't submit
                 })
             }).catch(error => console.log(error))
-
 
         const newItem = {
             "status": "ใช้งานได้ดี",
@@ -274,13 +300,11 @@ class GeneralForm extends Component {
                 console.log(`uploaded ${seq}`);
                 seq = seq + 1;
             })
-            this._check4 = true
-            this.confirmAdd()
         }
     }
 
     confirmAdd() {
-        if (this._check1 && this._check2 && this._check3 && this._check4) {
+        if (this._check1 && this._check2 && this._check3) {
             this.props.history.push('/items')
             console.log("เพิ่มข้อมูลสำเร็จ")
         }
@@ -290,9 +314,7 @@ class GeneralForm extends Component {
     }
 
     handleChange = departmentsOption1 => {
-        this.setState({ departmentsOption1 },
-            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
-        );
+        this.setState({ departmentsOption1 });
     };
 
     handleChange2 = departmentsOption2 => {
@@ -329,7 +351,7 @@ class GeneralForm extends Component {
         const { departmentsOption1, departmentsOption2, itemNameOption } = this.state;
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={this.onSubmit} id="form">
 
                     <input
                         type="hidden"
@@ -433,6 +455,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="waybillCode" /*****/
                                                 ref="waybillCode"  /*****/
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -450,6 +473,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="itemBrand" /*****/
                                                 ref="itemBrand"  /*****/
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -461,12 +485,12 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-archive" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="itemStyle" /*****/
                                                 ref="itemStyle"  /*****/
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -482,12 +506,12 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-bullseye" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="itemColor" /*****/
                                                 ref="itemColor"  /*****/
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -499,12 +523,12 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-bars" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="orderNo" /*****/
                                                 ref="orderNo"  /*****/
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -606,12 +630,12 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-cart-arrow-down" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}
                                                 name="derivedFrom" /*****/
                                                 ref="derivedFrom"  /*****/
+                                                
                                             />
                                         </div>
                                     </div>
@@ -631,6 +655,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="derivedDate" /*****/
                                                 ref="derivedDate"  /*****/
+                                                
                                             />
                                         </div>
                                     </div>
@@ -649,6 +674,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="Price" /*****/
                                                 ref="Price"  /*****/
+                                            
                                             />
                                             <span className="input-group-addon" style={{ fontSize: 20 }}>บาท</span>
                                         </div>
@@ -656,13 +682,23 @@ class GeneralForm extends Component {
 
                                     <div className="form-group">
                                         <label>งบประมาณของ</label>
-                                        <Select
-                                            required
-                                            options={this.state.departments}
-                                            value={departmentsOption2}
-                                            onChange={this.handleChange2}
-                                            placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
-                                        />
+                                        <Fragment>
+                                            <Select
+                                                required
+                                                options={this.state.departments}
+                                                value={departmentsOption2}
+                                                onChange={this.handleChange2}
+                                                placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                            />
+                                            <input
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                style={{ opacity: 0, height: 0 }}
+                                                value={departmentsOption1}
+                                                readOnly
+                                                required
+                                            />
+                                        </Fragment>
                                         <br />
                                     </div>
 
@@ -679,7 +715,6 @@ class GeneralForm extends Component {
                                                 <i className="fa fa-check-square-o" />
                                             </div>
                                             <input
-
                                                 type="text"
                                                 className="form-control"
                                                 style={{ fontSize: 20 }}

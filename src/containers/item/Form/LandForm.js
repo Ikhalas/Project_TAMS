@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import axios from 'axios';
+import React, { Component, Fragment } from 'react'
+import { db, storage } from '../../../common/firebaseConfig'
 import Select from 'react-select';
 import { withRouter } from "react-router";
 
@@ -7,44 +7,90 @@ class LandForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Departments: [],
+            departments: [],
             Landtypes: [],
+
             departmentsOption1: null,
             departmentsOption2: null,
             itemNameOption: null,
             buildingType: null,
             materialType: null,
             itemCode: '',
-            check_1: false,
-            check_2: false,
-            check_3: false
+
+            image: null,
+            codeCheck: true
         }
+
+        this._isMounted = false
+
+        this._check1 = false
+        this._check2 = false
+        this._check3 = false
+
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     componentDidMount() {
+        this.loadScript() //for inputmask
+        this._isMounted = true
+        this._isMounted && this.getDepartmentData();
+        this._isMounted && this.getItemTypeData();
+    }
+
+    loadScript() {
         const script = document.createElement('script')
         script.src = '/js/addform.js'
         script.async = true
         document.body.appendChild(script)
-
-        axios.get('http://localhost:3001/Department').then(
-            res => {
-                //console.log(res)
-                this.setState({ Departments: res.data })
-            }).catch(err => console.log(err))
-
-        //console.log(this.props.type)   
-        axios.get('http://localhost:3001/itemType?type=' + this.props.type).then(
-            res => {
-                //console.log(res.data)
-                this.setState({ Landtypes: res.data })
-            }).catch(err => console.log(err))
-
     }
 
+    getDepartmentData() {
+        db.collection('departments').orderBy('code').get().then(snapshot => {
+            let departments = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                departments.push(data)
+            })
+            this._isMounted && this.setState({ departments: departments })
+            //console.log("departments |" + this.state.departments)
+        }).catch(error => console.log(error))
+    }
 
-    onSubmit = (e) => {
-        //console.log(this.refs.name.value)
+    getItemTypeData() {
+        db.collection('itemTypes').where('type', '==', this.props.type).get().then(snapshot => {
+            if (snapshot.empty) {
+                console.log('No matching documents.');
+                return;
+            }
+
+            let itemTypes = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                itemTypes.push(data)
+            })
+            this._isMounted && this.setState({ Landtypes: itemTypes })
+            console.log("itemTypes |" + this.state.itemTypes)
+        }).catch(error => console.log(error))
+    }
+
+    async onSubmit(e) {
+        e.preventDefault();
+
+        await db.collection('items').where('itemCode', '==', this.state.itemCode.concat(this.refs.itemCode.value))
+            .get().then(snapshot => {
+                if (snapshot.empty) {
+                    console.log('No matching documents.' + 'can submit');
+                    this.setState({ codeCheck: true }) //can submit
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    let data = doc.data()
+                    console.log(this.state.itemCode.concat(this.refs.itemCode.value) + "|" + data.itemCode + "can't submit")
+                    this.setState({ codeCheck: false }) //can't submit
+                })
+            }).catch(error => console.log(error))
+
         const newLand = {
             "status": "ใช้งานได้ดี",                                               //สภาพพัสดุ
             "itemType": this.refs.itemType.value,                               //ประเภท         
@@ -66,7 +112,6 @@ class LandForm extends Component {
             "otherType": this.refs.otherType.value,                             //อื่นๆ .ชนิด
             "otherSize": this.refs.otherSize.value,                             //อื่นๆ .ขนาด
             "Note": this.refs.Note.value,                                       //หมายเหตุ
-            "thumbnail": ""                                                     //รูป
         }
 
         const landResponsibility = {
@@ -78,7 +123,7 @@ class LandForm extends Component {
             "Note": ""
         }
 
-        const landValueIncreases4Years = {
+        const landValue = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "seq": 0,
             "Year": this.refs.derivedDate.value,
@@ -112,7 +157,7 @@ class LandForm extends Component {
             "Note": ""
         }*/
 
-        
+
 
 
 
@@ -126,102 +171,60 @@ class LandForm extends Component {
             "Benefits": "",
             "Note": ""
         }*/
-
-        this.addItem(newLand)
-        this.addlandResponsibility(landResponsibility)
-        this.addlandValueIncreases4Years(landValueIncreases4Years)
+        if (this.state.codeCheck) {
+            this.uploadImg()
+            this.addItem(newLand)
+            this.addlandResponsibility(landResponsibility)
+            this.addlandValue(landValue)
+        }
         //this.addlandDepreciations(landDepreciations)
         //this.addlandExploitation(landExploitation)
         //this.addlandDisposal(Disposal)
-
-        e.preventDefault();
     }
 
-
-
-    /*******************************************************/
     addItem(newLand) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Items',
-            data: newLand
-        }).then(res => {
-            this.setState({ check_1: true })
-        }).catch(err => console.log(err));
+        db.collection('items').add(newLand).then(() => {
+            console.log("add item complete !!")
+            this._check1 = true
+            this.confirmAdd()
+        })
     }
 
-    /*******************************************************/
     addlandResponsibility(landResponsibility) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Responsibility',
-            data: landResponsibility
-        }).then(res => {
-            this.setState({ check_2: true })
-        }).catch(err => console.log(err));
+        db.collection('itemResponsibility').add(landResponsibility).then(() => {
+            console.log("add itemResponsibility complete !!")
+            this._check2 = true
+            this.confirmAdd()
+        })
     }
     /*******************************************************/
-    addlandValueIncreases4Years(landValueIncreases4Years) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/landValueIncreases4Years',
-            data: landValueIncreases4Years
-        }).then(res => {
-            this.setState({check_3:true}) 
-            this.confirmAdd()  
-        }).catch(err => console.log(err));
+    addlandValue(landValue) {
+        db.collection('landValue').add(landValue).then(() => {
+            console.log("add landValue complete !!")
+            this._check3 = true
+            this.confirmAdd()
+        })
     }
 
-    /*addlandDisposal(Disposal) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Disposal',
-            data: Disposal
-        }).then(res => {
-            this.setState({check_3:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
-
-    /*addlandDepreciations(landDepreciations) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Depreciations',
-            data: landDepreciations
-        }).then(res => {
-            this.setState({check_2:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
-
-    
-
-    /*******************************************************/
-
-    /*addlandExploitation(landExploitation) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Exploitation',
-            data: landExploitation
-        }).then(res => {
-            this.setState({check_5:true})
-            this.confirmAdd()
-        }).catch(err => console.log(err));
-    }*/
-
-    /*******************************************************/
+    uploadImg() {
+        let imgCode = this.state.itemCode.concat(this.refs.itemCode.value)
+        let seq = 1
+        if (this.state.image) {
+            this.state.image.forEach((image) => {
+                storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
+                console.log(`uploaded ${seq}`);
+                seq = seq + 1;
+            })
+        }
+    }
 
     confirmAdd() {
-        if (this.state.check_1 && this.state.check_2 && this.state.check_3) {
+        if (this._check1 && this._check2 && this._check3) {
             this.props.history.push('/items')
-            alert("เพิ่มข้อมูลสำเร็จ")
+            console.log("เพิ่มข้อมูลสำเร็จ")
         }
         else {
-            alert("ผิดพลาด")
+            console.log("ผิดพลาด")
         }
     }
 
@@ -265,8 +268,18 @@ class LandForm extends Component {
         );
     }
 
-    render() {
+    handleImgChange = e => {
+        if (e.target.files[0]) {
+            const image = Array.from(e.target.files)
+            this.setState({ image })
+        }
+    }
 
+    componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
+        this._isMounted = false;
+    }
+
+    render() {
         const { departmentsOption1, departmentsOption2, itemNameOption, buildingType, materialType } = this.state;
         const buildingOptions = [
             { value: 'อาคารเดี่ยว', label: 'อาคารเดี่ยว' },
@@ -301,13 +314,23 @@ class LandForm extends Component {
                                     <div style={{ marginBottom: '21px' }}>
                                         <div className="form-group">
                                             <label>หน่วยงานที่รับผิดชอบ</label>
-                                            <Select
-                                                required
-                                                options={this.state.Departments}
-                                                value={departmentsOption1}
-                                                onChange={this.handleChange}
-                                                placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
-                                            />
+                                            <Fragment>
+                                                <Select
+                                                    required
+                                                    options={this.state.departments}
+                                                    value={departmentsOption1}
+                                                    onChange={this.handleChange}
+                                                    placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                                />
+                                                <input
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    style={{ opacity: 0, height: 0 }}
+                                                    value={departmentsOption1}
+                                                    readOnly
+                                                    required
+                                                />
+                                            </Fragment>
                                         </div>
                                     </div>
 
@@ -315,13 +338,23 @@ class LandForm extends Component {
                                     <div style={{ marginBottom: '21px' }}>
                                         <div className="form-group">
                                             <label>ชื่อพัสดุ</label>
-                                            <Select
-                                                required
-                                                options={this.state.Landtypes}
-                                                value={itemNameOption}
-                                                onChange={this.handleChangeCode}
-                                                placeholder="--- โปรดเลือกรายการพัสดุครุภัณฑ์ ---"
-                                            />
+                                            <Fragment>
+                                                <Select
+                                                    required
+                                                    options={this.state.Landtypes}
+                                                    value={itemNameOption}
+                                                    onChange={this.handleChangeCode}
+                                                    placeholder="--- โปรดเลือกรายการพัสดุครุภัณฑ์ ---"
+                                                />
+                                                <input
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    style={{ opacity: 0, height: 0 }}
+                                                    value={departmentsOption1}
+                                                    readOnly
+                                                    required
+                                                />
+                                            </Fragment>
                                         </div>
                                     </div>
 
@@ -346,6 +379,13 @@ class LandForm extends Component {
                                             />
                                         </div>
                                     </div>
+
+                                    {!this.state.codeCheck &&
+                                        <div style={{ marginTop: 10 }} className="callout callout-warning">
+                                            <p style={{ fontSize: 17 }}>เลขรหัสพัสดุมีอยู่ในระบบแล้ว</p>
+                                        </div>
+                                    }
+
                                 </div>
                                 {/* /col-md-6 */}
 
@@ -407,6 +447,14 @@ class LandForm extends Component {
                     </div>
                     {/* /.box box-default */}
 
+                    <div className="box box-success">
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>อัพโหลดรูปภาพ</b></h1>
+                        </div>
+                        <div className="box-body" onChange={this.handleImgChange}>
+                            <input id="file" type="file" accept="image/*" multiple />
+                        </div>
+                    </div>
 
                     <div className="row">
                         <div className="col-md-6">
@@ -460,22 +508,42 @@ class LandForm extends Component {
                                 <div className="box-body">
                                     <div className="form-group">
                                         <label>ประเภทโรงเรือน</label>
-                                        <Select
-                                            options={buildingOptions}
-                                            value={buildingType}
-                                            onChange={this.handleBuildingOptions}
-                                            placeholder="--- โปรดเลือกประเภทโรงเรือน ---"
-                                        />
-                              
+                                        <Fragment>
+                                            <Select
+                                                options={buildingOptions}
+                                                value={buildingType}
+                                                onChange={this.handleBuildingOptions}
+                                                placeholder="--- โปรดเลือกประเภทโรงเรือน ---"
+                                            />
+                                            <input
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                style={{ opacity: 0, height: 0 }}
+                                                value={departmentsOption1}
+                                                readOnly
+                                                required
+                                            />
+                                        </Fragment>
+
                                     </div>
                                     <div className="form-group">
                                         <label>วัสดุที่ใช้ก่อสร้าง</label>
-                                        <Select
-                                            options={materialOption}
-                                            value={materialType}
-                                            onChange={this.handleMaterialOptions}
-                                            placeholder="--- โปรดเลือกประเภทวัสดุที่ใช้ก่อสร้าง ---"
-                                        />
+                                        <Fragment>
+                                            <Select
+                                                options={materialOption}
+                                                value={materialType}
+                                                onChange={this.handleMaterialOptions}
+                                                placeholder="--- โปรดเลือกประเภทวัสดุที่ใช้ก่อสร้าง ---"
+                                            />
+                                            <input
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                style={{ opacity: 0, height: 0 }}
+                                                value={departmentsOption1}
+                                                readOnly
+                                                required
+                                            />
+                                        </Fragment>
                                     </div>
                                     <div className="form-group">
                                         <label>จำนวนชั้น</label>
@@ -600,19 +668,25 @@ class LandForm extends Component {
 
                                     <div className="form-group">
                                         <label>งบประมาณของ</label>
-                                        <Select
-                                            required
-                                            options={this.state.Departments}
-                                            value={departmentsOption2}
-                                            onChange={this.handleChange2}
-                                            placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
-                                        />
+                                        <Fragment>
+                                            <Select
+                                                required
+                                                options={this.state.departments}
+                                                value={departmentsOption2}
+                                                onChange={this.handleChange2}
+                                                placeholder="--- โปรดเลือกหน่วยงานที่รับผิดชอบ ---"
+                                            />
+                                            <input
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                style={{ opacity: 0, height: 0 }}
+                                                value={departmentsOption1}
+                                                readOnly
+                                                required
+                                            />
+                                        </Fragment>
                                     </div>
-
                                 </div>
-
-
-
                             </div>
 
                             <div className="box box-primary">
@@ -689,8 +763,16 @@ class LandForm extends Component {
                         บันทึก
                     </button>
 
-                </form>
+                    {!this.state.codeCheck &&
+                        <div style={{ backgroundColor: "#ffc107", paddingTop: 0.1, paddingBottom: 0.1, marginTop: 5 }}>
+                            <h4 style={{ color: 'white', fontSize: 17 }}>&nbsp;&nbsp;
+                                <i className="icon fa fa-alert"></i>
+                                &nbsp;เกิดข้อผิดพลาด กรุณาทำตามคำแนะนำที่ปรากฎข้างต้น
+                                </h4>
+                        </div>
+                    }
 
+                </form>
             </div >
         )
     }
