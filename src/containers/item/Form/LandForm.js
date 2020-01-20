@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react'
+import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+import { apiKey } from '../../../common/GmapAPIKey'
 import { db, storage } from '../../../common/firebaseConfig'
 import Select from 'react-select';
 import { withRouter } from "react-router";
+
 
 class LandForm extends Component {
     constructor(props) {
@@ -10,18 +13,24 @@ class LandForm extends Component {
             departments: [],
             Landtypes: [],
 
-            departmentsOption1: null,
-            departmentsOption2: null,
-            itemNameOption: null,
-            buildingType: null,
-            materialType: null,
-            itemCode: '',
+            departmentsOption1: "",
+            departmentsOption2: "",
+            itemNameOption: "",
+            buildingType: "",
+            materialType: "",
+            itemCode: "",
 
-            image: null,
-            codeCheck: true
+            image: "",
+            codeCheck: true,
+            markers: [{
+                name: "Current position",
+                position: { lat: 7.0486814, lng: 100.5712017 }
+            }],
         }
 
         this._isMounted = false
+
+        this.currentPosition = { lat: 7.0486814, lng: 100.5712017 }
 
         this._check1 = false
         this._check2 = false
@@ -69,7 +78,7 @@ class LandForm extends Component {
                 itemTypes.push(data)
             })
             this._isMounted && this.setState({ Landtypes: itemTypes })
-            console.log("itemTypes |" + this.state.itemTypes)
+            //console.log("itemTypes |" + this.state.Landtypes)
         }).catch(error => console.log(error))
     }
 
@@ -79,7 +88,7 @@ class LandForm extends Component {
         await db.collection('items').where('itemCode', '==', this.state.itemCode.concat(this.refs.itemCode.value))
             .get().then(snapshot => {
                 if (snapshot.empty) {
-                    console.log('No matching documents.' + 'can submit');
+                    console.log('No matching documents. can submit');
                     this.setState({ codeCheck: true }) //can submit
                     return;
                 }
@@ -112,6 +121,8 @@ class LandForm extends Component {
             "otherType": this.refs.otherType.value,                             //อื่นๆ .ชนิด
             "otherSize": this.refs.otherSize.value,                             //อื่นๆ .ขนาด
             "Note": this.refs.Note.value,                                       //หมายเหตุ
+            "location" : this.currentPosition
+            
         }
 
         const landResponsibility = {
@@ -171,6 +182,7 @@ class LandForm extends Component {
             "Benefits": "",
             "Note": ""
         }*/
+
         if (this.state.codeCheck) {
             this.uploadImg()
             this.addItem(newLand)
@@ -231,7 +243,7 @@ class LandForm extends Component {
     handleChange = departmentsOption1 => {
         this.setState(
             { departmentsOption1 },
-            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
+            () => console.log(`Option selected:`, this.state.departmentsOption1.value)
         );
     };
 
@@ -275,6 +287,36 @@ class LandForm extends Component {
         }
     }
 
+    onMarkerClick = (props, marker, e) => {
+        const position = marker.getPosition();
+        var lat = position.lat()
+        var lng = position.lng()
+        this.currentPosition = { lat: lat, lng: lng }
+
+        console.log(this.currentPosition)
+    }
+
+    onMouseoverMarker = (props, marker, e) => {
+        const position = marker.getPosition();
+        var lat = position.lat()
+        var lng = position.lng()
+        this.currentPosition = { lat: lat, lng: lng }
+
+        console.log(this.currentPosition)
+    }
+
+    onMarkerDragEnd = (coord, index) => {
+        const { latLng } = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+
+        this.setState(prevState => {
+            const markers = [...this.state.markers];
+            markers[index] = { ...markers[index], position: { lat, lng } };
+            return { markers };
+        });
+    };
+
     componentWillUnmount() {  //cancel subscriptions and asynchronous tasks
         this._isMounted = false;
     }
@@ -297,8 +339,8 @@ class LandForm extends Component {
 
                     <input
                         type="hidden"
-                        name="itemType" /******/
-                        ref="itemType"  /******/
+                        name="itemType"
+                        ref="itemType"
                         value={this.props.type}
                     />
 
@@ -350,7 +392,7 @@ class LandForm extends Component {
                                                     tabIndex={-1}
                                                     autoComplete="off"
                                                     style={{ opacity: 0, height: 0 }}
-                                                    value={departmentsOption1}
+                                                    value={itemNameOption}
                                                     readOnly
                                                     required
                                                 />
@@ -456,6 +498,43 @@ class LandForm extends Component {
                         </div>
                     </div>
 
+                    {/* Google Map */}
+                    <div className="box box-success">
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ระบุตำแหน่งของที่ดิน</b></h1>
+                        </div>
+                        <div className="box-body" style={{ height: `550px` }} >
+                            <Map
+                                google={this.props.google}
+                                style={{
+                                    width: "98%",
+                                    height: "500px",
+                                    tabIndex: "1"
+                                }}
+                                zoom={15}
+                                initialCenter={{ lat: 7.0486814, lng: 100.5712017 }}
+                                onClick={this.handleMapClick}
+                            >
+                                {this.state.markers.map((marker, index) => (
+                                    <Marker
+                                        key={Math.random()}
+                                        position={marker.position}
+                                        draggable={true}
+                                        onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
+                                        name={marker.name}
+
+                                        onClick={this.onMarkerClick}
+                                        onMouseover={this.onMouseoverMarker}
+                                    />
+                                ))}
+                            </Map >
+
+                            <div style={{ marginTop: "510px" }}>
+                                <p >ตำแหน่ง : [ {this.currentPosition.lat + " " + this.currentPosition.lng} ]</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col-md-6">
                             <div className="box box-danger">
@@ -519,7 +598,7 @@ class LandForm extends Component {
                                                 tabIndex={-1}
                                                 autoComplete="off"
                                                 style={{ opacity: 0, height: 0 }}
-                                                value={departmentsOption1}
+                                                value={buildingType}
                                                 readOnly
                                                 required
                                             />
@@ -539,7 +618,7 @@ class LandForm extends Component {
                                                 tabIndex={-1}
                                                 autoComplete="off"
                                                 style={{ opacity: 0, height: 0 }}
-                                                value={departmentsOption1}
+                                                value={materialType}
                                                 readOnly
                                                 required
                                             />
@@ -680,7 +759,7 @@ class LandForm extends Component {
                                                 tabIndex={-1}
                                                 autoComplete="off"
                                                 style={{ opacity: 0, height: 0 }}
-                                                value={departmentsOption1}
+                                                value={departmentsOption2}
                                                 readOnly
                                                 required
                                             />
@@ -778,5 +857,7 @@ class LandForm extends Component {
     }
 }
 
-export default withRouter(LandForm)
+export default GoogleApiWrapper({
+    apiKey: (apiKey)
+})(withRouter(LandForm))
 

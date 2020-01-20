@@ -120,7 +120,7 @@ class GeneralForm extends Component {
         await db.collection('items').where('itemCode', '==', this.state.itemCode.concat(this.refs.itemCode.value))
             .get().then(snapshot => {
                 if (snapshot.empty) {
-                    console.log('No matching documents.' + 'can submit');
+                    console.log('No matching documents. can submit');
                     this.setState({ codeCheck: true }) //can submit
                     return;
                 }
