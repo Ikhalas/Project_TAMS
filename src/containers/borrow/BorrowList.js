@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom';
 
-class Itemlist extends Component {
-
+class BorrowList extends Component {
     generateItemRows() {
         //console.log(this.props.items)
         return (
             this.props.items && this.props.items.map(item => (
                 <tr key={item.id}>
                     <td style={{ fontSize: 20 }}>
-                        <Link to={'/items/item-detail/' + item.id + '/' + item.data().itemCode + '/' + item.data().itemType}>
+                        <Link to={'/items/item-detail/' + item.id}>
                             &nbsp;{item.data().itemCode}
                         </Link>
                     </td>
@@ -73,4 +72,5 @@ class Itemlist extends Component {
     }
 }
 
-export default withRouter(Itemlist)
+export default withRouter(BorrowList)
+

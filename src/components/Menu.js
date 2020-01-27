@@ -59,13 +59,7 @@ export default class Menu extends Component {
               <li className="header title" style={font18}>การจัดการ</li>
 
               <li>
-                <Link to="fake_url">
-                  <i className="fa fa-pie-chart" /><span className="title">&nbsp;การซ่อมบำรุง</span>
-                </Link>
-              </li>
-
-              <li>
-                <Link to="fake_url">
+                <Link to="/BorrowItems">
                   <i className="fa fa-pie-chart" /><span className="title">&nbsp;การยืม-คืน</span>
                 </Link>
               </li>

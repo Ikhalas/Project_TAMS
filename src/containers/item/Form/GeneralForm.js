@@ -17,6 +17,7 @@ class GeneralForm extends Component {
             itemCode: '',
 
             image: null,
+
             codeCheck: true
         }
         this._isMounted = false
@@ -24,6 +25,10 @@ class GeneralForm extends Component {
         this._check1 = false
         this._check2 = false
         this._check3 = false
+
+        this._imageURL = []
+        this._refId = ""
+
 
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -124,7 +129,6 @@ class GeneralForm extends Component {
                     this.setState({ codeCheck: true }) //can submit
                     return;
                 }
-
                 snapshot.forEach(doc => {
                     let data = doc.data()
                     console.log(this.state.itemCode.concat(this.refs.itemCode.value) + "|" + data.itemCode + "can't submit")
@@ -155,12 +159,15 @@ class GeneralForm extends Component {
             "derivedDate": this.refs.derivedDate.value,                 //ได้มาวันที่
             "Price": this.refs.Price.value,                             //ราคา
             "budgetOf": this.state.departmentsOption2.value,            //งบของ
-            "Note": this.refs.Note.value,                               //หมายเหตุ
+            "Note": this.refs.Note.value                               //หมายเหตุ
+      
         }
+
 
         const itemResponsibility = {
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "Year": this.refs.derivedDate.value,
+            "seq": 0,
             "responsibilityDepartmentName": this.refs.responsibilityDepartmentName.value,
             "responsibilityDepartmentHead": this.refs.responsibilityDepartmentHead.value,
             "responsibilityUserName": this.refs.responsibilityUserName.value,
@@ -250,7 +257,8 @@ class GeneralForm extends Component {
             "disposalNote": "",                                         //หมายเหตุจการจำหน่าย
         }*/
 
-        //console.log(newItem)
+
+        console.log(newItem)
         //console.log(itemResponsibility)
         //console.log(itemDepreciations)
 
@@ -292,15 +300,49 @@ class GeneralForm extends Component {
     }
 
     uploadImg() {
+        this.createURLCollection()
         let imgCode = this.state.itemCode.concat(this.refs.itemCode.value)
         let seq = 1
+
         if (this.state.image) {
-            this.state.image.forEach((image) => {
-                storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
-                console.log(`uploaded ${seq}`);
+            this.state.image.forEach((image, index, array) => {
+                const uploadTask = storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
+                uploadTask.on('state_changed',
+                    (snapshot) => { /*progress function */ },
+                    (error) => { console.log(error) },
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then(url => {
+                            this._imageURL.push(url)
+                            this.updateURLCollection(this._imageURL)
+                        })
+                    })
                 seq = seq + 1;
             })
+       
         }
+    }
+
+    createURLCollection() {
+        const newURL = {
+            "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
+            "url": []
+        }
+        db.collection('itemURL').add(newURL).then(ref => {
+            this._refId = ref.id
+            console.log("create url collection complete !! |" + this._refId)
+        })
+        
+    }
+
+    updateURLCollection(imageURL) {
+        console.log(this._refId)
+        const updateURL = {
+            "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
+            "url": imageURL
+        }
+        db.collection('itemURL').doc(this._refId).update(updateURL).then(() => {
+            console.log("update url collection complete !!")
+        })
     }
 
     confirmAdd() {
@@ -309,7 +351,7 @@ class GeneralForm extends Component {
             console.log("เพิ่มข้อมูลสำเร็จ")
         }
         else {
-            console.log("ผิดพลาด")
+            //console.log("ผิดพลาด")
         }
     }
 
@@ -340,6 +382,7 @@ class GeneralForm extends Component {
         if (e.target.files[0]) {
             const image = Array.from(e.target.files)
             this.setState({ image })
+            console.log(e.target.files.length)
         }
     }
 
@@ -362,7 +405,7 @@ class GeneralForm extends Component {
 
                     <div className="box box-success">
                         <div className="box-header">
-                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของพัสดุครุภัณฑ์</b></h1>
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื้องต้นของพัสดุครุภัณฑ์</b></h1>
                         </div>
                         <div className="box-body">
                             <div className="row">
@@ -373,7 +416,6 @@ class GeneralForm extends Component {
                                             <label>หน่วยงานที่รับผิดชอบ</label>
                                             <Fragment>
                                                 <Select
-                                                    required
                                                     options={this.state.departments}
                                                     value={departmentsOption1}
                                                     onChange={this.handleChange}
@@ -396,7 +438,6 @@ class GeneralForm extends Component {
                                             <label>ชื่อพัสดุ</label>
                                             <Fragment>
                                                 <Select
-                                                    required
                                                     options={this.state.itemTypes}
                                                     value={itemNameOption}
                                                     onChange={this.handleChangeCode}
@@ -455,7 +496,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="waybillCode" /*****/
                                                 ref="waybillCode"  /*****/
-                                                required
                                             />
                                         </div>
                                     </div>
@@ -473,7 +513,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="itemBrand" /*****/
                                                 ref="itemBrand"  /*****/
-                                                required
                                             />
                                         </div>
                                     </div>
@@ -490,7 +529,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20, zIndex: 0 }}
                                                 name="itemStyle" /*****/
                                                 ref="itemStyle"  /*****/
-                                                required
                                             />
                                         </div>
                                     </div>
@@ -511,7 +549,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="itemColor" /*****/
                                                 ref="itemColor"  /*****/
-                                                required
                                             />
                                         </div>
                                     </div>
@@ -528,7 +565,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="orderNo" /*****/
                                                 ref="orderNo"  /*****/
-                                                required
                                             />
                                         </div>
                                     </div>
@@ -635,7 +671,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="derivedFrom" /*****/
                                                 ref="derivedFrom"  /*****/
-                                                
+
                                             />
                                         </div>
                                     </div>
@@ -655,7 +691,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="derivedDate" /*****/
                                                 ref="derivedDate"  /*****/
-                                                
+
                                             />
                                         </div>
                                     </div>
@@ -674,7 +710,7 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="Price" /*****/
                                                 ref="Price"  /*****/
-                                            
+
                                             />
                                             <span className="input-group-addon" style={{ fontSize: 20 }}>บาท</span>
                                         </div>
@@ -684,7 +720,6 @@ class GeneralForm extends Component {
                                         <label>งบประมาณของ</label>
                                         <Fragment>
                                             <Select
-                                                required
                                                 options={this.state.departments}
                                                 value={departmentsOption2}
                                                 onChange={this.handleChange2}

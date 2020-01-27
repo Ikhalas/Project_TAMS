@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
-import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 
-class GeneralDetail extends Component {
-    _isMounted = false;
+import { db, storage } from '../../../../common/firebaseConfig'
 
+class GeneralDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            item: [],
-
+            item : '',
             Depreciations: [],
             Responsibility: [],
             Exploitation: [],
@@ -19,63 +17,53 @@ class GeneralDetail extends Component {
             statusClass: ''
         }
     }
+    _isMounted = false
+
+    depreciations = []
+    responsibility = []
 
     componentDidMount() {
+        //console.log("id |" + this.props.itemId)
+        //console.log("code |" + this.props.itemCode)
         this._isMounted = true;
 
-        let id = this.props.itemId
-        axios.get('http://localhost:3001/items/' + id).then(
-            res => {
-                if (this._isMounted) {
-                    this.setState({ item: res.data })
-
-                    //console.log("Gstatus|"+this.state.item.status)
-                    if (this.state.item.status === 'ใช้งานได้ดี') this.setState({ statusClass: 'label label-success' })
-                    else if (this.state.item.status === 'ชำรุด') this.setState({ statusClass: 'label label-warning' })
-                    else if (this.state.item.status === 'เสื่อมสภาพ') this.setState({ statusClass: 'label label-warning' })
-                    else if (this.state.item.status === 'สูญหาย') this.setState({ statusClass: 'label label-danger' })
-                    else this.setState({ statusClass: 'label label-primary' })
-
-                    //console.log(this.state.item)
-                    let itemCode = this.state.item.itemCode;
-                    //console.log(this.state.item.itemCode)
-                    axios.get('http://localhost:3001/Depreciations?itemCode=' + itemCode).then(
-                        res => {
-                            this.setState({ Depreciations: res.data })
-                            //console.log(this.state.Depreciations)
-                        }).catch(err => console.log(err))
-
-                    axios.get('http://localhost:3001/Maintenance?itemCode=' + itemCode).then(
-                        res => {
-                            this.setState({ itemMaintenance: res.data })
-                            //console.log(this.state.LandValueIncreases4Years)
-                        }).catch(err => console.log(err))
-
-                    axios.get('http://localhost:3001/Responsibility?itemCode=' + itemCode).then(
-                        res => {
-                            this.setState({ Responsibility: res.data })
-                            //console.log(this.state.Responsibility)
-                        }).catch(err => console.log(err))
-
-                    axios.get('http://localhost:3001/Exploitation?itemCode=' + itemCode).then(
-                        res => {
-                            this.setState({ Exploitation: res.data })
-                            //console.log(this.state.Exploitation)
-                        }).catch(err => console.log(err))
-
-                    axios.get('http://localhost:3001/Disposal?itemCode=' + itemCode).then(
-                        res => {
-                            this.setState({ Disposal: res.data })
-                            //console.log(this.state.Disposal)
-                        }).catch(err => console.log(err))
-                }
-
-            }).catch(err => console.log(err))
-
+        this._isMounted && this.getItemDetail()
+        this._isMounted && this.getItemDepreciations()
+        this._isMounted && this.getResponsibility()
+        //this.getImage()
 
     }
 
+    getItemDetail() {
+        db.collection('items').doc(this.props.itemId).get().then(doc => {
+            this._isMounted && this.setState({ item : doc.data() })
+            console.log("item |" + this.state.item.imageURL)
+        }).catch(error => console.log(error))
+    }
+
+    getItemDepreciations() {
+        db.collection('itemDepreciations').where('itemCode', '==', this.props.itemCode).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.depreciations.push(doc.data())
+            });
+            this._isMounted && this.setState({ Depreciations : this.depreciations })
+            //console.log(this.state.Depreciations);
+        }).catch(error => console.log(error))
+    }
+
+    getResponsibility() {
+        db.collection('itemResponsibility').where('itemCode', '==', this.props.itemCode).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.responsibility.push(doc.data())
+            });
+            this._isMounted && this.setState({ Responsibility : this.responsibility })
+            //console.log(this.state.Responsibility);
+        }).catch(error => console.log(error))
+    }
+
+
     generateDepreciationsRows() {
+        //console.log("Work |")
         let depreciationCheck = this.state.Depreciations.map(depreciation => {
             return depreciation
         })
@@ -90,15 +78,15 @@ class GeneralDetail extends Component {
         }
 
         return (
-            this.state.Depreciations.map(Depreciation => (
-                <tr key={Depreciation.id}>
-                    <td style={{ textAlign: 'center' }}><b>{Depreciation.Year}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{Depreciation.Balance}</b></td>
+            this.state.Depreciations && this.state.Depreciations.map(depreciation => (
+                <tr key={depreciation.seq}>
+                    <td style={{ textAlign: 'center' }}><b>{depreciation.Year}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{depreciation.Balance}</b></td>
                 </tr>
             ))
         )
     }
-
+    
     generateResponsibilityRows() {
         let responsibilityCheck = this.state.Responsibility.map(responsibility => {
             return responsibility
@@ -117,7 +105,7 @@ class GeneralDetail extends Component {
 
         return (
             this.state.Responsibility && this.state.Responsibility.map(Responsibility => (
-                <tr key={Responsibility.id}>
+                <tr key={Responsibility.seq}>
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.Year}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.responsibilityDepartmentName}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.responsibilityDepartmentHead}</b></td>
@@ -187,6 +175,12 @@ class GeneralDetail extends Component {
 
     }
 
+    getImage() {
+        storage.ref('images/' + this.props.itemCode).getDownloadURL().then(url =>{
+            console.log(url)
+        }).catch(error => console.log(error))
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -225,12 +219,7 @@ class GeneralDetail extends Component {
                                     </div>
                                 </div>
 
-                                <div className="box-body no-padding">
-
-                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
-                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ข้อมูลเบื่องต้นของพัสดุ ----------</b></h1>
-                                    </div>
-
+                                <div className="box-body no-padding" style={{ fontSize: 19 }}>
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
@@ -266,10 +255,6 @@ class GeneralDetail extends Component {
                                         </tbody>
                                     </table>
 
-
-                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
-                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- การประกันพัสดุ ----------</b></h1>
-                                    </div>
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
@@ -287,10 +272,6 @@ class GeneralDetail extends Component {
                                         </tbody>
                                     </table>
 
-
-                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
-                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- ที่มาของพัสดุ ----------</b></h1>
-                                    </div>
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
@@ -307,11 +288,6 @@ class GeneralDetail extends Component {
                                             </tr>
                                         </tbody>
                                     </table>
-
-
-                                    <div className="box-header" align="center" style={{ marginTop: 10 }}>
-                                        <h1 className="box-title" style={{ fontSize: 22 }}><b>---------- หมายเหตุ ----------</b></h1>
-                                    </div>
 
                                     <table className="table table-striped with-border">
                                         <tbody>

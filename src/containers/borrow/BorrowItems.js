@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Itemlist from './Itemlist'
-import { db } from '../../../common/firebaseConfig'
+import BorrowList from './BorrowList'
+import { db } from '../../common/firebaseConfig'
 
-class Items extends Component {
+export default class BorrowItems extends Component {
     constructor(props){
         super(props)
         this.state = {
@@ -39,17 +39,14 @@ class Items extends Component {
                 <div className="content-wrapper title">
                     <section className="content-header">
                         <h1>
-                            <span style={{ fontSize: 35 }}>&nbsp;รายการครุภัณฑ์ทั้งหมด</span>
+                            <span style={{ fontSize: 35 }}>&nbsp;รายการการ ยืม/คืน พัสดุครุภัณฑ์</span>
                         </h1>
                     </section>
                     <section className="content">
-                       <Itemlist items={this.state.items} />
+                       <BorrowList items={this.state.items} />
                     </section>
                 </div>
             </div>
         )
     }
 }
-
-
-export default Items

@@ -38,7 +38,7 @@ export default class Setting extends Component {
                 //let data = doc.data()
                 departments.push(doc)
             })
-            this._isMounted && this.setState({ departments: departments })
+            this._isMounted && this.setState({ departments })
             //console.log(this.state.departments)
         }).catch(error => console.log(error))
     }
@@ -50,7 +50,7 @@ export default class Setting extends Component {
                 //let data = doc.data()
                 types.push(doc)
             })
-            this._isMounted && this.setState({ types: types })
+            this._isMounted && this.setState({ types })
             //console.log(this.state.types)
         }).catch(error => console.log(error))
     }

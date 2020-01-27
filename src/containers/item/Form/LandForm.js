@@ -121,8 +121,9 @@ class LandForm extends Component {
             "otherType": this.refs.otherType.value,                             //อื่นๆ .ชนิด
             "otherSize": this.refs.otherSize.value,                             //อื่นๆ .ขนาด
             "Note": this.refs.Note.value,                                       //หมายเหตุ
-            "location" : this.currentPosition
-            
+            "address": this.refs.address.value,
+            "location": this.currentPosition
+
         }
 
         const landResponsibility = {
@@ -302,7 +303,7 @@ class LandForm extends Component {
         var lng = position.lng()
         this.currentPosition = { lat: lat, lng: lng }
 
-        console.log(this.currentPosition)
+        //console.log(this.currentPosition)
     }
 
     onMarkerDragEnd = (coord, index) => {
@@ -346,7 +347,7 @@ class LandForm extends Component {
 
                     <div className="box box-success">
                         <div className="box-header">
-                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื่องต้นของที่ดิน</b></h1>
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ข้อมูลเบื้องต้นของที่ดิน</b></h1>
                         </div>
                         {/* /.box-header */}
                         <div className="box-body">
@@ -503,34 +504,52 @@ class LandForm extends Component {
                         <div className="box-header">
                             <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>ระบุตำแหน่งของที่ดิน</b></h1>
                         </div>
-                        <div className="box-body" style={{ height: `550px` }} >
-                            <Map
-                                google={this.props.google}
-                                style={{
-                                    width: "98%",
-                                    height: "500px",
-                                    tabIndex: "1"
-                                }}
-                                zoom={15}
-                                initialCenter={{ lat: 7.0486814, lng: 100.5712017 }}
-                                onClick={this.handleMapClick}
-                            >
-                                {this.state.markers.map((marker, index) => (
-                                    <Marker
-                                        key={Math.random()}
-                                        position={marker.position}
-                                        draggable={true}
-                                        onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
-                                        name={marker.name}
 
-                                        onClick={this.onMarkerClick}
-                                        onMouseover={this.onMouseoverMarker}
+                        <div className="box-body">
+                            <div className="form-group">
+                                <label>ที่อยู่</label>
+                                <div className="input-group">
+                                    <div className="input-group-addon">
+                                        <i className="fa fa-area-chart" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        style={{ fontSize: 20, zIndex: 0 }}
+                                        name="address" /*****/
+                                        ref="address"  /*****/
                                     />
-                                ))}
-                            </Map >
+                                </div>
+                            </div>
 
-                            <div style={{ marginTop: "510px" }}>
-                                <p >ตำแหน่ง : [ {this.currentPosition.lat + " " + this.currentPosition.lng} ]</p>
+                            <div className="box-body" style={{ height: `550px` }} >
+                                <Map
+                                    google={this.props.google}
+                                    style={{
+                                        width: "96%",
+                                        height: "500px",
+                                    }}
+                                    zoom={15}
+                                    initialCenter={{ lat: 7.0486814, lng: 100.5712017 }}
+                                    onClick={this.handleMapClick}
+                                >
+                                    {this.state.markers.map((marker, index) => (
+                                        <Marker
+                                            key={Math.random()}
+                                            position={marker.position}
+                                            draggable={true}
+                                            onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
+                                            name={marker.name}
+
+                                            onClick={this.onMarkerClick}
+                                            onMouseover={this.onMouseoverMarker}
+                                        />
+                                    ))}
+                                </Map >
+
+                                <div style={{ marginTop: "510px" }}>
+                                    <p >ตำแหน่ง : [ {this.currentPosition.lat + " " + this.currentPosition.lng} ]</p>
+                                </div>
                             </div>
                         </div>
                     </div>

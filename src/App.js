@@ -34,6 +34,8 @@ import GeneralEdit from './containers/item/Showitems/General/GeneralEdit'
 import Itemdepreciation from './containers/depreciation/ItemDepreciation'
 import LandValue from './containers/landValue/LandValue'
 
+import BorrowItems from './containers/borrow/BorrowItems'
+
 
 export default class Main extends Component {
   renderRouter(){
@@ -59,18 +61,17 @@ export default class Main extends Component {
 
         <Route exact path="/items" component={Items}/>
 
-        <Route exact path="/items/item-detail/:id" component={ItemDetail}/>
+        <Route exact path="/items/item-detail/:id/:code/:type" component={ItemDetail}/>
         <Route exact path="/items/item-add" component={FormContainer}/>
 
         <Route exact path="/items/item-detail/land-edit/:id" component={LandEdit}/>
         <Route exact path="/items/item-detail/general-edit/:id" component={GeneralEdit}/>
 
         <Route exact path="/depreciation/item-depreciation/:id" component={Itemdepreciation}/>
-
         <Route exact path="/landvalue/:id" component={LandValue}/>
+
+        <Route exact path="/BorrowItems" component={BorrowItems}/>
         
-
-
         <Route component={NotFound}/>
 
       </Switch>
