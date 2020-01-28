@@ -26,6 +26,7 @@ class LandForm extends Component {
                 name: "Current position",
                 position: { lat: 7.0486814, lng: 100.5712017 }
             }],
+            
         }
 
         this._isMounted = false
@@ -35,6 +36,10 @@ class LandForm extends Component {
         this._check1 = false
         this._check2 = false
         this._check3 = false
+        this._check4 = false
+
+        this._imageURL = []
+        this._refId = ""
 
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -219,32 +224,65 @@ class LandForm extends Component {
         })
     }
 
-    uploadImg() {
+    async uploadImg() {
+        
         let imgCode = this.state.itemCode.concat(this.refs.itemCode.value)
         let seq = 1
+        await this.createURLCollection(imgCode)
+
         if (this.state.image) {
-            this.state.image.forEach((image) => {
-                storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
-                console.log(`uploaded ${seq}`);
+            await this.state.image.forEach((image) => {
+                const uploadTask = storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
+                uploadTask.on('state_changed',
+                    (snapshot) => { /*progress function */ },
+                    (error) => { console.log(error) },
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then(url => {
+                            this._imageURL.push(url)
+                            this.updateURLCollection(this._imageURL, imgCode)
+                        })
+                    })
                 seq = seq + 1;
             })
         }
+        this._check4 = true
+        console.log("add image complete !!")
+    }
+
+    async createURLCollection(imgCode) {
+        const newURL = {
+            "url": []
+        }
+        await db.collection('itemURL').doc(imgCode).set(newURL).then(() => {
+            console.log("create url collection complete !! |" + this._refId)
+        })
+
+    }
+
+    async updateURLCollection(imageURL, imgCode) {
+        console.log(this._refId)
+        const updateURL = {
+            "url": imageURL
+        }
+        await db.collection('itemURL').doc(imgCode).update(updateURL).then(() => {
+            console.log("update url collection complete !!")
+        })
     }
 
     confirmAdd() {
-        if (this._check1 && this._check2 && this._check3) {
+        if (this._check1 && this._check2 && this._check3 && this._check4) {
             this.props.history.push('/items')
             console.log("เพิ่มข้อมูลสำเร็จ")
         }
         else {
-            console.log("ผิดพลาด")
+            //console.log("ผิดพลาด")
         }
     }
 
     handleChange = departmentsOption1 => {
         this.setState(
             { departmentsOption1 },
-            () => console.log(`Option selected:`, this.state.departmentsOption1.value)
+            //() => console.log(`Option selected:`, this.state.departmentsOption1.value)
         );
     };
 
@@ -277,7 +315,7 @@ class LandForm extends Component {
     handleMaterialOptions = materialType => {
         this.setState(
             { materialType },
-            () => console.log(`Option selected2:`, this.state.materialType.value)
+            //() => console.log(`Option selected2:`, this.state.materialType.value)
         );
     }
 

@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 
-import { db, storage } from '../../../../common/firebaseConfig'
+import { db } from '../../../../common/firebaseConfig'
 
 class GeneralDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            item : '',
+            item: '',
             Depreciations: [],
             Responsibility: [],
             Exploitation: [],
             Disposal: [],
             Maintenance: [],
+            imageURL: [],
 
             statusClass: ''
         }
@@ -21,6 +22,7 @@ class GeneralDetail extends Component {
 
     depreciations = []
     responsibility = []
+    imageURL = []
 
     componentDidMount() {
         //console.log("id |" + this.props.itemId)
@@ -30,14 +32,13 @@ class GeneralDetail extends Component {
         this._isMounted && this.getItemDetail()
         this._isMounted && this.getItemDepreciations()
         this._isMounted && this.getResponsibility()
-        //this.getImage()
-
+        this._isMounted && this.getImage()
     }
 
     getItemDetail() {
         db.collection('items').doc(this.props.itemId).get().then(doc => {
-            this._isMounted && this.setState({ item : doc.data() })
-            console.log("item |" + this.state.item.imageURL)
+            this._isMounted && this.setState({ item: doc.data() })
+            //console.log("item |" + this.state.item)
         }).catch(error => console.log(error))
     }
 
@@ -46,7 +47,7 @@ class GeneralDetail extends Component {
             snapshot.forEach(doc => {
                 this.depreciations.push(doc.data())
             });
-            this._isMounted && this.setState({ Depreciations : this.depreciations })
+            this._isMounted && this.setState({ Depreciations: this.depreciations })
             //console.log(this.state.Depreciations);
         }).catch(error => console.log(error))
     }
@@ -56,18 +57,29 @@ class GeneralDetail extends Component {
             snapshot.forEach(doc => {
                 this.responsibility.push(doc.data())
             });
-            this._isMounted && this.setState({ Responsibility : this.responsibility })
+            this._isMounted && this.setState({ Responsibility: this.responsibility })
             //console.log(this.state.Responsibility);
         }).catch(error => console.log(error))
     }
 
+    async getImage() {
+        await db.collection('itemURL').doc(this.props.itemCode).get().then(doc => {
+            if (!doc.exists) {
+                console.log('No such document!');
+            } else {
+                this._isMounted && this.setState({ imageURL: doc.data() })
+                //console.log('Image data:', typeof(this.state.imageURL));
+            }
+        }).catch(err => {
+            console.log('Error getting document', err);
+        });
+
+    }
 
     generateDepreciationsRows() {
-        //console.log("Work |")
         let depreciationCheck = this.state.Depreciations.map(depreciation => {
             return depreciation
         })
-        //console.log(depreciationCheck.length)
         if (!depreciationCheck.length) {
             return (
                 <tr>
@@ -76,7 +88,6 @@ class GeneralDetail extends Component {
                 </tr>
             )
         }
-
         return (
             this.state.Depreciations && this.state.Depreciations.map(depreciation => (
                 <tr key={depreciation.seq}>
@@ -86,7 +97,7 @@ class GeneralDetail extends Component {
             ))
         )
     }
-    
+
     generateResponsibilityRows() {
         let responsibilityCheck = this.state.Responsibility.map(responsibility => {
             return responsibility
@@ -175,10 +186,25 @@ class GeneralDetail extends Component {
 
     }
 
-    getImage() {
-        storage.ref('images/' + this.props.itemCode).getDownloadURL().then(url =>{
-            console.log(url)
-        }).catch(error => console.log(error))
+    genImage() {
+        if (!this.state.imageURL.url) {
+            return (<p>ไม่มีรูปภาพ</p>)
+        }
+
+        return (
+            this.state.imageURL.url && this.state.imageURL.url.map(img => (
+                <img 
+                    key={img}
+                    src={img}
+                    alt="img"
+                    className="shadow-sm p-3 mb-5 bg-white rounded"
+                    style={{
+                        width: "23%", height: "23%", objectFit: "cover", marginLeft: "1%", marginRight: "1%", marginBottom: "2%",
+                        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.19)"
+                    }}
+                />
+            ))
+        )
     }
 
     componentWillUnmount() {
@@ -202,9 +228,9 @@ class GeneralDetail extends Component {
                         เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>&nbsp;&nbsp;
                 </span>
 
-
+                    {/*รายละเอียดครุภัณฑ์*/}
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                             <div className="box box-success">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
@@ -223,51 +249,48 @@ class GeneralDetail extends Component {
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
-                                                <td>ชื่อพัสดุ : &nbsp;<b>{this.state.item.itemName}</b></td>
+                                                <th style={{ width: "30%" }}></th>
+                                                <th style={{ width: "70%" }}></th>
                                             </tr>
                                             <tr>
-                                                <td>ใบส่งของที่ : &nbsp;<b>{this.state.item.waybillCode}</b></td>
+                                                <td><b>ชื่อพัสดุ</b></td>
+                                                <td>{this.state.item.itemName}</td>
                                             </tr>
                                             <tr>
-                                                <td>ชื่อ/ยี่ห้อผู้ทำหรือผลิต : &nbsp;<b>{this.state.item.itemBrand}</b></td>
+                                                <td><b>ใบส่งของที่</b></td>
+                                                <td>{this.state.item.waybillCode}</td>
                                             </tr>
                                             <tr>
-                                                <td>แบบ/ชนิด/ลักษณะ : &nbsp;<b>{this.state.item.itemStyle}</b></td>
+                                                <td><b>ชื่อ/ยี่ห้อผู้ทำหรือผลิต</b></td>
+                                                <td>{this.state.item.itemBrand}</td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขลำดับ : &nbsp;<b>{this.state.item.orderNo}</b></td>
+                                                <td><b>แบบ/ชนิด/ลักษณะ</b></td>
+                                                <td>{this.state.item.itemStyle}</td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขเครื่อง : &nbsp;<b>{this.state.item.bodyNo}</b></td>
+                                                <td><b>หมายเลขลำดับ</b></td>
+                                                <td>{this.state.item.orderNo}</td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขกรอบ : &nbsp;<b>{this.state.item.frameNo}</b></td>
+                                                <td><b>หมายเลขเครื่อง</b></td>
+                                                <td>{this.state.item.bodyNo}</td>
                                             </tr>
                                             <tr>
-                                                <td>หมายเลขจดทะเบียน : &nbsp;<b>{this.state.item.regisNo}</b></td>
+                                                <td><b>หมายเลขกรอบ</b></td>
+                                                <td>{this.state.item.frameNo}</td>
                                             </tr>
                                             <tr>
-                                                <td>สีของพัสดุ : &nbsp;<b>{this.state.item.itemColor}</b></td>
+                                                <td><b>หมายเลขจดทะเบียน</b></td>
+                                                <td>{this.state.item.regisNo}</td>
                                             </tr>
                                             <tr>
-                                                <td>อื่น ๆ : &nbsp;<b>{this.state.item.other}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table className="table table-striped with-border">
-                                        <tbody>
-                                            <tr>
-                                                <td>เงือนไข - การประกัน : &nbsp;<b>{this.state.item.insuranceTerms}</b></td>
+                                                <td><b>สีของพัสดุ</b></td>
+                                                <td>{this.state.item.itemColor}</td>
                                             </tr>
                                             <tr>
-                                                <td>พัสดุรับประกันถึงวันที่ : &nbsp;<b>{this.state.item.insuranceExpDate}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>พัสดุรับประกันไว้ที่บริษัท : &nbsp;<b>{this.state.item.insuranceCompany}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>วันที่ประกันพัสดุ : &nbsp;<b>{this.state.item.insuranceDate}</b></td>
+                                                <td><b>อื่น ๆ</b></td>
+                                                <td>{this.state.item.other}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -275,16 +298,24 @@ class GeneralDetail extends Component {
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มาจาก : &nbsp;<b>{this.state.item.derivedFrom}</b></td>
+                                                <th style={{ width: "30%" }}></th>
+                                                <th style={{ width: "70%" }}></th>
                                             </tr>
                                             <tr>
-                                                <td>ซื้อ/จ้าง/ได้มา เมื่อวันที่ : &nbsp;<b>{this.state.item.derivedDate}</b></td>
+                                                <td><b>เงือนไข-การประกัน</b></td>
+                                                <td>{this.state.item.insuranceTerms}</td>
                                             </tr>
                                             <tr>
-                                                <td>ราคา : &nbsp;<b>{this.state.item.Price}<span className="pull-right" style={{ marginRight: 40 }}>บาท</span></b></td>
+                                                <td><b>พัสดุรับประกันถึงวันที่</b></td>
+                                                <td>{this.state.item.insuranceExpDate}</td>
                                             </tr>
                                             <tr>
-                                                <td>งบประมาณของ : &nbsp;<b>{this.state.item.budgetOf}</b></td>
+                                                <td><b>พัสดุรับประกันไว้ที่บริษัท</b></td>
+                                                <td>{this.state.item.insuranceCompany}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>วันที่ประกันพัสดุ</b></td>
+                                                <td>{this.state.item.insuranceDate}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -292,7 +323,37 @@ class GeneralDetail extends Component {
                                     <table className="table table-striped with-border">
                                         <tbody>
                                             <tr>
-                                                <td>หมายเหตุ : &nbsp;<b>{this.state.item.Note}</b></td>
+                                                <th style={{ width: "30%" }}></th>
+                                                <th style={{ width: "70%" }}></th>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ซื้อ/จ้าง/ได้มาจาก</b></td>
+                                                <td>{this.state.item.derivedFrom}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ซื้อ/จ้าง/ได้มา เมื่อวันที่</b></td>
+                                                <td>{this.state.item.derivedDate}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ราคา</b></td>
+                                                <td>{this.state.item.Price} &nbsp; บาท</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>งบประมาณของ</b></td>
+                                                <td>{this.state.item.budgetOf}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table className="table table-striped with-border">
+                                        <tbody>
+                                            <tr>
+                                                <th style={{ width: "30%" }}></th>
+                                                <th style={{ width: "70%" }}></th>
+                                            </tr>
+                                            <tr>
+                                                <td><b>หมายเหตุ</b></td>
+                                                <td>{this.state.item.Note}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -303,9 +364,15 @@ class GeneralDetail extends Component {
                             </div>
                             {/* /.box */}
                         </div>
-                        {/* /.col */}
 
-                        <div className="col-md-6">
+
+
+
+                    </div>
+
+                    {/*ค่าเสื่อมราคา*/}
+                    <div className="row">
+                        <div className="col-md-12">
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
@@ -314,7 +381,7 @@ class GeneralDetail extends Component {
                                             type="button"
                                             className="btn btn-box-tool"
                                             style={{ fontSize: 20 }}
-                                            onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.state.item.id)}>
+                                            onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.props.itemCode)}>
                                             <i className="fa fa-info" />&nbsp;รายละเอียด&nbsp;&nbsp;
                                         </button>
                                     </div>
@@ -331,8 +398,12 @@ class GeneralDetail extends Component {
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-
+                    {/*ค่าเสื่อมราคา*/}
+                    <div className="row">
+                        <div className="col-md-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>การหาผลประโยชน์ในพัสดุ</h1>
@@ -362,11 +433,9 @@ class GeneralDetail extends Component {
                             {/* /.box */}
 
                         </div>
-
-
                     </div>
-                    {/* /.row */}
 
+                    {/*การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ*/}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-primary">
@@ -390,6 +459,7 @@ class GeneralDetail extends Component {
                         </div>
                     </div>
 
+                    {/*บันทึกการซ่อม*/}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-primary">
@@ -416,19 +486,23 @@ class GeneralDetail extends Component {
                         </div>
                     </div>
 
+                    {/*รูปถ่ายหรือแผนผังที่ตั้ง*/}
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>รูปถ่ายหรือแผนผังที่ตั้ง</h1>
                                 </div>
                                 <div className="box-body">
-
+                                    {this.genImage()}
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="col-md-6">
+                    {/*การจำหน่าย*/}
+                    <div className="row">
+                        <div className="col-md-12">
                             <div className="box box-danger">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>การจำหน่าย</h1>

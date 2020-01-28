@@ -25,6 +25,7 @@ class GeneralForm extends Component {
         this._check1 = false
         this._check2 = false
         this._check3 = false
+        this._check4 = false
 
         this._imageURL = []
         this._refId = ""
@@ -299,13 +300,14 @@ class GeneralForm extends Component {
         })
     }
 
-    uploadImg() {
-        this.createURLCollection()
+    async uploadImg() {
+        
         let imgCode = this.state.itemCode.concat(this.refs.itemCode.value)
         let seq = 1
+        await this.createURLCollection(imgCode)
 
         if (this.state.image) {
-            this.state.image.forEach((image, index, array) => {
+            await this.state.image.forEach((image) => {
                 const uploadTask = storage.ref(`images/${imgCode}/${imgCode}(${seq})`).put(image)
                 uploadTask.on('state_changed',
                     (snapshot) => { /*progress function */ },
@@ -313,40 +315,39 @@ class GeneralForm extends Component {
                     () => {
                         uploadTask.snapshot.ref.getDownloadURL().then(url => {
                             this._imageURL.push(url)
-                            this.updateURLCollection(this._imageURL)
+                            this.updateURLCollection(this._imageURL, imgCode)
                         })
                     })
                 seq = seq + 1;
             })
-       
         }
+        this._check4 = true
+        console.log("add image complete !!")
     }
 
-    createURLCollection() {
+    async createURLCollection(imgCode) {
+        //console.log("createURLCollection")
         const newURL = {
-            "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "url": []
         }
-        db.collection('itemURL').add(newURL).then(ref => {
-            this._refId = ref.id
-            console.log("create url collection complete !! |" + this._refId)
+        await db.collection('itemURL').doc(imgCode).set(newURL).then(() => {
+            console.log("create url collection complete !!")
         })
-        
     }
 
-    updateURLCollection(imageURL) {
-        console.log(this._refId)
+    async updateURLCollection(imageURL , imgCode) {
+        //console.log("updateURLCollection")
+        //console.log(this._refId)
         const updateURL = {
-            "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),
             "url": imageURL
         }
-        db.collection('itemURL').doc(this._refId).update(updateURL).then(() => {
+        await db.collection('itemURL').doc(imgCode).update(updateURL).then(() => {
             console.log("update url collection complete !!")
         })
     }
 
     confirmAdd() {
-        if (this._check1 && this._check2 && this._check3) {
+        if (this._check1 && this._check2 && this._check3 && this._check4) {
             this.props.history.push('/items')
             console.log("เพิ่มข้อมูลสำเร็จ")
         }
