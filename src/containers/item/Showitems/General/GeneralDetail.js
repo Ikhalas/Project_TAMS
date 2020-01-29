@@ -1,7 +1,29 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
+import Modal from 'react-modal';
+import ItemDepreciation from '../depreciation/ItemDepreciation'
 
 import { db } from '../../../../common/firebaseConfig'
+
+const modalStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: '#f9f9f9',
+        borderStyle: 'solid',
+        borderWidth: '1px',
+        borderRadius: '25px'
+
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1000
+    },
+};
 
 class GeneralDetail extends Component {
     constructor(props) {
@@ -15,10 +37,23 @@ class GeneralDetail extends Component {
             Maintenance: [],
             imageURL: [],
 
-            statusClass: ''
+            opacity: 0.2,
+
+            statusClass: '',
+
+            depModalIsOpen: false,
+            editModalIsOpen: false,
         }
+
+        this.DepOpenModal = this.DepOpenModal.bind(this);
+        this.DepCloseModal = this.DepCloseModal.bind(this);
+
+        this.editOpenModal = this.editOpenModal.bind(this);
+        this.editCloseModal = this.editCloseModal.bind(this);
     }
     _isMounted = false
+    _getItemSuccess = false
+    _getDesSuccess = false
 
     depreciations = []
     responsibility = []
@@ -28,7 +63,6 @@ class GeneralDetail extends Component {
         //console.log("id |" + this.props.itemId)
         //console.log("code |" + this.props.itemCode)
         this._isMounted = true;
-
         this._isMounted && this.getItemDetail()
         this._isMounted && this.getItemDepreciations()
         this._isMounted && this.getResponsibility()
@@ -38,6 +72,7 @@ class GeneralDetail extends Component {
     getItemDetail() {
         db.collection('items').doc(this.props.itemId).get().then(doc => {
             this._isMounted && this.setState({ item: doc.data() })
+            this._getItemSuccess = true
             //console.log("item |" + this.state.item)
         }).catch(error => console.log(error))
     }
@@ -48,6 +83,7 @@ class GeneralDetail extends Component {
                 this.depreciations.push(doc.data())
             });
             this._isMounted && this.setState({ Depreciations: this.depreciations })
+            this._getDesSuccess = true
             //console.log(this.state.Depreciations);
         }).catch(error => console.log(error))
     }
@@ -85,6 +121,7 @@ class GeneralDetail extends Component {
                 <tr>
                     <td style={{ textAlign: 'center' }}><b>-</b></td>
                     <td style={{ textAlign: 'center' }}><span className="label label-danger">--&nbsp;ยังไม่มีรายการ&nbsp;--</span></td>
+                    <td style={{ textAlign: 'center' }}><b>-</b></td>
                 </tr>
             )
         }
@@ -93,6 +130,7 @@ class GeneralDetail extends Component {
                 <tr key={depreciation.seq}>
                     <td style={{ textAlign: 'center' }}><b>{depreciation.Year}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{depreciation.Balance}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{depreciation.dNote}</b></td>
                 </tr>
             ))
         )
@@ -193,7 +231,7 @@ class GeneralDetail extends Component {
 
         return (
             this.state.imageURL.url && this.state.imageURL.url.map(img => (
-                <img 
+                <img
                     key={img}
                     src={img}
                     alt="img"
@@ -205,6 +243,36 @@ class GeneralDetail extends Component {
                 />
             ))
         )
+    }
+
+    DepOpenModal() {
+        this.setState({ depModalIsOpen: true });
+        document.body.style.overflow = 'hidden';
+    }
+
+    DepCloseModal() {
+        this.setState({ depModalIsOpen: false });
+        document.body.style.overflow = 'unset';
+    }
+
+    editOpenModal() {
+        this.setState({ editModalIsOpen: true });
+        document.body.style.overflow = 'hidden'
+    }
+
+    editCloseModal() {
+        this.setState({ editModalIsOpen: false });
+        document.body.style.overflow = 'unset';
+    }
+
+    mouseEnter = () => {
+        //console.log('mouse enter')
+        this.setState({ opacity: 1 })
+    }
+
+    mouseLeave = () => {
+        //console.log('mouse leave')
+        this.setState({ opacity: 0.2 })
     }
 
     componentWillUnmount() {
@@ -231,177 +299,269 @@ class GeneralDetail extends Component {
                     {/*รายละเอียดครุภัณฑ์*/}
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="box box-success">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
-                                    <div className="box-tools pull-right">
-                                        <button
-                                            type="button"
-                                            className="btn btn-box-tool"
-                                            style={{ fontSize: 20 }}
-                                            onClick={() => this.props.history.push('/items/item-detail/general-edit/' + this.state.item.id)}>
-                                            <i className="fa fa-edit" />แก้ไข&nbsp;&nbsp;
-                                        </button>
+                            {this._getItemSuccess &&
+                                <div className="box box-success" style={{ borderRadius: '10px' }}>
+                                    <div className="box-header with-border">
+                                        <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
+                                        <div className="box-tools pull-right">
+
+                                        </div>
+                                    </div>
+
+                                    <div className="box-body no-padding" style={{ fontSize: 19 }}>
+                                        <table className="table table-striped with-border">
+                                            <tbody>
+                                                <tr>
+                                                    <th style={{ width: "25%" }}></th>
+                                                    <th style={{ width: "65%" }}></th>
+                                                    <th style={{ width: "10%" }}></th>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave} >
+                                                    <td><b>ชื่อพัสดุ</b></td>
+                                                    <td>{this.state.item.itemName}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>ใบส่งของที่</b></td>
+                                                    <td>{this.state.item.waybillCode}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>ชื่อ/ยี่ห้อผู้ทำหรือผลิต</b></td>
+                                                    <td>{this.state.item.itemBrand}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>แบบ/ชนิด/ลักษณะ</b></td>
+                                                    <td>{this.state.item.itemStyle}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>หมายเลขลำดับ</b></td>
+                                                    <td>{this.state.item.orderNo}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>หมายเลขเครื่อง</b></td>
+                                                    <td>{this.state.item.bodyNo}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>หมายเลขกรอบ</b></td>
+                                                    <td>{this.state.item.frameNo}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>หมายเลขจดทะเบียน</b></td>
+                                                    <td>{this.state.item.regisNo}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>สีของพัสดุ</b></td>
+                                                    <td>{this.state.item.itemColor}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>อื่น ๆ</b></td>
+                                                    <td>{this.state.item.other}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table className="table table-striped with-border">
+                                            <tbody>
+                                                <tr>
+                                                    <th style={{ width: "25%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "65%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "10%", backgroundColor: '#f0f0f0' }}></th>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>เงือนไข-การประกัน</b></td>
+                                                    <td>{this.state.item.insuranceTerms}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>พัสดุรับประกันถึงวันที่</b></td>
+                                                    <td>{this.state.item.insuranceExpDate}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>พัสดุรับประกันไว้ที่บริษัท</b></td>
+                                                    <td>{this.state.item.insuranceCompany}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>วันที่ประกันพัสดุ</b></td>
+                                                    <td>{this.state.item.insuranceDate}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table className="table table-striped with-border">
+                                            <tbody>
+                                                <tr>
+                                                    <th style={{ width: "25%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "65%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "10%", backgroundColor: '#f0f0f0' }}></th>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>ซื้อ/จ้าง/ได้มาจาก</b></td>
+                                                    <td>{this.state.item.derivedFrom}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>ซื้อ/จ้าง/ได้มา เมื่อวันที่</b></td>
+                                                    <td>{this.state.item.derivedDate}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>ราคา</b></td>
+                                                    <td>{this.state.item.Price} &nbsp; บาท</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>งบประมาณของ</b></td>
+                                                    <td>{this.state.item.budgetOf}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table className="table table-striped with-border">
+                                            <tbody>
+                                                <tr>
+                                                    <th style={{ width: "25%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "65%", backgroundColor: '#f0f0f0' }}></th>
+                                                    <th style={{ width: "10%", backgroundColor: '#f0f0f0' }}></th>
+                                                </tr>
+                                                <tr onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                                                    <td><b>หมายเหตุ</b></td>
+                                                    <td>{this.state.item.Note}</td>
+                                                    <td>
+                                                        <a style={{ color: '#7c7c7c', opacity: this.state.opacity }} href="#edit" onClick={this.editOpenModal}>
+                                                            &nbsp;<i className="fa fa-pencil" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-
-                                <div className="box-body no-padding" style={{ fontSize: 19 }}>
-                                    <table className="table table-striped with-border">
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "30%" }}></th>
-                                                <th style={{ width: "70%" }}></th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ชื่อพัสดุ</b></td>
-                                                <td>{this.state.item.itemName}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ใบส่งของที่</b></td>
-                                                <td>{this.state.item.waybillCode}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ชื่อ/ยี่ห้อผู้ทำหรือผลิต</b></td>
-                                                <td>{this.state.item.itemBrand}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>แบบ/ชนิด/ลักษณะ</b></td>
-                                                <td>{this.state.item.itemStyle}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>หมายเลขลำดับ</b></td>
-                                                <td>{this.state.item.orderNo}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>หมายเลขเครื่อง</b></td>
-                                                <td>{this.state.item.bodyNo}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>หมายเลขกรอบ</b></td>
-                                                <td>{this.state.item.frameNo}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>หมายเลขจดทะเบียน</b></td>
-                                                <td>{this.state.item.regisNo}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>สีของพัสดุ</b></td>
-                                                <td>{this.state.item.itemColor}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>อื่น ๆ</b></td>
-                                                <td>{this.state.item.other}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table className="table table-striped with-border">
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "30%" }}></th>
-                                                <th style={{ width: "70%" }}></th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>เงือนไข-การประกัน</b></td>
-                                                <td>{this.state.item.insuranceTerms}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>พัสดุรับประกันถึงวันที่</b></td>
-                                                <td>{this.state.item.insuranceExpDate}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>พัสดุรับประกันไว้ที่บริษัท</b></td>
-                                                <td>{this.state.item.insuranceCompany}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>วันที่ประกันพัสดุ</b></td>
-                                                <td>{this.state.item.insuranceDate}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table className="table table-striped with-border">
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "30%" }}></th>
-                                                <th style={{ width: "70%" }}></th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ซื้อ/จ้าง/ได้มาจาก</b></td>
-                                                <td>{this.state.item.derivedFrom}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ซื้อ/จ้าง/ได้มา เมื่อวันที่</b></td>
-                                                <td>{this.state.item.derivedDate}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>ราคา</b></td>
-                                                <td>{this.state.item.Price} &nbsp; บาท</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>งบประมาณของ</b></td>
-                                                <td>{this.state.item.budgetOf}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table className="table table-striped with-border">
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "30%" }}></th>
-                                                <th style={{ width: "70%" }}></th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>หมายเหตุ</b></td>
-                                                <td>{this.state.item.Note}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-
-                                </div>
-                                {/* /.box-body */}
-                            </div>
-                            {/* /.box */}
+                            }
                         </div>
-
-
-
-
                     </div>
 
                     {/*ค่าเสื่อมราคา*/}
-                    <div className="row">
+                    <div className="row" style={{ fontSize: 19 }}>
                         <div className="col-md-12">
-                            <div className="box box-danger">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
-                                    <div className="box-tools pull-right">
-                                        <button
-                                            type="button"
-                                            className="btn btn-box-tool"
-                                            style={{ fontSize: 20 }}
-                                            onClick={() => this.props.history.push('/depreciation/item-depreciation/' + this.props.itemCode)}>
-                                            <i className="fa fa-info" />&nbsp;รายละเอียด&nbsp;&nbsp;
-                                        </button>
+                            {this._getDesSuccess &&
+                                <div className="box box-success" style={{ borderRadius: '10px' }}>
+                                    <div className="box-header with-border">
+                                        <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
+                                        <div className="box-tools pull-right">
+                                            <button
+                                                type="button"
+                                                className="btn btn-box-tool"
+                                                style={{ fontSize: 20 }}
+                                                onClick={this.DepOpenModal}
+                                            >
+                                                <i className="fa fa-plus" />
+                                                <span>&nbsp;รายละเอียด/เพิ่มรายการ&nbsp;&nbsp;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="box-body">
+                                        <table className="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{ width: '15%', textAlign: 'center' }}>วันที่</td>
+                                                    <td style={{ width: '55%', textAlign: 'center' }}>ราคาคงเหลือ</td>
+                                                    <td style={{ width: '30%', textAlign: 'center' }}>หมายเหตุ</td>
+                                                </tr>
+                                                {this.generateDepreciationsRows()}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div className="box-body">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: '20%', textAlign: 'center' }}>วันที่</td>
-                                                <td style={{ width: '80%', textAlign: 'center' }}>ราคาคงเหลือ</td>
-                                            </tr>
-                                            {this.generateDepreciationsRows()}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
 
-                    {/*ค่าเสื่อมราคา*/}
+                    {/*การหาผลประโยชน์ในพัสดุ*/}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-primary">
@@ -532,6 +692,35 @@ class GeneralDetail extends Component {
                             {/* /.box */}
                         </div>
                     </div>
+
+                    {/*Edit Modal*/}
+                    <Modal
+                        isOpen={this.state.editModalIsOpen}
+                        closeTimeoutMS={500}
+                        onRequestClose={this.editCloseModal}
+                        style={modalStyles}
+                        contentLabel="Edit Modal"
+                    >
+                        <div style={{ width: 500, height: 100 }}>
+
+                        </div>
+                    </Modal>
+
+                    {/*Depreciations Modal*/}
+                    <Modal
+                        isOpen={this.state.depModalIsOpen}
+                        closeTimeoutMS={500}
+                        onRequestClose={this.DepCloseModal}
+                        style={modalStyles}
+                        contentLabel="Depreciations Modal"
+                    >
+                        <div style={{ width: 1000 }}>
+
+                            <ItemDepreciation itemCode={this.props.itemCode} depreciations={this.state.Depreciations} />
+
+                        </div>
+                    </Modal>
+
                 </section>
             </div>
         )

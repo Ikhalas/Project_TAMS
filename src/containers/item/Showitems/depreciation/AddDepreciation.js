@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import axios from 'axios';
+import { db } from '../../../../common/firebaseConfig'
 
 export default class AddDepreciation extends Component {
     componentDidMount() {
+        this.loadScript()  //script for datepicker
+    }
+
+    loadScript(){
         const script = document.createElement('script')
         script.src = '/js/thaidate.js'
         script.async = true
@@ -15,7 +19,7 @@ export default class AddDepreciation extends Component {
             "seq": this.refs.seq.value + 1,
             "Year": this.refs.Year.value,
             "Balance": this.refs.Balance.value,
-            "Note": this.refs.Note.value
+            "dNote": this.refs.Note.value
         }
         //console.log(newVal)
         e.preventDefault()
@@ -24,16 +28,11 @@ export default class AddDepreciation extends Component {
     }
 
     addDepreciation(newVal) {
-        axios.request({
-            method: 'post',
-            url: 'http://localhost:3001/Depreciations',
-            data: newVal
-        }).then(res => {
-            alert("เพิ่มข้อมูลสำเร็จ")
+        db.collection('itemDepreciations').add(newVal).then(() => {
+            console.log("add item complete !!")
             window.location.reload();
-        }).catch(err => console.log(err));
+        })
     }
-
 
     renderList() {
         //console.log(this.props.depreciations)
@@ -107,23 +106,8 @@ export default class AddDepreciation extends Component {
 
     render() {
         return (
-            <div>
-                <section className="content">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-warning">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 20 }}>รายการใหม่</h1>
-                                </div>
-                                <div className="box-body">
-                                    {this.renderList()}
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+            <div className="box-body">
+                {this.renderList()}
             </div>
         )
     }

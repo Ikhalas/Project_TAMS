@@ -16,7 +16,7 @@ class ItemDepreciation extends Component {
 
     componentDidMount() {
         let id = this.props.match.params.id;
-        // console.log(id)
+        console.log(this.props.itemCode)
         axios.get('http://localhost:3001/Items/' + id).then(
             res => {
                 this.setState({ item: res.data })
@@ -38,7 +38,7 @@ class ItemDepreciation extends Component {
 
             }).catch(err => {
                 console.log(err)
-                this.props.history.push('/NotFound')
+                //this.props.history.push('/NotFound')
             })
             
     }
@@ -121,8 +121,8 @@ class ItemDepreciation extends Component {
 
     render() {
         return (
-            <div>
-                <div className="content-wrapper title">
+          
+                <div className="title">
                     <section className="content-header">
                         <h1>
                             <span style={{ fontSize: 50 }}>&nbsp;ค่าเสื่อมราคาของครุภัณฑ์</span>
@@ -134,8 +134,8 @@ class ItemDepreciation extends Component {
                                 <div className="box box-warning">
                                     <ul className="list-group">
                                         <li className="list-group-item title">
-                                            <span style={{ fontSize: 20 }}><b>เลขรหัสพัสดุ</b> &nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                            <span style={{ fontSize: 30 }}>{this.state.item.itemCode}</span>
+                                            <span style={{ fontSize: 20 }}><b>เลขรหัสพัสดุครุภัณฑ์</b> &nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            <span style={{ fontSize: 30 }}>{this.props.itemCode}</span>
                                             <br />
                                             <span style={{ fontSize: 20 }}><b>ชื่อพัสดุ</b> &nbsp; : &nbsp;&nbsp;&nbsp;&nbsp;</span>
                                             <span style={{ fontSize: 30 }}>{this.state.item.itemName}</span>
@@ -191,7 +191,7 @@ class ItemDepreciation extends Component {
 
 
                 </div>
-            </div>
+          
         )
     }
 }
