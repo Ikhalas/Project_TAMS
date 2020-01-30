@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import Modal from 'react-modal';
 import ItemDepreciation from '../depreciation/ItemDepreciation'
+import AddResponsibility from '../responsibility/AddResponsibility'
 
 import { db } from '../../../../common/firebaseConfig'
 
@@ -43,6 +44,7 @@ class GeneralDetail extends Component {
 
             depModalIsOpen: false,
             editModalIsOpen: false,
+            resModalIsOpen: false,
         }
 
         this.DepOpenModal = this.DepOpenModal.bind(this);
@@ -50,6 +52,9 @@ class GeneralDetail extends Component {
 
         this.editOpenModal = this.editOpenModal.bind(this);
         this.editCloseModal = this.editCloseModal.bind(this);
+
+        this.resOpenModal = this.resOpenModal.bind(this);
+        this.resCloseModal = this.resCloseModal.bind(this);
     }
     _isMounted = false
     _getItemSuccess = false
@@ -148,6 +153,7 @@ class GeneralDetail extends Component {
                     <td style={{ textAlign: 'center' }}><b>-</b></td>
                     <td style={{ textAlign: 'center' }}><span className="label label-danger">--&nbsp;ยังไม่มีรายการ&nbsp;--</span></td>
                     <td style={{ textAlign: 'center' }}><b>-</b></td>
+                    <td style={{ textAlign: 'center' }}><b>-</b></td>
                 </tr>
             )
         }
@@ -158,6 +164,7 @@ class GeneralDetail extends Component {
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.Year}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.responsibilityDepartmentName}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{Responsibility.responsibilityDepartmentHead}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{Responsibility.responsibilityUserName}</b></td>
                 </tr>
             ))
         )
@@ -262,6 +269,16 @@ class GeneralDetail extends Component {
 
     editCloseModal() {
         this.setState({ editModalIsOpen: false });
+        document.body.style.overflow = 'unset';
+    }
+
+    resOpenModal() {
+        this.setState({ resModalIsOpen: true });
+        document.body.style.overflow = 'hidden'
+    }
+
+    resCloseModal() {
+        this.setState({ resModalIsOpen: false });
         document.body.style.overflow = 'unset';
     }
 
@@ -525,6 +542,42 @@ class GeneralDetail extends Component {
                         </div>
                     </div>
 
+                    {/*ส่วนราชการและผู้ดูแลรับผิดชอบ*/}
+                    <div className="row" style={{ fontSize: 19 }}>
+                        <div className="col-md-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>ส่วนราชการและผู้ดูแลรับผิดชอบ</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 20 }}
+                                            onClick={this.resOpenModal}
+                                        >
+                                            <i className="fa fa-plus" />
+                                            <span>&nbsp;เพิ่มรายการ&nbsp;&nbsp;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>ชื่อส่วนราชการ</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>ชื่อหัวหน้าส่วนราชการ</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>ชื่อผู้ใช้</td>
+                                            </tr>
+                                            {this.generateResponsibilityRows()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {/* /.box */}
+                        </div>
+                    </div>
+
                     {/*ค่าเสื่อมราคา*/}
                     <div className="row" style={{ fontSize: 19 }}>
                         <div className="col-md-12">
@@ -592,30 +645,6 @@ class GeneralDetail extends Component {
                             </div>
                             {/* /.box */}
 
-                        </div>
-                    </div>
-
-                    {/*การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ*/}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>การเปลี่ยนแปลงส่วนราชการและผู้ดูแลรับผิดชอบ</h1>
-                                </div>
-                                <div className="box-body">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
-                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อส่วนราชการ (สำนัก, กอง, ฝ่าย)</td>
-                                                <td style={{ width: 300, textAlign: 'center' }}>ชื่อหัวหน้าส่วนราชการ</td>
-                                            </tr>
-                                            {this.generateResponsibilityRows()}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {/* /.box */}
                         </div>
                     </div>
 
@@ -706,6 +735,20 @@ class GeneralDetail extends Component {
                         </div>
                     </Modal>
 
+                    {/*Responsibility Modal*/}
+                    <Modal
+                        isOpen={this.state.resModalIsOpen}
+                        closeTimeoutMS={500}
+                        onRequestClose={this.resCloseModal}
+                        style={modalStyles}
+                        contentLabel="Responsibility Modal"
+                    >
+                        <div style={{ width: 1000 }}>
+
+                            <AddResponsibility itemCode={this.props.itemCode} responsibility={this.state.Responsibility} />
+                        </div>
+                    </Modal>
+
                     {/*Depreciations Modal*/}
                     <Modal
                         isOpen={this.state.depModalIsOpen}
@@ -717,7 +760,6 @@ class GeneralDetail extends Component {
                         <div style={{ width: 1000 }}>
 
                             <ItemDepreciation itemCode={this.props.itemCode} depreciations={this.state.Depreciations} />
-
                         </div>
                     </Modal>
 

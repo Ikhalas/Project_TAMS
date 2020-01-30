@@ -847,6 +847,22 @@ class GeneralForm extends Component {
                                             />
                                         </div>
                                     </div>
+                              
+                                    <div className="form-group">
+                                        <label>ชื่อหัวหน้าส่วนราชการ</label>
+                                        <div className="input-group">
+                                            <div className="input-group-addon">
+                                                <i className="fa fa-address-card" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={{ fontSize: 20 }}
+                                                name="responsibilityDepartmentHead" /*****/
+                                                ref="responsibilityDepartmentHead"  /*****/
+                                            />
+                                        </div>
+                                    </div>
 
                                     <div className="form-group">
                                         <label>ชื่อผู้ใช้พัสดุ</label>
@@ -860,22 +876,6 @@ class GeneralForm extends Component {
                                                 style={{ fontSize: 20 }}
                                                 name="responsibilityUserName" /*****/
                                                 ref="responsibilityUserName"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>ชื่อหัวหน้าส่วนราชการ</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-address-card" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20 }}
-                                                name="responsibilityDepartmentHead" /*****/
-                                                ref="responsibilityDepartmentHead"  /*****/
                                             />
                                         </div>
                                     </div>

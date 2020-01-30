@@ -16,7 +16,7 @@ export default class AddDepreciation extends Component {
     onSubmit = (e) => {
         const newVal = {
             "itemCode": this.refs.itemCode.value,
-            "seq": this.refs.seq.value + 1,
+            "seq": Number(this.refs.seq.value) + 1,
             "Year": this.refs.Year.value,
             "Balance": this.refs.Balance.value,
             "dNote": this.refs.Note.value
@@ -34,7 +34,7 @@ export default class AddDepreciation extends Component {
         })
     }
 
-    renderList() {
+    renderForm() {
         //console.log(this.props.depreciations)
         if (this.props.depreciations) {
             var depreciation = this.props.depreciations.map(depreciation => (depreciation))
@@ -95,19 +95,16 @@ export default class AddDepreciation extends Component {
                             </button>
                         </div>
                     </form>
-
                 </div>
             )
         }
 
     }
 
-
-
     render() {
         return (
             <div className="box-body">
-                {this.renderList()}
+                {this.renderForm()}
             </div>
         )
     }
