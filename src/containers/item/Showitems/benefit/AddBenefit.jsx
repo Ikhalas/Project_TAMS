@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { db } from '../../../../common/firebaseConfig'
 
-export default class AddResponsibility extends Component {
+export default class AddBenefit extends Component {
     componentDidMount() {
         //console.log(this.props.itemCode)
         this.loadScript()  //script for datepicker
@@ -15,29 +15,11 @@ export default class AddResponsibility extends Component {
     }
 
     onSubmit = (e) => {
-        let _lastSeq = Math.max.apply(Math, this.props.responsibility.map(function (obj) { return obj.seq; }))
-        //console.log(_lastSeq)
-
-        const newVal = {
-            "itemCode": this.props.itemCode,
-            "seq": Number(_lastSeq) + 1,
-            "Year": this.refs.Date.value,
-            "responsibilityDepartmentName": this.refs.departmentName.value,
-            "responsibilityDepartmentHead": this.refs.headName.value,
-            "responsibilityUserName": this.refs.userName.value,
-            "Note": "-"
-        }
+       
         //console.log(newVal)
         e.preventDefault()
 
-        this.addResponsibility(newVal)
-    }
-
-    addResponsibility(newVal) {
-        db.collection('itemResponsibility').add(newVal).then(() => {
-            console.log("add itemResponsibility complete !!")
-            window.location.reload();
-        })
+        
     }
 
     render() {
@@ -45,7 +27,7 @@ export default class AddResponsibility extends Component {
             <div className="title">
                 <section className="content-header">
                     <h1>
-                        <span style={{ fontSize: 35 }}>&nbsp;ส่วนราชการและผู้ดูแลรับผิดชอบ</span>
+                        <span style={{ fontSize: 35 }}>&nbsp;การหาผลประโยชน์ในพัสดุ</span>
                     </h1>
                 </section>
                 <section className="content">
@@ -59,7 +41,7 @@ export default class AddResponsibility extends Component {
                                     </li>
                                 </ul>
                                 <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 21 }}>เพิ่มรายการส่วนราชการและผู้ดูแลรับผิดชอบ</h1>
+                                    <h1 className="box-title" style={{ fontSize: 21 }}>เพิ่มรายการการหาผลประโยชน์ในพัสดุ</h1>
                                 </div>
                                 <div className="box-body">
                                     <form onSubmit={this.onSubmit.bind(this)}>

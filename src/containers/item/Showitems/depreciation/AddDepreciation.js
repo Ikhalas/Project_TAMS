@@ -14,9 +14,10 @@ export default class AddDepreciation extends Component {
     }
 
     onSubmit = (e) => {
+        let _lastSeq = Math.max.apply(Math, this.props.depreciations.map(function (obj) { return obj.seq; })) //find last seq
         const newVal = {
-            "itemCode": this.refs.itemCode.value,
-            "seq": Number(this.refs.seq.value) + 1,
+            "itemCode": this.props.itemCode,
+            "seq": Number(_lastSeq) + 1,
             "Year": this.refs.Year.value,
             "Balance": this.refs.Balance.value,
             "dNote": this.refs.Note.value
@@ -40,7 +41,6 @@ export default class AddDepreciation extends Component {
             var depreciation = this.props.depreciations.map(depreciation => (depreciation))
             var maxIndex = depreciation.length - 1
 
-            var seq = this.props.depreciations.map(depreciation => (depreciation.seq))
             var Cumulative = this.props.depreciations.map(depreciation => (depreciation.Cumulative))
             var lastBalance = this.props.depreciations.map(depreciation => (depreciation.Balance))
 
@@ -55,8 +55,6 @@ export default class AddDepreciation extends Component {
                             <tbody>
                                 <tr>
                                     <td style={{ width: '15%', textAlign: 'center' }}>
-                                        <input type="hidden" name="itemCode" ref="itemCode" value={this.props.itemCode} readOnly />
-                                        <input type="hidden" name="seq" ref="seq" value={seq[maxIndex]} readOnly />
                                         <input
                                             type="text"
                                             className="form-control datepicker"
