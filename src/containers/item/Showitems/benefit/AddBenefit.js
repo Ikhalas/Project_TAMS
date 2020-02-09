@@ -4,6 +4,7 @@ import { db } from '../../../../common/firebaseConfig'
 export default class AddBenefit extends Component {
     componentDidMount() {
         //console.log(this.props.itemCode)
+        //console.log(this.props.benefit)
         this.loadScript()  //script for datepicker
     }
 
@@ -15,11 +16,31 @@ export default class AddBenefit extends Component {
     }
 
     onSubmit = (e) => {
-       
-        //console.log(newVal)
         e.preventDefault()
+        let _lastSeq = 0
+        //console.log(this.props.benefit.length)
+        if (this.props.benefit.length !== 0) {
+            _lastSeq = Math.max.apply(Math, this.props.benefit.map(function (obj) { return obj.seq; }))
+            _lastSeq = _lastSeq + 1
+        }
+        //console.log(_lastSeq)
+        const newVal = {
+            "itemCode": this.props.itemCode,
+            "seq": _lastSeq,
+            "date": this.refs.date.value,
+            "detail": this.refs.detail.value,
+            "total": this.refs.total.value,
+            "note": this.refs.note.value
+        }
+        //console.log(newVal)
+        this.addBenefit(newVal)
+    }
 
-        
+    addBenefit(newVal) {
+        db.collection('itemBenefit').add(newVal).then(() => {
+            console.log("add itemBenefit complete !!")
+            window.location.reload();
+        })
     }
 
     render() {
@@ -49,7 +70,7 @@ export default class AddBenefit extends Component {
                                             <div className="input-group">
                                                 <div className="input-group-addon" style={{ fontSize: 18 }}>
                                                     <div style={{ width: '150px', textAlign: 'initial' }}>
-                                                        <i className="fa fa-home" />
+                                                        <i className="fa fa-calendar" />
                                                         &nbsp;&nbsp;วัน/เดือน/ปี
                                                     </div>
                                                 </div>
@@ -59,9 +80,10 @@ export default class AddBenefit extends Component {
                                                     id="inputdatepicker"
                                                     data-date-format="dd/mm/yyyy"
                                                     placeholder="วัน/เดือน/ปี"
-                                                    style={{ fontSize: 20 }}
-                                                    name="Date" /*****/
-                                                    ref="Date"  /*****/
+                                                    style={{ fontSize: 20, width: '13%' }}
+                                                    name="date" /*****/
+                                                    ref="date"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -70,15 +92,16 @@ export default class AddBenefit extends Component {
                                                 <div className="input-group-addon" style={{ fontSize: 18 }}>
                                                     <div style={{ width: '150px', textAlign: 'initial' }}>
                                                         <i className="fa fa-home" />
-                                                        &nbsp;&nbsp;ชื่อส่วนราชการ
+                                                        &nbsp;&nbsp;รายละเอียด
                                                     </div>
                                                 </div>
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     style={{ fontSize: 20 }}
-                                                    name="departmentName" /*****/
-                                                    ref="departmentName"  /*****/
+                                                    name="detail" /*****/
+                                                    ref="detail"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -87,15 +110,16 @@ export default class AddBenefit extends Component {
                                                 <div className="input-group-addon" style={{ fontSize: 18 }}>
                                                     <div style={{ width: '150px', textAlign: 'initial' }}>
                                                         <i className="fa fa-address-card" />
-                                                        &nbsp;&nbsp;ชื่อหัวหน้าส่วนราชการ
+                                                        &nbsp;&nbsp;ผลประโยชน์ที่ได้รับ (บาท)
                                                     </div>
                                                 </div>
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     style={{ fontSize: 20 }}
-                                                    name="headName" /*****/
-                                                    ref="headName"  /*****/
+                                                    name="total" /*****/
+                                                    ref="total"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -104,15 +128,15 @@ export default class AddBenefit extends Component {
                                                 <div className="input-group-addon" style={{ fontSize: 18 }}>
                                                     <div style={{ width: '150px', textAlign: 'initial' }}>
                                                         <i className="fa fa-address-card" />
-                                                        &nbsp;&nbsp;ชื่อผู้ใช้พัสดุ
+                                                        &nbsp;&nbsp;หมายเหตุ (ถ้ามี)
                                                     </div>
                                                 </div>
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     style={{ fontSize: 20 }}
-                                                    name="userName" /*****/
-                                                    ref="userName"  /*****/
+                                                    name="note" /*****/
+                                                    ref="note"  /*****/
                                                 />
                                             </div>
                                         </div>

@@ -3,12 +3,13 @@ import { withRouter } from 'react-router-dom';
 import Modal from 'react-modal';
 import ItemDepreciation from '../depreciation/ItemDepreciation'
 import AddResponsibility from '../responsibility/AddResponsibility'
-import AddBenefit from '../benefit/AddBenefit.jsx'
+import AddBenefit from '../benefit/AddBenefit'
 
 import { db } from '../../../../common/firebaseConfig'
 
 const modalStyles = {
     content: {
+        position: 'absolute',
         top: '50%',
         left: '50%',
         right: 'auto',
@@ -22,6 +23,11 @@ const modalStyles = {
 
     },
     overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: 1000
     },
@@ -67,6 +73,7 @@ class GeneralDetail extends Component {
 
     depreciations = []
     responsibility = []
+    benefit = []
     imageURL = []
 
     componentDidMount() {
@@ -76,6 +83,7 @@ class GeneralDetail extends Component {
         this._isMounted && this.getItemDetail()
         this._isMounted && this.getItemDepreciations()
         this._isMounted && this.getResponsibility()
+        this._isMounted && this.getBenefit()
         this._isMounted && this.getImage()
     }
 
@@ -106,6 +114,16 @@ class GeneralDetail extends Component {
             this._isMounted && this.setState({ Responsibility: this.responsibility })
             //console.log(this.state.Responsibility);
         }).catch(error => console.log(error))
+    }
+
+    getBenefit(){
+        db.collection('itemBenefit').where('itemCode', '==', this.props.itemCode).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.benefit.push(doc.data())
+            });
+            this._isMounted && this.setState({ Benefit: this.benefit })
+            //console.log(this.state.Benefit);
+        }).catch(error => console.log(error))   
     }
 
     async getImage() {
@@ -152,7 +170,6 @@ class GeneralDetail extends Component {
         let responsibilityCheck = this.state.Responsibility.map(responsibility => {
             return responsibility
         })
-
         //console.log(responsibilityCheck.Year)
         if (!responsibilityCheck.length) {
             return (
@@ -179,12 +196,12 @@ class GeneralDetail extends Component {
     }
 
     generateBenefitRows() {
-        let exploitationCheck = this.state.Benefit.map(exploitation => {
-            return exploitation
+        let benefitCheck = this.state.Benefit.map(benefit => {
+            return benefit
         })
-        //console.log(exploitationCheck.Year)
+        //console.log(benefitCheck.length)
 
-        if (!exploitationCheck.length) {
+        if (!benefitCheck.length) {
             return (
                 <tr>
                     <td style={{ textAlign: 'center' }}><b>-</b></td>
@@ -193,13 +210,14 @@ class GeneralDetail extends Component {
                 </tr>
             )
         }
-
+        const sorted = this.state.Benefit
+        this.state.Benefit && sorted.sort((a, b) => (a.seq > b.seq) ? 1 : -1) //sort seq
         return (
             this.state.Benefit && this.state.Benefit.map(benefit => (
-                <tr key={benefit.id}>
-                    <td style={{ textAlign: 'center' }}><b>{benefit.Year}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{benefit.List}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{benefit.Benefits}</b></td>
+                <tr key={benefit.seq}>
+                    <td style={{ textAlign: 'center' }}><b>{benefit.date}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{benefit.detail}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{benefit.total}</b></td>
                 </tr>
             ))
         )
@@ -652,9 +670,9 @@ class GeneralDetail extends Component {
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>พ.ศ.</td>
-                                                <td style={{ width: 400, textAlign: 'center' }}>รายการ</td>
-                                                <td style={{ width: 200, textAlign: 'center' }}>ผลประโยชน์ที่ได้รับเป็นรายเดือนหรือรายปี (บาท)</td>
+                                                <td style={{ width: '15%', textAlign: 'center' }}>พ.ศ.</td>
+                                                <td style={{ width: '55%', textAlign: 'center' }}>รายการ</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>ผลประโยชน์ที่ได้รับ (บาท)</td>
                                             </tr>
                                             {this.generateBenefitRows()}
                                         </tbody>
@@ -781,6 +799,7 @@ class GeneralDetail extends Component {
                         </div>
                     </Modal>
 
+                    {/*Benefit Modal*/}
                     <Modal
                         isOpen={this.state.beModalIsOpen}
                         closeTimeoutMS={500}

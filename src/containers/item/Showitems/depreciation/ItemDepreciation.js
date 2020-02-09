@@ -43,20 +43,20 @@ export default class ItemDepreciation extends Component {
                                     <th style={{ width: "50%" }}></th>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>วันที่ได้มา</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.Year}</td>
+                                    <td style={{ fontSize: 19 }}><b>วันที่ได้มา</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.Year}</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>ราคาทุน</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.Balance}&nbsp;บาท</td>
+                                    <td style={{ fontSize: 19 }}><b>ราคาทุน</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.Balance}&nbsp;บาท</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>อายุการใช้งาน</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.lifeTime}&nbsp;ปี</td>
+                                    <td style={{ fontSize: 19 }}><b>อายุการใช้งาน</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.lifeTime}&nbsp;ปี</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>อัตราค่าเสื่อมสภาพ</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.Percent}&nbsp;%</td>
+                                    <td style={{ fontSize: 19 }}><b>อัตราค่าเสื่อมสภาพ</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.Percent}&nbsp;%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -69,12 +69,12 @@ export default class ItemDepreciation extends Component {
                                     <th style={{ width: "50%" }}></th>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>จำนวนปี</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.yearRate}&nbsp;ปี</td>
+                                    <td style={{ fontSize: 19 }}><b>จำนวนปี</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.yearRate}&nbsp;ปี</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>จำนวนเดือน</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.monthRate}&nbsp;เดือน</td>
+                                    <td style={{ fontSize: 19 }}><b>จำนวนเดือน</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.monthRate}&nbsp;เดือน</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -87,16 +87,16 @@ export default class ItemDepreciation extends Component {
                                     <th style={{ width: "40%" }}></th>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>ค่าเสื่อมราคา/ปี</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.perYear}&nbsp;บาท</td>
+                                    <td style={{ fontSize: 19 }}><b>ค่าเสื่อมราคา/ปี</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.perYear}&nbsp;บาท</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>ค่าเสื่อมราคา/{seq.monthRate}เดือน</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.perMonth}&nbsp;บาท</td>
+                                    <td style={{ fontSize: 19 }}><b>ค่าเสื่อมราคา/{seq.monthRate}เดือน</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.perMonth}&nbsp;บาท</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ fontSize: 20 }}><b>ค่าเสื่อมราคาสะสม</b></td>
-                                    <td style={{ fontSize: 25 }}>{seq.Cumulative}&nbsp;บาท</td>
+                                    <td style={{ fontSize: 19 }}><b>ค่าเสื่อมราคาสะสม</b></td>
+                                    <td style={{ fontSize: 19 }}>{seq.Cumulative}&nbsp;บาท</td>
                                 </tr>
                             </tbody>
                         </table>

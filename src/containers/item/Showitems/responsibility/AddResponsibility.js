@@ -3,8 +3,9 @@ import { db } from '../../../../common/firebaseConfig'
 
 export default class AddResponsibility extends Component {
     componentDidMount() {
-        //console.log(this.props.itemCode)
+        //console.log(this.props.Responsibility)
         this.loadScript()  //script for datepicker
+        
     }
 
     loadScript() {
@@ -15,7 +16,10 @@ export default class AddResponsibility extends Component {
     }
 
     onSubmit = (e) => {
-        let _lastSeq = Math.max.apply(Math, this.props.responsibility.map(function (obj) { return obj.seq; }))
+        let _lastSeq = 0
+        if(this.props.responsibility.length !== 0){
+            _lastSeq = Math.max.apply(Math, this.props.responsibility.map(function (obj) { return obj.seq; }))
+        }
         //console.log(_lastSeq)
 
         const newVal = {
@@ -77,9 +81,10 @@ export default class AddResponsibility extends Component {
                                                     id="inputdatepicker"
                                                     data-date-format="dd/mm/yyyy"
                                                     placeholder="วัน/เดือน/ปี"
-                                                    style={{ fontSize: 20 }}
+                                                    style={{ fontSize: 20, width: '13%' }}
                                                     name="Date" /*****/
                                                     ref="Date"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -97,6 +102,7 @@ export default class AddResponsibility extends Component {
                                                     style={{ fontSize: 20 }}
                                                     name="departmentName" /*****/
                                                     ref="departmentName"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -114,6 +120,7 @@ export default class AddResponsibility extends Component {
                                                     style={{ fontSize: 20 }}
                                                     name="headName" /*****/
                                                     ref="headName"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -131,6 +138,7 @@ export default class AddResponsibility extends Component {
                                                     style={{ fontSize: 20 }}
                                                     name="userName" /*****/
                                                     ref="userName"  /*****/
+                                                    required
                                                 />
                                             </div>
                                         </div>

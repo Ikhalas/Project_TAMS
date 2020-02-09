@@ -6,7 +6,7 @@ export default class AddDepreciation extends Component {
         this.loadScript()  //script for datepicker
     }
 
-    loadScript(){
+    loadScript() {
         const script = document.createElement('script')
         script.src = '/js/thaidate.js'
         script.async = true
@@ -14,7 +14,10 @@ export default class AddDepreciation extends Component {
     }
 
     onSubmit = (e) => {
-        let _lastSeq = Math.max.apply(Math, this.props.depreciations.map(function (obj) { return obj.seq; })) //find last seq
+        let _lastSeq = 0
+        if (this.props.depreciations.length !== 0) {
+            _lastSeq = Math.max.apply(Math, this.props.depreciations.map(function (obj) { return obj.seq; })) //find last seq
+        }
         const newVal = {
             "itemCode": this.props.itemCode,
             "seq": Number(_lastSeq) + 1,
