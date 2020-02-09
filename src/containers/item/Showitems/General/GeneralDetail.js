@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import ItemDepreciation from '../depreciation/ItemDepreciation'
 import AddResponsibility from '../responsibility/AddResponsibility'
 import AddBenefit from '../benefit/AddBenefit'
+import AddMaintenance from '../maintenance/AddMaintenance'
 
 import { db } from '../../../../common/firebaseConfig'
 
@@ -53,6 +54,7 @@ class GeneralDetail extends Component {
             editModalIsOpen: false,
             resModalIsOpen: false,
             beModalIsOpen: false,
+            mainModalIsOpen: false,
         }
 
         this.DepOpenModal = this.DepOpenModal.bind(this);
@@ -66,14 +68,16 @@ class GeneralDetail extends Component {
 
         this.benefitOpenModal = this.benefitOpenModal.bind(this);
         this.benefitCloseModal = this.benefitCloseModal.bind(this);
+
+        this.mainOpenModal = this.mainOpenModal.bind(this);
+        this.mainCloseModal = this.mainCloseModal.bind(this);
     }
     _isMounted = false
-    _getItemSuccess = false
-    _getDesSuccess = false
-
+   
     depreciations = []
     responsibility = []
     benefit = []
+    maintenance = []
     imageURL = []
 
     componentDidMount() {
@@ -84,13 +88,13 @@ class GeneralDetail extends Component {
         this._isMounted && this.getItemDepreciations()
         this._isMounted && this.getResponsibility()
         this._isMounted && this.getBenefit()
+        this._isMounted && this.getMaintenance()
         this._isMounted && this.getImage()
     }
 
     getItemDetail() {
         db.collection('items').doc(this.props.itemId).get().then(doc => {
             this._isMounted && this.setState({ item: doc.data() })
-            this._getItemSuccess = true
             //console.log("item |" + this.state.item)
         }).catch(error => console.log(error))
     }
@@ -101,7 +105,6 @@ class GeneralDetail extends Component {
                 this.depreciations.push(doc.data())
             });
             this._isMounted && this.setState({ Depreciations: this.depreciations })
-            this._getDesSuccess = true
             //console.log(this.state.Depreciations);
         }).catch(error => console.log(error))
     }
@@ -116,14 +119,24 @@ class GeneralDetail extends Component {
         }).catch(error => console.log(error))
     }
 
-    getBenefit(){
+    getBenefit() {
         db.collection('itemBenefit').where('itemCode', '==', this.props.itemCode).get().then(snapshot => {
             snapshot.forEach(doc => {
                 this.benefit.push(doc.data())
             });
             this._isMounted && this.setState({ Benefit: this.benefit })
             //console.log(this.state.Benefit);
-        }).catch(error => console.log(error))   
+        }).catch(error => console.log(error))
+    }
+
+    getMaintenance() {
+        db.collection('itemMaintenance').where('itemCode', '==', this.props.itemCode).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.maintenance.push(doc.data())
+            });
+            this._isMounted && this.setState({ Maintenance: this.maintenance })
+            //console.log(this.state.Maintenance);
+        }).catch(error => console.log(error))
     }
 
     async getImage() {
@@ -213,7 +226,7 @@ class GeneralDetail extends Component {
         const sorted = this.state.Benefit
         this.state.Benefit && sorted.sort((a, b) => (a.seq > b.seq) ? 1 : -1) //sort seq
         return (
-            this.state.Benefit && this.state.Benefit.map(benefit => (
+            sorted && sorted.map(benefit => (
                 <tr key={benefit.seq}>
                     <td style={{ textAlign: 'center' }}><b>{benefit.date}</b></td>
                     <td style={{ textAlign: 'center' }}><b>{benefit.detail}</b></td>
@@ -228,7 +241,6 @@ class GeneralDetail extends Component {
             return maintenance
         })
         //console.log(exploitationCheck.length)
-
         if (!maintenanceCheck.length) {
             return (
                 <tr>
@@ -241,16 +253,17 @@ class GeneralDetail extends Component {
                 </tr>
             )
         }
-
+        const sorted = this.state.Maintenance
+        this.state.Maintenance && sorted.sort((a, b) => (a.seq > b.seq) ? 1 : -1) //sort seq
         return (
-            this.state.Maintenance && this.state.Maintenance.map(maintenance => (
-                <tr key={maintenance.id}>
+            sorted && sorted.map(maintenance => (
+                <tr key={maintenance.seq}>
                     <td style={{ textAlign: 'center' }}><b>{maintenance.No}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{maintenance.approvalLetter}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{maintenance.approvalDate}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{maintenance.List}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{maintenance.Amount}</b></td>
-                    <td style={{ textAlign: 'center' }}><b>{maintenance.Responsible}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{maintenance.docNo}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{maintenance.date}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{maintenance.detail}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{maintenance.amount}</b></td>
+                    <td style={{ textAlign: 'center' }}><b>{maintenance.responsible}</b></td>
                 </tr>
             ))
         )
@@ -315,6 +328,16 @@ class GeneralDetail extends Component {
 
     benefitCloseModal() {
         this.setState({ beModalIsOpen: false });
+        document.body.style.overflow = 'unset';
+    }
+
+    mainOpenModal() {
+        this.setState({ mainModalIsOpen: true });
+        document.body.style.overflow = 'hidden'
+    }
+
+    mainCloseModal() {
+        this.setState({ mainModalIsOpen: false });
         document.body.style.overflow = 'unset';
     }
 
@@ -616,7 +639,6 @@ class GeneralDetail extends Component {
                     {/*ค่าเสื่อมราคา*/}
                     <div className="row" style={{ fontSize: 19 }}>
                         <div className="col-md-12">
-                            {this._getDesSuccess &&
                                 <div className="box box-success" style={{ borderRadius: '10px' }}>
                                     <div className="box-header with-border">
                                         <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
@@ -645,7 +667,6 @@ class GeneralDetail extends Component {
                                         </table>
                                     </div>
                                 </div>
-                            }
                         </div>
                     </div>
 
@@ -662,7 +683,7 @@ class GeneralDetail extends Component {
                                             style={{ fontSize: 20 }}
                                             onClick={this.benefitOpenModal}
                                         >
-                                            <i className="fa fa-info" />&nbsp;รายละเอียด&nbsp;&nbsp;
+                                            <i className="fa fa-plus" />&nbsp;เพิ่มรายการ&nbsp;&nbsp;
                                         </button>
                                     </div>
                                 </div>
@@ -690,17 +711,27 @@ class GeneralDetail extends Component {
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>บันทึกการซ่อม/ปรับปรุงแก้ไขพัสดุ</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 20 }}
+                                            onClick={this.mainOpenModal}
+                                        >
+                                            <i className="fa fa-plus" />&nbsp;เพิ่มรายการ&nbsp;&nbsp;
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <td style={{ width: 50, textAlign: 'center' }}>ครั้งที่</td>
-                                                <td style={{ width: 100, textAlign: 'center' }}>เลขที่หนังสือ</td>
-                                                <td style={{ width: 100, textAlign: 'center' }}>ลงวันที่</td>
-                                                <td style={{ width: 400, textAlign: 'center' }}>รายการซ่อม/ปรับปรุงแก้ไข</td>
-                                                <td style={{ width: 100, textAlign: 'center' }}>จำนวนเงิน</td>
-                                                <td style={{ width: 200, textAlign: 'center' }}>ชื่อบุคคล - บริษัทผู้ซ่อม/ปรังปรุง</td>
+                                                <td style={{ width: '5%', textAlign: 'center' }}>ครั้งที่</td>
+                                                <td style={{ width: '8%', textAlign: 'center' }}>เลขที่หนังสือ</td>
+                                                <td style={{ width: '9%', textAlign: 'center' }}>ลงวันที่</td>
+                                                <td style={{ width: '38%', textAlign: 'center' }}>รายการซ่อม/ปรับปรุงแก้ไข</td>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>จำนวนเงิน(บาท)</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>ชื่อบุคคล-บริษัทผู้ซ่อม/ปรังปรุง</td>
                                             </tr>
                                             {this.generateMaintenanceRows()}
                                         </tbody>
@@ -716,7 +747,7 @@ class GeneralDetail extends Component {
                         <div className="col-md-12">
                             <div className="box box-danger">
                                 <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>รูปถ่ายหรือแผนผังที่ตั้ง</h1>
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>รูปถ่ายพัสดุครุภัณฑ์</h1>
                                 </div>
                                 <div className="box-body">
                                     {this.genImage()}
@@ -808,8 +839,20 @@ class GeneralDetail extends Component {
                         contentLabel="benefit Modal"
                     >
                         <div style={{ width: 1000 }}>
-
                             <AddBenefit itemCode={this.props.itemCode} benefit={this.state.Benefit} />
+                        </div>
+                    </Modal>
+
+                    {/*Maintenance Modal*/}
+                    <Modal
+                        isOpen={this.state.mainModalIsOpen}
+                        closeTimeoutMS={500}
+                        onRequestClose={this.mainCloseModal}
+                        style={modalStyles}
+                        contentLabel="Maintenance Modal"
+                    >
+                        <div style={{ width: 1000 }}>
+                            <AddMaintenance itemCode={this.props.itemCode} maintenance={this.state.Maintenance} />
                         </div>
                     </Modal>
 
