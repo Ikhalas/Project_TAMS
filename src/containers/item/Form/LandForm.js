@@ -111,7 +111,6 @@ class LandForm extends Component {
             "Department": this.state.departmentsOption1.value,                           //หน่วยงานต้นสังกัด
             "itemName": this.state.itemNameOption.value,                             //ชื่อ
             "itemCode": this.state.itemCode.concat(this.refs.itemCode.value),                               //เลขรหัส
-            "Location": this.refs.Location.value,                               //ที่ตั้ง
             "derivedDate": this.refs.derivedDate.value,                         //วันที่ได้มา
             "approvalDate": this.refs.approvalDate.value,                       //เลขที่หนังสืออนุมัติ/ลงวันที่
             "Price": this.refs.Price.value,                                     //ราคา
@@ -126,7 +125,7 @@ class LandForm extends Component {
             "otherType": this.refs.otherType.value,                             //อื่นๆ .ชนิด
             "otherSize": this.refs.otherSize.value,                             //อื่นๆ .ขนาด
             "Note": this.refs.Note.value,                                       //หมายเหตุ
-            "address": this.refs.address.value,
+            "address": this.refs.address.value,                                     //ที่ตั้ง
             "location": this.currentPosition
 
         }
@@ -397,7 +396,6 @@ class LandForm extends Component {
                                             <label>หน่วยงานที่รับผิดชอบ</label>
                                             <Fragment>
                                                 <Select
-                                                    required
                                                     options={this.state.departments}
                                                     value={departmentsOption1}
                                                     onChange={this.handleChange}
@@ -408,7 +406,6 @@ class LandForm extends Component {
                                                     autoComplete="off"
                                                     style={{ opacity: 0, height: 0 }}
                                                     value={departmentsOption1}
-                                                    readOnly
                                                     required
                                                 />
                                             </Fragment>
@@ -420,8 +417,7 @@ class LandForm extends Component {
                                         <div className="form-group">
                                             <label>ชื่อพัสดุ</label>
                                             <Fragment>
-                                                <Select
-                                                    required
+                                                <Select                                                   
                                                     options={this.state.Landtypes}
                                                     value={itemNameOption}
                                                     onChange={this.handleChangeCode}
@@ -432,7 +428,6 @@ class LandForm extends Component {
                                                     autoComplete="off"
                                                     style={{ opacity: 0, height: 0 }}
                                                     value={itemNameOption}
-                                                    readOnly
                                                     required
                                                 />
                                             </Fragment>
@@ -472,22 +467,6 @@ class LandForm extends Component {
 
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>ที่ตั้งพัสดุ</label>
-                                        <div className="input-group">
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-compass" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                style={{ fontSize: 20, zIndex: 0 }}
-                                                name="Location" /*****/
-                                                ref="Location"  /*****/
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group" style={{ marginTop: 30 }}>
                                         <label>เอกสารสิทธิ์พัสดุ</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -503,7 +482,7 @@ class LandForm extends Component {
                                         </div>
                                     </div>
 
-                                    <div className="form-group" style={{ marginTop: 30 }}>
+                                    <div className="form-group" style={{ marginTop: 60 }}>
                                         <label>ชื่อผู้รับจ้าง/ผู้ขาย/ผู้ให้</label>
                                         <div className="input-group">
                                             <div className="input-group-addon">
@@ -528,15 +507,6 @@ class LandForm extends Component {
                     </div>
                     {/* /.box box-default */}
 
-                    <div className="box box-success">
-                        <div className="box-header">
-                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>อัพโหลดรูปภาพ</b></h1>
-                        </div>
-                        <div className="box-body" onChange={this.handleImgChange}>
-                            <input id="file" type="file" accept="image/*" multiple />
-                        </div>
-                    </div>
-
                     {/* Google Map */}
                     <div className="box box-success">
                         <div className="box-header">
@@ -545,7 +515,7 @@ class LandForm extends Component {
 
                         <div className="box-body">
                             <div className="form-group">
-                                <label>ที่อยู่</label>
+                                <label>ที่ตั้งพัสดุ</label>
                                 <div className="input-group">
                                     <div className="input-group-addon">
                                         <i className="fa fa-area-chart" />
@@ -589,6 +559,15 @@ class LandForm extends Component {
                                     <p >ตำแหน่ง : [ {this.currentPosition.lat + " " + this.currentPosition.lng} ]</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="box box-success">
+                        <div className="box-header">
+                            <h1 className="box-title title" style={{ fontSize: 30, marginTop: 10 }}><b>อัพโหลดรูปภาพ</b></h1>
+                        </div>
+                        <div className="box-body" onChange={this.handleImgChange}>
+                            <input id="file" type="file" accept="image/*" multiple />
                         </div>
                     </div>
 

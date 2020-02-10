@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import {auth} from '../common/firebaseConfig'
 
-export default class Menu extends Component {
+class Menu extends Component {
   render() {
     const font18 = { fontSize: 18 }
     return (
@@ -14,7 +15,7 @@ export default class Menu extends Component {
             {/* Sidebar user panel */}
             <div className="user-panel">
               <div className="pull-left image">
-                <img src="../../public/image/logo.png" className="img-circle" alt="THAKHAM" />
+                <img src={require('../common/image/logo.png')} className="img-circle" alt="THAKHAM" />
               </div>
               <div className="pull-left info">
                 <p className="title">&nbsp;อิคลาศ หมันหนุน</p>
@@ -73,9 +74,9 @@ export default class Menu extends Component {
               <li className="header title" style={font18}> </li>
 
               <li className="treeview">
-                <Link to="fake_url">
+                <a href="#logout" onClick={() => auth.signOut().then(res => {this.props.history.push('/')})}>
                   <i className="fa fa-sign-out" /><span className="title">&nbsp;ออกจากระบบ</span>
-                </Link>
+                </a>
               </li>
 
               <li className="header title" style={font18}> </li>
@@ -90,3 +91,5 @@ export default class Menu extends Component {
     )
   }
 }
+
+export default withRouter(Menu)
