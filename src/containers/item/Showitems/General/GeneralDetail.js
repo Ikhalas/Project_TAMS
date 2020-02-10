@@ -5,6 +5,8 @@ import ItemDepreciation from '../depreciation/ItemDepreciation'
 import AddResponsibility from '../responsibility/AddResponsibility'
 import AddBenefit from '../benefit/AddBenefit'
 import AddMaintenance from '../maintenance/AddMaintenance'
+import DeactivateInfo from '../deactivate/DeactivateInfo'
+import Deactivation from '../deactivate/Deactivation'
 
 import { db } from '../../../../common/firebaseConfig'
 
@@ -55,6 +57,8 @@ class GeneralDetail extends Component {
             resModalIsOpen: false,
             beModalIsOpen: false,
             mainModalIsOpen: false,
+
+            deactivateShow: false
         }
 
         this.DepOpenModal = this.DepOpenModal.bind(this);
@@ -73,15 +77,17 @@ class GeneralDetail extends Component {
         this.mainCloseModal = this.mainCloseModal.bind(this);
     }
     _isMounted = false
-   
+    _showDeactivateInfo = false
+
     depreciations = []
     responsibility = []
     benefit = []
     maintenance = []
     imageURL = []
 
+
     componentDidMount() {
-        //console.log("id |" + this.props.itemId)
+        //console.log(Object.entries(this.props))
         //console.log("code |" + this.props.itemCode)
         this._isMounted = true;
         this._isMounted && this.getItemDetail()
@@ -351,19 +357,69 @@ class GeneralDetail extends Component {
         this.setState({ opacity: 0.2 })
     }
 
+    deactivateCheck() {
+        //console.log(this._showDeactivateInfo)
+        if (this.state.item.status !== "จำหน่าย") {
+            return (
+                <div>
+                    <div>
+                        สถานะปัจจุบัน :<span style={{ fontSize: 23 }}>{this.state.item.status}</span>
+                    </div>
+                    <button
+                        className="btn btn-lg btn-block btn-danger title"
+                        onClick={() => this.setState({ deactivateShow: !this.state.deactivateShow })}>
+                        {this.state.deactivateShow !== true ? "จำหน่ายครุภัณฑ์" : "ยกเลิก"}
+                    </button>
+                    <br />
+                    {this.state.deactivateShow &&
+                        <div>
+                            <Deactivation
+                                itemCode={this.props.itemCode}
+                                itemName={this.state.item.itemName}
+                                itemId={this.props.itemId}
+                                price={this.state.item.Price}
+                            />
+                        </div>
+                    }
+                </div>
+            )
+        }
+        else this._showDeactivateInfo = true
+    }
+
+    statusShow() {
+        //console.log(this.state.item.status)
+        let statusClass
+        if (this.state.item.status === 'ใช้งานได้ดี') statusClass = 'label label-success'
+        else if (this.state.item.status === 'ชำรุด') statusClass = 'label label-warning'
+        else if (this.state.item.status === 'เสื่อมสภาพ') statusClass = 'label label-warning'
+        else if (this.state.item.status === 'สูญหาย') statusClass = 'label label-danger'
+        else if (this.state.item.status === 'จำหน่าย') statusClass = 'label label-danger'
+        else statusClass = 'label label-primary'
+
+        return (
+            <div className="pull-right" style={{ marginTop: 10 }}>
+                <span className={statusClass} style={{ fontSize: 23, margin: '8px 10px 8px 20px' }}>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {this.state.item.status}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>&nbsp;&nbsp;
+            </div>
+        )
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
 
     render() {
         //console.log(this.state.item)
+        //console.log(this._showDeactivateInfo)
         return (
             <div>
                 <section className="content-header">
                     <span style={{ fontSize: 35 }}>รายละเอียดพัสดุครุภัณฑ์</span>
-                    <span className="pull-right" style={{ marginTop: 10 }}>
-                        <span className={this.state.statusClass} style={{ fontSize: 23 }}>{this.state.item.status}</span>&nbsp;&nbsp;
-                </span>
+                    {this.statusShow()}
                 </section>
 
                 <section className="content">
@@ -372,10 +428,11 @@ class GeneralDetail extends Component {
                         เลขรหัสพัสดุ&nbsp;&nbsp;:&nbsp;&nbsp;<b>{this.state.item.itemCode}</b>&nbsp;&nbsp;
                 </span>
 
+                    {this._showDeactivateInfo && <DeactivateInfo itemCode={this.props.itemCode} />}
+
                     {/*รายละเอียดครุภัณฑ์*/}
                     <div className="row">
                         <div className="col-md-12">
-
                             <div className="box box-success" style={{ borderRadius: '10px' }}>
                                 <div className="box-header with-border">
                                     <h1 className="box-title" style={{ fontSize: 25 }}>รายละเอียดครุภัณฑ์</h1>
@@ -639,34 +696,34 @@ class GeneralDetail extends Component {
                     {/*ค่าเสื่อมราคา*/}
                     <div className="row" style={{ fontSize: 19 }}>
                         <div className="col-md-12">
-                                <div className="box box-success" style={{ borderRadius: '10px' }}>
-                                    <div className="box-header with-border">
-                                        <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
-                                        <div className="box-tools pull-right">
-                                            <button
-                                                type="button"
-                                                className="btn btn-box-tool"
-                                                style={{ fontSize: 20 }}
-                                                onClick={this.DepOpenModal}
-                                            >
-                                                <i className="fa fa-plus" />
-                                                <span>&nbsp;รายละเอียด/เพิ่มรายการ&nbsp;&nbsp;</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="box-body">
-                                        <table className="table table-bordered">
-                                            <tbody>
-                                                <tr>
-                                                    <td style={{ width: '15%', textAlign: 'center' }}>วันที่</td>
-                                                    <td style={{ width: '55%', textAlign: 'center' }}>ราคาคงเหลือ</td>
-                                                    <td style={{ width: '30%', textAlign: 'center' }}>หมายเหตุ</td>
-                                                </tr>
-                                                {this.generateDepreciationsRows()}
-                                            </tbody>
-                                        </table>
+                            <div className="box box-success" style={{ borderRadius: '10px' }}>
+                                <div className="box-header with-border">
+                                    <h1 className="box-title" style={{ fontSize: 25 }}>ค่าเสื่อมราคา</h1>
+                                    <div className="box-tools pull-right">
+                                        <button
+                                            type="button"
+                                            className="btn btn-box-tool"
+                                            style={{ fontSize: 20 }}
+                                            onClick={this.DepOpenModal}
+                                        >
+                                            <i className="fa fa-plus" />
+                                            <span>&nbsp;รายละเอียด/เพิ่มรายการ&nbsp;&nbsp;</span>
+                                        </button>
                                     </div>
                                 </div>
+                                <div className="box-body">
+                                    <table className="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: '15%', textAlign: 'center' }}>วันที่</td>
+                                                <td style={{ width: '55%', textAlign: 'center' }}>ราคาคงเหลือ</td>
+                                                <td style={{ width: '30%', textAlign: 'center' }}>หมายเหตุ</td>
+                                            </tr>
+                                            {this.generateDepreciationsRows()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -756,38 +813,7 @@ class GeneralDetail extends Component {
                         </div>
                     </div>
 
-                    {/*การจำหน่าย*/}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-danger">
-                                <div className="box-header with-border">
-                                    <h1 className="box-title" style={{ fontSize: 25 }}>การจำหน่าย</h1>
-                                </div>
-                                <div className="box-body no-padding">
-                                    <table className="table table-striped">
-                                        <tbody>
-                                            <tr>
-                                                <td>วันที่จำหน่าย : &nbsp;<b>{this.state.Disposal.disposalDate}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>วิธีจำหน่าย : &nbsp;<b>{this.state.Disposal.disposalMethod}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>เลขที่หนังสืออนุมัติ : &nbsp;<b>{this.state.Disposal.disposalapprovalNo}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>ราคาจำหน่าย : &nbsp;<b>{this.state.Disposal.disposalPrice}<span className="pull-right">บาท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>กำไร/ขาดทุน : &nbsp;<b>{this.state.Disposal.profitOrLost}<span className="pull-right">บาท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {/* /.box */}
-                        </div>
-                    </div>
+                    {this.deactivateCheck()}
 
                     {/*Edit Modal*/}
                     <Modal

@@ -7,7 +7,7 @@ export default class Menu extends Component {
     return (
       <div>
 
-        <aside className="main-sidebar" style={{height: 1000}}>
+        <aside className="main-sidebar">
           {/* sidebar: style can be found in sidebar.less */}
 
           <section className="sidebar">
@@ -42,17 +42,23 @@ export default class Menu extends Component {
               <li className="header title" style={font18}>รายการครุภัณฑ์</li>
 
               <li>
-                <Link to="/items">
-                  <i className="fa fa-files-o" /> <span className="title">รายการครุภัณฑ์ทั้งหมด</span>
-                </Link>
-              </li>
-
-              <li>
                 <Link to="/items/item-add">
                   <i className="fa fa-plus-circle" /> <span className="title">เพิ่มรายการครุภัณฑ์</span>
                   <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span>
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/items">
+                  <i className="fa fa-files-o" /> <span className="title">ครุภัณฑ์ทั้งหมด</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/deactivatedItems">
+                  <i className="fa fa-trash" /> <span className="title">ครุภัณฑ์ที่ถูกจำหน่าย</span>
                 </Link>
               </li>
 
@@ -64,29 +70,15 @@ export default class Menu extends Component {
                 </Link>
               </li>
 
-              <li className="header title" style={font18}>บริการอื่น ๆ</li>
-
-              <li className="treeview">
-                <Link to="fake_url">
-                  <i className="fa fa-pie-chart" /><span className="title">&nbsp;กล่องข้อความ</span>
-                </Link>
-              </li>
-
-              <li className="treeview">
-                <Link to="fake_url">
-                  <i className="fa fa-pie-chart" /><span className="title">&nbsp;จัดทำเอกสาร</span>
-                </Link>
-              </li>
-
               <li className="header title" style={font18}> </li>
 
               <li className="treeview">
                 <Link to="fake_url">
-                  <i className="fa fa-pie-chart" /><span className="title">&nbsp;ออกจากระบบ</span>
+                  <i className="fa fa-sign-out" /><span className="title">&nbsp;ออกจากระบบ</span>
                 </Link>
               </li>
 
-              
+              <li className="header title" style={font18}> </li>
 
             </ul>
           </section>
