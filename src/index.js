@@ -1,9 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import { createBrowserHistory } from "history";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "assets/scss/paper-dashboard.scss?v=1.1.0";
+import "assets/css/Main.css";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
+
+import Login from "./layouts/Login"
+import AdminLayout from "layouts/Admin.jsx";
+
+const hist = createBrowserHistory();
 
 ReactDOM.render(
-    <div style={{ backgroundColor: '#1a2226'}}><App /></div>
-    ,document.getElementById('root'));
-
-
+  <Router history={hist}>
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/admin" render={props => <AdminLayout {...props} />} />
+      <Redirect to="/login" />
+    </Switch>
+  </Router>,
+  document.getElementById("root")
+);

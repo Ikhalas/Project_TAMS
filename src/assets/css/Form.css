@@ -1,0 +1,56 @@
+@font-face {
+  font-family: "THSarabunNew";
+  src: url("../fonts/THSarabunNew.ttf");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.has-error {
+  border: 1px solid #f5283d;
+  border-radius: 4px;
+}
+
+input {
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+}
+
+input[type="text"]:disabled {
+  background: #f2f2f2;
+}
+
+.date-picker {
+  font-family: "THSarabunNew" !important;
+  height: 40px;
+  width: 50%;
+  font-size: 22px;
+  text-align: center;
+  color: #495057;
+  border: 0px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.calendar-class {
+  font-family: "THSarabunNew" !important;
+  font-size: 22px !important;
+}
+
+b {
+  color: #66615b;
+  font-size: 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
