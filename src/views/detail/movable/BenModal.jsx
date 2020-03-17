@@ -11,7 +11,9 @@ import {
   FormGroup,
   Input,
   InputGroup,
-  Spinner
+  Spinner,
+  Row,
+  Col
 } from "reactstrap";
 
 function TextInput(props) {
@@ -35,50 +37,37 @@ function TextInput(props) {
   );
 }
 
-export default class ResModal extends Component {
+const options = [
+  { value: "รายเดือน", label: "รายเดือน" },
+  { value: "รายปี", label: "รายปี" }
+];
+
+export default class BenModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      subDep: "",
       dateToShow: new Date(),
       inProgress: false,
 
+      detail: "",
+      total: 0,
+      selected: "",
       date:
         new Date().getDate() +
         "/" +
         (new Date().getMonth() + 1) +
         "/" +
-        (new Date().getFullYear() + 543),
-      selectedDep: "",
-      resName: "",
-      resUser: ""
+        (new Date().getFullYear() + 543)
     };
     this._isMounted = false;
   }
 
   componentDidMount() {
     this._isMounted = true;
-    this._isMounted && this.getSubDepOptions();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-  }
-
-  getSubDepOptions() {
-    if (this.props.resModal) {
-      db.collection("subDepartments")
-        .where("parent", "==", this.props.department)
-        .get()
-        .then(snapshot => {
-          let subDep = [];
-          snapshot.forEach(doc => {
-            subDep.push(doc.data());
-          });
-          this._isMounted && this.setState({ subDep });
-        })
-        .catch(error => console.log(error));
-    }
   }
 
   handleInputTextChange = e => {
@@ -93,31 +82,39 @@ export default class ResModal extends Component {
     e.preventDefault();
     this.setState({ inProgress: true });
 
+    //console.log(this.props.ben)
     let _lastSeq = 0;
-    if (this.props.res.length !== 0) {
+    if (this.props.ben.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.res.map(function(obj) {
+        this.props.ben.map(function(obj) {
           return obj.seq;
         })
       );
+    }
+
+    let _total = ""
+    if(this.state.selected.value === "รายเดือน"){
+        _total = "ต่อเดือน"
+    } else {
+        _total = "ต่อปี"
     }
 
     const data = {
       seq: Number(_lastSeq) + 1,
       date: this.state.date,
       itemCode: this.props.itemCode,
-      resDepartment: this.props.department,
-      resSubDepartment: this.state.selectedDep.label,
-      resUser: this.state.resUser,
-      resName: this.state.resName
+      detail: this.state.detail,
+      total: this.state.total + " บาท/" + _total
     };
 
-    this.addResToDatabase(data);
+    //console.log(data)
+
+    this.addBenToDatabase(data);
   }
 
-  addResToDatabase(data) {
-    db.collection("itemRes")
+  addBenToDatabase(data) {
+    db.collection("itemBen")
       .add(data)
       .then(() => {
         //console.log("add itemResponsibility complete !!");
@@ -128,8 +125,8 @@ export default class ResModal extends Component {
   }
 
   render() {
-    const { inProgress, resName, resUser, date } = this.state;
-    const { dateToShow, selectedDep, subDep } = this.state;
+    const { detail, total, date, selected } = this.state;
+    const { dateToShow, inProgress } = this.state;
 
     return (
       <>
@@ -138,18 +135,17 @@ export default class ResModal extends Component {
           keyboard={false}
           size="lg"
           className="regular-th"
-          isOpen={this.props.resModal}
+          isOpen={this.props.benModal}
           toggle={this.props.toggleFn}
         >
           <ModalHeader style={{ color: "white" }}>
-            เพิ่มรายการผู้ดูแลรับผิดชอบครุภัณฑ์
+            เพิ่มรายการผลประโยชน์ที่หาได้จากครุภัณฑ์
           </ModalHeader>
           <ModalBody>
             <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-
             <FormGroup>
               <label style={{ fontSize: "23px", color: "black" }}>
-                <b>วันที่ซื้อ/ได้มา</b>{" "}
+                <b>วันที่</b>{" "}
                 <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
               </label>
               <InputGroup>
@@ -183,38 +179,49 @@ export default class ResModal extends Component {
                 />
               </InputGroup>
             </FormGroup>
-
-            <FormGroup>
-              <label>
-                <b>ชื่อส่วนราชการ</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <Select
-                style={{ height: 40, fontSize: "22px" }}
-                value={selectedDep}
-                onChange={selectedDep => {
-                  this.setState({
-                    selectedDep
-                  });
-                }}
-                options={subDep}
-                placeholder="เลือกส่วนราชการ..."
-                className="regular-th"
-              />
-            </FormGroup>
-
             <TextInput
-              label="ชื่อผู้ใช้ครุภัณฑ์"
-              name="resUser"
+              label="รายการ"
+              name="detail"
               onChange={this.handleInputTextChange}
             />
-
-            <TextInput
-              label="ชื่อหัวหน้าส่วนราชการ"
-              name="resName"
-              onChange={this.handleInputTextChange}
-            />
+            <Row>
+              <Col md="6">
+                <FormGroup>
+                  <label style={{ fontSize: "23px", color: "black" }}>
+                    <b>ผลประโยชน์ที่ได้รับ (บาท)</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    name="total"
+                    className="regular-th"
+                    style={{ height: 40, fontSize: "22px" }}
+                    onChange={this.handleInputTextChange}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="6">
+                <FormGroup>
+                  <label style={{ fontSize: "23px", color: "black" }}>
+                    <b>(รายเดือนหรือรายปี)</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Select
+                    value={selected}
+                    onChange={selected => {
+                      this.setState({ selected });
+                    }}
+                    options={options}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
           </ModalBody>
+
           <ModalFooter>
             <Button
               className="btn-round regular-th"
@@ -240,9 +247,7 @@ export default class ResModal extends Component {
               color="info"
               onClick={this.handleSummit.bind(this)}
               style={{ fontSize: "25px", fontWeight: "normal" }}
-              disabled={
-                !resName || !resUser || !date || !selectedDep || inProgress
-              }
+              disabled={!detail || !total || !date || !selected || inProgress}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
               {inProgress ? (

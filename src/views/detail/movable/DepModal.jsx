@@ -28,9 +28,9 @@ export default class DepModal extends Component {
 
       date:
         new Date().getDate() +
-        "-" +
+        "/" +
         (new Date().getMonth() + 1) +
-        "-" +
+        "/" +
         (new Date().getFullYear() + 543),
       balance: ""
     };
@@ -178,7 +178,7 @@ export default class DepModal extends Component {
     e.preventDefault();
     this.setState({ inProgress: true });
 
-    let _lastSeq = "";
+    let _lastSeq = 0;
     if (this.props.dep.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
@@ -236,7 +236,7 @@ export default class DepModal extends Component {
                 {/* date */}
                 <FormGroup>
                   <label style={{ fontSize: "23px", color: "black" }}>
-                    <b>วันที่ซื้อ/ได้มา</b>{" "}
+                    <b>วันที่</b>{" "}
                     <span style={{ fontSize: "18px", color: "red" }}>
                       *จำเป็น
                     </span>
@@ -258,9 +258,9 @@ export default class DepModal extends Component {
                         if (date) {
                           let formatted_date =
                             date.getDate() +
-                            "-" +
+                            "/" +
                             (date.getMonth() + 1) +
-                            "-" +
+                            "/" +
                             (date.getFullYear() + 543);
 
                           this.setState({

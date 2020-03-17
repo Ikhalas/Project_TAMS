@@ -951,9 +951,9 @@ export default class MovableForm extends Component {
                               if (date) {
                                 let formatted_date =
                                   date.getDate() +
-                                  "-" +
+                                  "/" +
                                   (date.getMonth() + 1) +
-                                  "-" +
+                                  "/" +
                                   (date.getFullYear() + 543);
 
                                 this.setState({
@@ -1050,9 +1050,9 @@ export default class MovableForm extends Component {
                               if (date) {
                                 let formatted_date =
                                   date.getDate() +
-                                  "-" +
+                                  "/" +
                                   (date.getMonth() + 1) +
-                                  "-" +
+                                  "/" +
                                   (date.getFullYear() + 543);
 
                                 this.setState({

@@ -5,6 +5,7 @@ import { db } from "../../../api/firebase";
 import { Link } from "react-router-dom";
 import ResModal from "./ResModal";
 import DepModal from "./DepModal";
+import BenModal from "./BenModal";
 import {
   Card,
   CardHeader,
@@ -54,7 +55,8 @@ export default class MovableDetail extends Component {
       refresher: false,
 
       resModal: false,
-      depModal: false
+      depModal: false,
+      benModal: false
     };
 
     this._isMounted = false;
@@ -126,7 +128,7 @@ export default class MovableDetail extends Component {
   }
 
   getBenefit() {
-    db.collection("itemBenefit")
+    db.collection("itemBen")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
       .then(snapshot => {
@@ -225,7 +227,7 @@ export default class MovableDetail extends Component {
         sorted.map(dep => (
           <tr key={dep.seq}>
             <td style={{ textAlign: "center" }}>{dep.date}</td>
-            <td style={{ textAlign: "center" }}>{dep.balance}</td>
+            <td style={{ textAlign: "center" }}>{dep.balance}&nbsp;บาท</td>
           </tr>
         ))
       );
@@ -257,13 +259,13 @@ export default class MovableDetail extends Component {
       sorted.map(ben => (
         <tr key={ben.seq}>
           <td style={{ textAlign: "center" }}>
-            <b>{ben.date}</b>
+            {ben.date}
           </td>
           <td style={{ textAlign: "center" }}>
-            <b>{ben.detail}</b>
+            {ben.detail}
           </td>
           <td style={{ textAlign: "center" }}>
-            <b>{ben.total}</b>
+            {ben.total}
           </td>
         </tr>
       ))
@@ -335,6 +337,12 @@ export default class MovableDetail extends Component {
 
   toggleDepModal = () => {
     this.setState({ depModal: !this.state.depModal });
+  };
+
+  toggleBenModal = () => {
+    this.setState({ benModal: !this.state.benModal },()=>{
+      //console.log("done")
+    })
   };
 
   toggleAlert = res => {
@@ -710,7 +718,13 @@ export default class MovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a href="javascript:void(0);">
+                      <a
+                        href="javascript:void(0);"
+                        onClick={() => {
+                          this.toggleBenModal();
+                          //console.log("click");
+                        }}
+                      >
                         <i
                           style={{ fontSize: "15px" }}
                           className="far fa-plus-square"
@@ -844,6 +858,16 @@ export default class MovableDetail extends Component {
             toggleFn={this.toggleDepModal}
             itemCode={this.state.itemDetail.itemCode}
             dep={this.state.dep}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.benModal && (
+          <BenModal
+            benModal={this.state.benModal}
+            toggleFn={this.toggleBenModal}
+            itemCode={this.state.itemDetail.itemCode}
+            ben={this.state.ben}
             toggleAlert={this.toggleAlert}
           />
         )}
