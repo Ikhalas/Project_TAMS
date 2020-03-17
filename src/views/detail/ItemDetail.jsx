@@ -29,8 +29,8 @@ export default class ItemDetail extends Component {
       activeTab: "1",
       readyToRender: false,
 
-      showDetail: false, 
-      showMovable: false, 
+      showDetail: true, //false
+      showMovable: true, //false
       showImovable: false, 
       itemId: ""
     };
@@ -251,7 +251,7 @@ export default class ItemDetail extends Component {
                             className="table-header"
                             style={{ fontWeight: "normal" }}
                           >
-                            <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
+                            <b style={{ fontSize: "23px" }}>ชื่อครุภัณฑ์</b>
                           </th>
                           <th
                             className="table-header text-right pr-5"

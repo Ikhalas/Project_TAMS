@@ -4,6 +4,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { db } from "../../../api/firebase";
 import { Link } from "react-router-dom";
 import ResModal from "./ResModal";
+import DepModal from "./DepModal";
 import {
   Card,
   CardHeader,
@@ -52,7 +53,8 @@ export default class MovableDetail extends Component {
       readyToRender: false,
       refresher: false,
 
-      resModal: false
+      resModal: false,
+      depModal: false
     };
 
     this._isMounted = false;
@@ -75,27 +77,27 @@ export default class MovableDetail extends Component {
   }
 
   getItemDetail() {
-    if (this.props.itemId) {
-      db.collection("itemMovable")
-        .doc(this.props.itemId)
-        .get()
-        .then(doc => {
-          this._isMounted &&
-            this.setState({
-              itemDetail: Object(doc.data()),
-              readyToRender: true
-            });
-          this._isMounted && this.getResponsibility();
-          this._isMounted && this.getDepreciations();
-          this._isMounted && this.getBenefit();
-        })
-        .catch(error => console.log(error));
-    }
+    //if (this.props.itemId) {
+    db.collection("itemMovable")
+      .doc("X32UtvVTayGD5ykl9qSH") //mock this.props.itemId
+      .get()
+      .then(doc => {
+        this._isMounted &&
+          this.setState({
+            itemDetail: Object(doc.data()),
+            readyToRender: true
+          });
+        this._isMounted && this.getResponsibility();
+        this._isMounted && this.getDepreciations();
+        this._isMounted && this.getBenefit();
+      })
+      .catch(error => console.log(error));
+    //  }
   }
 
   getResponsibility() {
     db.collection("itemRes")
-      .where("itemCode", "==", this.state.itemDetail.itemCode) //mock => this.props.itemId
+      .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
       .then(snapshot => {
         let res = [];
@@ -331,6 +333,10 @@ export default class MovableDetail extends Component {
     this.setState({ resModal: !this.state.resModal });
   };
 
+  toggleDepModal = () => {
+    this.setState({ depModal: !this.state.depModal });
+  };
+
   toggleAlert = res => {
     if (res === "complete") {
       this.setState({ refresher: !this.state.refresher });
@@ -409,7 +415,7 @@ export default class MovableDetail extends Component {
               <Col md="6" sm="12">
                 <div
                   style={{
-                    paddingBottom: '20px',
+                    paddingBottom: "20px",
                     textAlign: "center"
                   }}
                 >
@@ -646,7 +652,10 @@ export default class MovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a href="javascript:void(0);">
+                      <a
+                        href="javascript:void(0);"
+                        onClick={() => this.toggleDepModal()}
+                      >
                         <i
                           style={{ fontSize: "15px" }}
                           className="far fa-plus-square"
@@ -825,6 +834,16 @@ export default class MovableDetail extends Component {
             itemCode={this.state.itemDetail.itemCode}
             department={this.state.itemDetail.department}
             res={this.state.res}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.depModal && (
+          <DepModal
+            depModal={this.state.depModal}
+            toggleFn={this.toggleDepModal}
+            itemCode={this.state.itemDetail.itemCode}
+            dep={this.state.dep}
             toggleAlert={this.toggleAlert}
           />
         )}

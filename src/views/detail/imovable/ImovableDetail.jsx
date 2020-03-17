@@ -17,6 +17,7 @@ import {
   Button
 } from "reactstrap";
 
+/*
 var notiAlert = {
   place: "tc",
   message: (
@@ -28,6 +29,7 @@ var notiAlert = {
   icon: "nc-icon nc-cloud-upload-94",
   autoDismiss: 3
 };
+*/
 
 function DetailTable(props) {
   return (
@@ -70,7 +72,7 @@ class ImovableDetail extends Component {
   getItemDetail() {
     // if (this.props.itemId) {
     db.collection("itemImovable")
-      .doc("nJfNUbGbLYz4CzbMonCb") //mock this.props.itemId
+      .doc(this.props.itemId) //mock this.props.itemId
       .get()
       .then(doc => {
         this._isMounted &&
@@ -376,7 +378,7 @@ class ImovableDetail extends Component {
                 <Table size="sm" hover>
                   <tbody>
                     <DetailTable
-                      label="ชื่อพัสดุ"
+                      label="ชื่อครุภัณฑ์"
                       detail={itemDetail.itemName}
                     />
                     <DetailTable
