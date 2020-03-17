@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { db } from "../../../api/firebase";
+import { db } from "../../../../api/firebase";
 import DatePicker from "react-date-picker";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {

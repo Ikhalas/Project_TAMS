@@ -27,10 +27,11 @@ export default class ItemDetail extends Component {
       itemsMove: "",
       itemsImove: "",
       activeTab: "1",
-      readyToRender: false,
+      readyToRender1: false,
+      readyToRender2: false,
 
-      showDetail: true, //false
-      showMovable: true, //false
+      showDetail: false, //false
+      showMovable: false, //false
       showImovable: false, 
       itemId: ""
     };
@@ -58,7 +59,7 @@ export default class ItemDetail extends Component {
         snapshot.forEach(doc => {
           itemsMove.push(doc);
         });
-        this._isMounted && this.setState({ itemsMove, readyToRender: true });
+        this._isMounted && this.setState({ itemsMove, readyToRender1: true });
       })
       .catch(error => console.log(error));
   }
@@ -72,7 +73,7 @@ export default class ItemDetail extends Component {
         snapshot.forEach(doc => {
           itemsImove.push(doc);
         });
-        this._isMounted && this.setState({ itemsImove });
+        this._isMounted && this.setState({ itemsImove, readyToRender2: true });
       })
       .catch(error => console.log(error));
   }
@@ -302,9 +303,9 @@ export default class ItemDetail extends Component {
   }
 
   render() {
-    const { readyToRender } = this.state;
+    const { readyToRender1, readyToRender2 } = this.state;
     const { showDetail } = this.state;
-    return readyToRender ? (
+    return readyToRender1 && readyToRender2 ? (
       <>
         <div className="content regular-th">
           {showDetail ? <>{this.renderDetail()}</> : <>{this.renderMain()}</>}
