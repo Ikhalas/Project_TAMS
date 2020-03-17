@@ -118,6 +118,16 @@
   background: none!important;
   border: none;
   padding: 0!important;
+  cursor: pointer;
+  outline-color: transparent;
+  outline: none;
+  font-size: 23px;
+}
+
+.button-like-a:hover{
+  background: none!important;
+  border: none;
+  padding: 0!important;
   text-decoration: underline;
   cursor: pointer;
   outline-color: transparent;

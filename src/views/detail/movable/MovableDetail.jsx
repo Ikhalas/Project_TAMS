@@ -432,7 +432,7 @@ export default class MovableDetail extends Component {
             </span>
           </Link>
 
-              {/* case: item deactivated */}
+          {/* case: item deactivated */}
           {itemDetail.status === "จำหน่าย" ? (
             <DeactivateInfo itemCode={itemDetail.itemCode} />
           ) : (
@@ -649,8 +649,8 @@ export default class MovableDetail extends Component {
                       ) : (
                         <>
                           {" "}
-                          <a
-                            href="javascript:void(0);"
+                          <button
+                            className="regular-th button-like-a text-info"
                             onClick={() => this.toggleResModal()}
                           >
                             <i
@@ -658,7 +658,7 @@ export default class MovableDetail extends Component {
                               className="far fa-plus-square"
                             />{" "}
                             เพิ่มรายการ
-                          </a>
+                          </button>
                         </>
                       )}
                     </Col>
@@ -732,8 +732,8 @@ export default class MovableDetail extends Component {
                       ) : (
                         <>
                           {" "}
-                          <a
-                            href="javascript:void(0);"
+                          <button
+                            className="regular-th button-like-a text-info"
                             onClick={() => this.toggleDepModal()}
                           >
                             <i
@@ -741,7 +741,7 @@ export default class MovableDetail extends Component {
                               className="far fa-plus-square"
                             />{" "}
                             เพิ่มรายการ
-                          </a>
+                          </button>
                         </>
                       )}
                     </Col>
@@ -797,8 +797,8 @@ export default class MovableDetail extends Component {
                       ) : (
                         <>
                           {" "}
-                          <a
-                            href="javascript:void(0);"
+                          <button
+                            className="regular-th button-like-a text-info"
                             onClick={() => {
                               this.toggleBenModal();
                               //console.log("click");
@@ -809,7 +809,7 @@ export default class MovableDetail extends Component {
                               className="far fa-plus-square"
                             />{" "}
                             เพิ่มรายการ
-                          </a>
+                          </button>
                         </>
                       )}
                     </Col>
@@ -874,8 +874,8 @@ export default class MovableDetail extends Component {
                       ) : (
                         <>
                           {" "}
-                          <a
-                            href="javascript:void(0);"
+                          <button
+                            className="regular-th button-like-a text-info"
                             onClick={() => this.toggleMainModal()}
                           >
                             <i
@@ -883,7 +883,7 @@ export default class MovableDetail extends Component {
                               className="far fa-plus-square"
                             />{" "}
                             เพิ่มรายการ
-                          </a>
+                          </button>
                         </>
                       )}
                     </Col>

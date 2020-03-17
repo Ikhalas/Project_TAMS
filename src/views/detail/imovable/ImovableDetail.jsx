@@ -628,8 +628,8 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a
-                        href="javascript:void(0);"
+                      <button
+                        className="regular-th button-like-a text-info"
                         onClick={() => this.toggleResModal()}
                       >
                         <i
@@ -637,7 +637,7 @@ class ImovableDetail extends Component {
                           className="far fa-plus-square"
                         />{" "}
                         เพิ่มรายการ
-                      </a>
+                      </button>
                     </Col>
                   </Row>
                 </CardTitle>
@@ -695,8 +695,8 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a
-                        href="javascript:void(0);"
+                      <button
+                        className="regular-th button-like-a text-info"
                         onClick={() => this.toggleResModal()}
                       >
                         <i
@@ -704,7 +704,7 @@ class ImovableDetail extends Component {
                           className="far fa-plus-square"
                         />{" "}
                         เพิ่มรายการ
-                      </a>
+                      </button>
                     </Col>
                   </Row>
                 </CardTitle>
@@ -740,7 +740,7 @@ class ImovableDetail extends Component {
                       >
                         ราคาปัจจุบัน
                       </th>
-                      <th style={{width:'10%'}}></th>
+                      <th style={{ width: "10%" }}></th>
                     </tr>
                   </thead>
                   <tbody>{this.genValRows()}</tbody>
@@ -763,13 +763,13 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a href="javascript:void(0);">
+                      <button className="regular-th button-like-a text-info">
                         <i
                           style={{ fontSize: "15px" }}
                           className="far fa-plus-square"
                         />{" "}
                         เพิ่มรายการ
-                      </a>
+                      </button>
                     </Col>
                   </Row>
                 </CardTitle>
@@ -827,13 +827,13 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <a href="javascript:void(0);">
+                      <button className="regular-th button-like-a text-info">
                         <i
                           style={{ fontSize: "15px" }}
                           className="far fa-plus-square"
                         />{" "}
                         เพิ่มรายการ
-                      </a>
+                      </button>
                     </Col>
                   </Row>
                 </CardTitle>
@@ -879,7 +879,6 @@ class ImovableDetail extends Component {
         </Row>
         {/* การจำหน่ายครุภัณฑ์ */}
         {this.deactivateLand()}
-
       </>
     ) : (
       <div className="content">
