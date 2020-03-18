@@ -11,7 +11,9 @@ import {
   FormGroup,
   Input,
   InputGroup,
-  Spinner
+  Spinner,
+  Col,
+  Row
 } from "reactstrap";
 
 function TextInput(props) {
@@ -28,7 +30,7 @@ function TextInput(props) {
         type="text"
         name={props.name}
         className="regular-th"
-        style={{ height: 40, fontSize: "22px", width: "600px" }}
+        style={{ height: 40, fontSize: "22px"}}
         onChange={onChangeHandle}
       />
     </FormGroup>
@@ -137,7 +139,7 @@ export default class ResModal extends Component {
           backdrop="static"
           keyboard={false}
           size="lg"
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.resModal}
           toggle={this.props.toggleFn}
         >
@@ -145,8 +147,10 @@ export default class ResModal extends Component {
             เพิ่มรายการผู้ดูแลรับผิดชอบครุภัณฑ์
           </ModalHeader>
           <ModalBody>
+          <Row>
+              <Col className="pl-3" md="9" sm="12">
             <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-
+            <hr />
             <FormGroup>
               <label style={{ fontSize: "23px", color: "black" }}>
                 <b>วันที่ซื้อ/ได้มา</b>{" "}
@@ -214,6 +218,8 @@ export default class ResModal extends Component {
               name="resName"
               onChange={this.handleInputTextChange}
             />
+            </Col>
+            </Row>
           </ModalBody>
           <ModalFooter>
             <Button

@@ -213,7 +213,7 @@ export default class DeactCollapse extends Component {
           backdrop="static"
           keyboard={false}
           size="lg"
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.state.confirmModal}
           toggle={this.toggleModal}
         >

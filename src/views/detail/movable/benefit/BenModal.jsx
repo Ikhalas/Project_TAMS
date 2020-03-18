@@ -30,7 +30,7 @@ function TextInput(props) {
         type="text"
         name={props.name}
         className="regular-th"
-        style={{ height: 40, fontSize: "22px", width: "600px" }}
+        style={{ height: 40, fontSize: "22px" }}
         onChange={onChangeHandle}
       />
     </FormGroup>
@@ -134,7 +134,7 @@ export default class BenModal extends Component {
           backdrop="static"
           keyboard={false}
           size="lg"
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.benModal}
           toggle={this.props.toggleFn}
         >
@@ -142,7 +142,10 @@ export default class BenModal extends Component {
             เพิ่มรายการผลประโยชน์ที่หาได้จากครุภัณฑ์
           </ModalHeader>
           <ModalBody>
+          <Row>
+              <Col className="pl-3" md="9" sm="12">
             <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
+            <hr/>
             <FormGroup>
               <label style={{ fontSize: "23px", color: "black" }}>
                 <b>วันที่</b>{" "}
@@ -220,8 +223,12 @@ export default class BenModal extends Component {
                 </FormGroup>
               </Col>
             </Row>
+            </Col>
+            </Row>
           </ModalBody>
 
+                    
+                 
           <ModalFooter>
             <Button
               className="btn-round regular-th"

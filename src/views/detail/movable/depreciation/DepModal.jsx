@@ -219,10 +219,9 @@ export default class DepModal extends Component {
         <Modal
           backdrop="static"
           keyboard={false}
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.depModal}
           toggle={this.props.toggleFn}
-          style={{ maxWidth: "1000px" }}
         >
           <ModalHeader style={{ color: "white" }}>
             เพิ่มรายการค่าเสื่อมราคาครุภัณฑ์
@@ -230,65 +229,70 @@ export default class DepModal extends Component {
           {readyToRender ? (
             <>
               <ModalBody>
-                <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-                {this.renderDetail()}
-                <hr />
-                {/* date */}
-                <FormGroup>
-                  <label style={{ fontSize: "23px", color: "black" }}>
-                    <b>วันที่</b>{" "}
-                    <span style={{ fontSize: "18px", color: "red" }}>
-                      *จำเป็น
-                    </span>
-                  </label>
-                  <InputGroup>
-                    <label>
-                      {" "}
-                      <i
-                        className="nc-icon nc-calendar-60 pl-2"
-                        style={{ fontSize: "20px", paddingTop: "10px" }}
-                      />
-                      &nbsp;&nbsp;&nbsp;&nbsp;
-                    </label>
-                    <DatePicker
-                      className="date-picker"
-                      calendarClassName="calendar-class"
-                      value={dateToShow}
-                      onChange={date => {
-                        if (date) {
-                          let formatted_date =
-                            date.getDate() +
-                            "/" +
-                            (date.getMonth() + 1) +
-                            "/" +
-                            (date.getFullYear() + 543);
+                <Row>
+                  <Col className="pl-3" md="9" sm="12">
+                    <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
+                    <hr />
+                    {this.renderDetail()}
+                    <hr />
+                    {/* date */}
+                    <FormGroup>
+                      <label style={{ fontSize: "23px", color: "black" }}>
+                        <b>วันที่</b>{" "}
+                        <span style={{ fontSize: "18px", color: "red" }}>
+                          *จำเป็น
+                        </span>
+                      </label>
+                      <InputGroup>
+                        <label>
+                          {" "}
+                          <i
+                            className="nc-icon nc-calendar-60 pl-2"
+                            style={{ fontSize: "20px", paddingTop: "10px" }}
+                          />
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                        </label>
+                        <DatePicker
+                          className="date-picker"
+                          calendarClassName="calendar-class"
+                          value={dateToShow}
+                          onChange={date => {
+                            if (date) {
+                              let formatted_date =
+                                date.getDate() +
+                                "/" +
+                                (date.getMonth() + 1) +
+                                "/" +
+                                (date.getFullYear() + 543);
 
-                          this.setState({
-                            date: formatted_date,
-                            dateToShow: date
-                          });
-                        }
-                      }}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                {/* balance */}
-                <FormGroup>
-                  <label style={{ fontSize: "23px", color: "black" }}>
-                    <b>ราคาคงเหลือ</b>{" "}
-                    <span style={{ fontSize: "18px", color: "red" }}>
-                      *จำเป็น
-                    </span>
-                  </label>
-                  <Input
-                    type="number"
-                    name="balance"
-                    value={balance}
-                    className="regular-th"
-                    style={{ height: 40, fontSize: "22px", width: "600px" }}
-                    onChange={this.handleInputTextChange}
-                  />
-                </FormGroup>
+                              this.setState({
+                                date: formatted_date,
+                                dateToShow: date
+                              });
+                            }
+                          }}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    {/* balance */}
+                    <FormGroup>
+                      <label style={{ fontSize: "23px", color: "black" }}>
+                        <b>ราคาคงเหลือ</b>{" "}
+                        <span style={{ fontSize: "18px", color: "red" }}>
+                          *จำเป็น
+                        </span>
+                      </label>
+                      <Input
+                        type="number"
+                        name="balance"
+                        value={balance}
+                        className="regular-th"
+                        style={{ height: 40, fontSize: "22px" }}
+                        onChange={this.handleInputTextChange}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
               </ModalBody>
               <ModalFooter>
                 <Button

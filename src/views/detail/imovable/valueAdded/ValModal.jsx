@@ -10,7 +10,9 @@ import {
   FormGroup,
   Input,
   InputGroup,
-  Spinner
+  Spinner,
+  Row,
+  Col
 } from "reactstrap";
 
 export default class ValModal extends Component {
@@ -127,7 +129,7 @@ export default class ValModal extends Component {
         <Modal
           backdrop="static"
           keyboard={false}
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.valModal}
           toggle={this.props.toggleFn}
           style={{ maxWidth: "1000px" }}
@@ -137,6 +139,8 @@ export default class ValModal extends Component {
           </ModalHeader>
 
           <ModalBody>
+          <Row>
+              <Col className="pl-3" md="9" sm="12">
             <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
             <hr />
             {/* date */}
@@ -186,7 +190,7 @@ export default class ValModal extends Component {
                 type="number"
                 name="percent"
                 className="regular-th"
-                style={{ height: 40, fontSize: "22px", width: "600px" }}
+                style={{ height: 40, fontSize: "22px" }}
                 onChange={this.handleInputTextChange}
               />
             </FormGroup>
@@ -200,7 +204,7 @@ export default class ValModal extends Component {
                 name="balance"
                 value={balance}
                 className="regular-th"
-                style={{ height: 40, fontSize: "22px", width: "600px" }}
+                style={{ height: 40, fontSize: "22px" }}
                 onChange={this.handleInputTextChange}
               />
               {percent ? (
@@ -213,6 +217,8 @@ export default class ValModal extends Component {
                 </>
               ) : null}
             </FormGroup>
+            </Col>
+            </Row>
           </ModalBody>
           <ModalFooter>
             <Button

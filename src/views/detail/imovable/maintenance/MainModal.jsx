@@ -11,6 +11,8 @@ import {
   Input,
   InputGroup,
   Spinner,
+  Row,
+  Col
 } from "reactstrap";
 
 function TextInput(props) {
@@ -27,7 +29,7 @@ function TextInput(props) {
         type="text"
         name={props.name}
         className="regular-th"
-        style={{ height: 40, fontSize: "22px", width: "600px" }}
+        style={{ height: 40, fontSize: "22px" }}
         onChange={onChangeHandle}
       />
     </FormGroup>
@@ -122,7 +124,7 @@ export default class MainModal extends Component {
           backdrop="static"
           keyboard={false}
           size="lg"
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.mainModal}
           toggle={this.props.toggleFn}
         >
@@ -130,75 +132,84 @@ export default class MainModal extends Component {
             เพิ่มรายการบันทึกการซ่อม/ปรับปรุงแก้ไขครุภัณฑ์
           </ModalHeader>
           <ModalBody>
-            <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-            <FormGroup>
-              <label style={{ fontSize: "23px", color: "black" }}>
-                <b>วันที่</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <InputGroup>
-                <label>
-                  {" "}
-                  <i
-                    className="nc-icon nc-calendar-60 pl-2"
-                    style={{ fontSize: "20px", paddingTop: "10px" }}
-                  />
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                </label>
-                <DatePicker
-                  className="date-picker"
-                  calendarClassName="calendar-class"
-                  value={dateToShow}
-                  onChange={date => {
-                    if (date) {
-                      let formatted_date =
-                        date.getDate() +
-                        "/" +
-                        (date.getMonth() + 1) +
-                        "/" +
-                        (date.getFullYear() + 543);
+            <Row>
+              <Col className="pl-3" md="9" sm="12">
+                <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
+                <hr />
+                <FormGroup>
+                  <label style={{ fontSize: "23px", color: "black" }}>
+                    <b>วันที่</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <InputGroup>
+                    <label>
+                      {" "}
+                      <i
+                        className="nc-icon nc-calendar-60 pl-2"
+                        style={{ fontSize: "20px", paddingTop: "10px" }}
+                      />
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                    <DatePicker
+                      className="date-picker"
+                      calendarClassName="calendar-class"
+                      value={dateToShow}
+                      onChange={date => {
+                        if (date) {
+                          let formatted_date =
+                            date.getDate() +
+                            "/" +
+                            (date.getMonth() + 1) +
+                            "/" +
+                            (date.getFullYear() + 543);
 
-                      this.setState({
-                        date: formatted_date,
-                        dateToShow: date
-                      });
-                    }
-                  }}
+                          this.setState({
+                            date: formatted_date,
+                            dateToShow: date
+                          });
+                        }
+                      }}
+                    />
+                  </InputGroup>
+                </FormGroup>
+
+                <TextInput
+                  label="เลขที่หนังสือ"
+                  name="docNo"
+                  onChange={this.handleInputTextChange}
                 />
-              </InputGroup>
-            </FormGroup>
 
-            <TextInput
-              label="เลขที่หนังสือ"
-              name="docNo"
-              onChange={this.handleInputTextChange}
-            />
+                <TextInput
+                  label="รายการซ่อม/ปรับปรุงรายการ"
+                  name="detail"
+                  onChange={this.handleInputTextChange}
+                />
 
-            <TextInput
-              label="รายการซ่อม/ปรับปรุงรายการ"
-              name="detail"
-              onChange={this.handleInputTextChange}
-            />
+                <FormGroup>
+                  <label style={{ fontSize: "23px", color: "black" }}>
+                    <b>จำนวนเงิน</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    name="amount"
+                    className="regular-th"
+                    style={{ height: 40, fontSize: "22px", width: "600px" }}
+                    onChange={this.handleInputTextChange}
+                  />
+                </FormGroup>
 
-            <FormGroup>
-              <label style={{ fontSize: "23px", color: "black" }}>
-                <b>จำนวนเงิน</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <Input
-                type="number"
-                name="amount"
-                className="regular-th"
-                style={{ height: 40, fontSize: "22px", width: "600px" }}
-                onChange={this.handleInputTextChange}
-              />
-            </FormGroup>
-
-            <TextInput
-              label="ผู้รับผิดชอบ"
-              name="resName"
-              onChange={this.handleInputTextChange}
-            />
+                <TextInput
+                  label="ผู้รับผิดชอบ"
+                  name="resName"
+                  onChange={this.handleInputTextChange}
+                />
+              </Col>
+            </Row>
           </ModalBody>
 
           <ModalFooter>

@@ -30,7 +30,7 @@ function TextInput(props) {
         type="text"
         name={props.name}
         className="regular-th"
-        style={{ height: 40, fontSize: "22px", width: "600px" }}
+        style={{ height: 40, fontSize: "22px" }}
         onChange={onChangeHandle}
       />
     </FormGroup>
@@ -93,11 +93,11 @@ export default class BenModal extends Component {
       );
     }
 
-    let _total = ""
-    if(this.state.selected.value === "รายเดือน"){
-        _total = "ต่อเดือน"
+    let _total = "";
+    if (this.state.selected.value === "รายเดือน") {
+      _total = "ต่อเดือน";
     } else {
-        _total = "ต่อปี"
+      _total = "ต่อปี";
     }
 
     const data = {
@@ -134,7 +134,7 @@ export default class BenModal extends Component {
           backdrop="static"
           keyboard={false}
           size="lg"
-          className="regular-th"
+          className="add-modal regular-th"
           isOpen={this.props.benModal}
           toggle={this.props.toggleFn}
         >
@@ -142,82 +142,89 @@ export default class BenModal extends Component {
             เพิ่มรายการผลประโยชน์ที่หาได้จากครุภัณฑ์
           </ModalHeader>
           <ModalBody>
-            <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-            <FormGroup>
-              <label style={{ fontSize: "23px", color: "black" }}>
-                <b>วันที่</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <InputGroup>
-                <label>
-                  {" "}
-                  <i
-                    className="nc-icon nc-calendar-60 pl-2"
-                    style={{ fontSize: "20px", paddingTop: "10px" }}
-                  />
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                </label>
-                <DatePicker
-                  className="date-picker"
-                  calendarClassName="calendar-class"
-                  value={dateToShow}
-                  onChange={date => {
-                    if (date) {
-                      let formatted_date =
-                        date.getDate() +
-                        "/" +
-                        (date.getMonth() + 1) +
-                        "/" +
-                        (date.getFullYear() + 543);
-
-                      this.setState({
-                        date: formatted_date,
-                        dateToShow: date
-                      });
-                    }
-                  }}
-                />
-              </InputGroup>
-            </FormGroup>
-            <TextInput
-              label="รายการ"
-              name="detail"
-              onChange={this.handleInputTextChange}
-            />
             <Row>
-              <Col md="6">
+              <Col className="pl-3" md="9" sm="12">
+                <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
+                <hr />
                 <FormGroup>
                   <label style={{ fontSize: "23px", color: "black" }}>
-                    <b>ผลประโยชน์ที่ได้รับ (บาท)</b>{" "}
+                    <b>วันที่</b>{" "}
                     <span style={{ fontSize: "18px", color: "red" }}>
                       *จำเป็น
                     </span>
                   </label>
-                  <Input
-                    type="number"
-                    name="total"
-                    className="regular-th"
-                    style={{ height: 40, fontSize: "22px" }}
-                    onChange={this.handleInputTextChange}
-                  />
+                  <InputGroup>
+                    <label>
+                      {" "}
+                      <i
+                        className="nc-icon nc-calendar-60 pl-2"
+                        style={{ fontSize: "20px", paddingTop: "10px" }}
+                      />
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                    <DatePicker
+                      className="date-picker"
+                      calendarClassName="calendar-class"
+                      value={dateToShow}
+                      onChange={date => {
+                        if (date) {
+                          let formatted_date =
+                            date.getDate() +
+                            "/" +
+                            (date.getMonth() + 1) +
+                            "/" +
+                            (date.getFullYear() + 543);
+
+                          this.setState({
+                            date: formatted_date,
+                            dateToShow: date
+                          });
+                        }
+                      }}
+                    />
+                  </InputGroup>
                 </FormGroup>
-              </Col>
-              <Col md="6">
-                <FormGroup>
-                  <label style={{ fontSize: "23px", color: "black" }}>
-                    <b>(รายเดือนหรือรายปี)</b>{" "}
-                    <span style={{ fontSize: "18px", color: "red" }}>
-                      *จำเป็น
-                    </span>
-                  </label>
-                  <Select
-                    value={selected}
-                    onChange={selected => {
-                      this.setState({ selected });
-                    }}
-                    options={options}
-                  />
-                </FormGroup>
+                <TextInput
+                  label="รายการ"
+                  name="detail"
+                  onChange={this.handleInputTextChange}
+                />
+                <Row>
+                  <Col md="6">
+                    <FormGroup>
+                      <label style={{ fontSize: "23px", color: "black" }}>
+                        <b>ผลประโยชน์ที่ได้รับ (บาท)</b>{" "}
+                        <span style={{ fontSize: "18px", color: "red" }}>
+                          *จำเป็น
+                        </span>
+                      </label>
+                      <Input
+                        type="number"
+                        name="total"
+                        className="regular-th"
+                        style={{ height: 40, fontSize: "22px" }}
+                        onChange={this.handleInputTextChange}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                    <FormGroup>
+                      <label style={{ fontSize: "23px", color: "black" }}>
+                        <b>(รายเดือนหรือรายปี)</b>{" "}
+                        <span style={{ fontSize: "18px", color: "red" }}>
+                          *จำเป็น
+                        </span>
+                      </label>
+                      <Select
+                        value={selected}
+                        onChange={selected => {
+                          this.setState({ selected });
+                        }}
+                        options={options}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </ModalBody>
