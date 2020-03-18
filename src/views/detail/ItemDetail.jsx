@@ -31,7 +31,7 @@ export default class ItemDetail extends Component {
       readyToRender2: false,
 
       showDetail: false, //false
-      showMovable: false, 
+      showMovable: false,
       showImovable: false, //false
       itemId: ""
     };
@@ -79,9 +79,13 @@ export default class ItemDetail extends Component {
   }
 
   generateItemsMoveRows() {
-    return (
-      this.state.itemsMove &&
-      this.state.itemsMove.map(item => (
+    if (this.state.itemsMove) {
+      // filter only !== "จำหน่าย"
+      const filItem = this.state.itemsMove.filter(item => {
+        return item.data().status !== "จำหน่าย";
+      });
+
+      return filItem.map(item => (
         <tr
           key={item.id}
           style={{ cursor: "pointer" }}
@@ -100,14 +104,18 @@ export default class ItemDetail extends Component {
             &nbsp;{item.data().department}
           </td>
         </tr>
-      ))
-    );
+      ));
+    }
   }
 
   generateItemsImoveRows() {
-    return (
-      this.state.itemsImove &&
-      this.state.itemsImove.map(item => (
+    if (this.state.itemsImove) {
+      // filter only !== "จำหน่าย"
+      const filItem = this.state.itemsImove.filter(item => {
+        return item.data().status !== "จำหน่าย";
+      });
+
+      return filItem.map(item => (
         <tr
           key={item.id}
           style={{ cursor: "pointer" }}
@@ -126,8 +134,66 @@ export default class ItemDetail extends Component {
             &nbsp;{item.data().department}
           </td>
         </tr>
-      ))
-    );
+      ));
+    }
+  }
+
+  genDeactImove() {
+    if (this.state.itemsImove) {
+      const filImov = this.state.itemsImove.filter(item => {
+        return item.data().status === "จำหน่าย";
+      });
+
+      return filImov.map(item => (
+        <tr
+          key={item.id}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            this.setState({
+              showImovable: true,
+              showDetail: true,
+              itemId: item.id
+            });
+          }}
+        >
+          <td className="text-danger" style={{ fontSize: 20 }}>&nbsp;{item.data().itemCode}</td>
+          <td style={{ fontSize: 20 }}>&nbsp;{item.data().itemType}</td>
+          <td style={{ fontSize: 20 }}>&nbsp;{item.data().itemName}</td>
+          <td className="text-right pr-5" style={{ fontSize: 20 }}>
+            &nbsp;{item.data().department}
+          </td>
+        </tr>
+      ));
+    }
+  }
+
+  genDeactMove() {
+    if (this.state.itemsMove) {
+      const filMov = this.state.itemsMove.filter(item => {
+        return item.data().status === "จำหน่าย";
+      });
+
+      return filMov.map(item => (
+        <tr
+          key={item.id}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            this.setState({
+              showMovable: true,
+              showDetail: true,
+              itemId: item.id
+            });
+          }}
+        >
+          <td className="text-danger" style={{ fontSize: 20 }}>&nbsp;{item.data().itemCode}</td>
+          <td style={{ fontSize: 20 }}>&nbsp;{item.data().itemType}</td>
+          <td style={{ fontSize: 20 }}>&nbsp;{item.data().itemName}</td>
+          <td className="text-right pr-5" style={{ fontSize: 20 }}>
+            &nbsp;{item.data().department}
+          </td>
+        </tr>
+      ));
+    }
   }
 
   toggle = tab => {
@@ -155,6 +221,7 @@ export default class ItemDetail extends Component {
                 <span style={{ fontSize: "23px" }}>ครุภัณฑ์สังหาริมทรัพย์</span>
               </NavLink>
             </NavItem>
+
             <NavItem>
               <NavLink
                 className={classnames({ active: activeTab === "2" })}
@@ -171,6 +238,23 @@ export default class ItemDetail extends Component {
                 </span>
               </NavLink>
             </NavItem>
+
+            <NavItem style={{ paddingLeft: "20px" }}>
+              <NavLink
+                className={classnames({ active: activeTab === "3" })}
+                style={{
+                  backgroundColor: activeTab === "3" ? "#f5f5f5" : "",
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  this.toggle("3");
+                }}
+              >
+                <span className="text-danger" style={{ fontSize: "23px" }}>
+                  ครุภัณฑ์ที่ถูกจำหน่าย
+                </span>
+              </NavLink>
+            </NavItem>
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">
@@ -179,7 +263,7 @@ export default class ItemDetail extends Component {
                   <CardHeader>
                     <CardTitle tag="h5" style={{ color: "#66615b" }}>
                       รายการครุภัณฑ์
-                      <b style={{ fontSize: "32px" }}>สังหาริมทรัพย์</b>
+                      <b style={{ fontSize: "32px" }}> สังหาริมทรัพย์ </b>
                       ทั้งหมด
                     </CardTitle>
                   </CardHeader>
@@ -228,7 +312,7 @@ export default class ItemDetail extends Component {
                   <CardHeader>
                     <CardTitle tag="h5" style={{ color: "#66615b" }}>
                       รายการครุภัณฑ์
-                      <b style={{ fontSize: "32px" }}>อสังหาริมทรัพย์</b>
+                      <b style={{ fontSize: "32px" }}> อสังหาริมทรัพย์ </b>
                       ทั้งหมด
                     </CardTitle>
                   </CardHeader>
@@ -272,6 +356,62 @@ export default class ItemDetail extends Component {
                 </Col>
               </Row>
             </TabPane>
+            <TabPane tabId="3">
+              <Row>
+                <Col sm="12">
+                  <CardHeader>
+                    <CardTitle tag="h5" style={{ color: "#66615b" }}>
+                      รายการครุภัณฑ์ที่ถูก
+                      <b className="text-danger" style={{ fontSize: "32px" }}>
+                        {" "}
+                        จำหน่าย{" "}
+                      </b>
+                      แล้ว
+                    </CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <Table responsive hover size="sm">
+                      <thead className="text-primary">
+                        <tr>
+                          <th
+                            className="table-header"
+                            style={{ fontWeight: "normal" }}
+                          >
+                            <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
+                          </th>
+                          <th
+                            className="table-header"
+                            style={{ fontWeight: "normal" }}
+                          >
+                            <b style={{ fontSize: "23px" }}>ประเภทครุภัณฑ์</b>
+                          </th>
+                          <th
+                            className="table-header"
+                            style={{ fontWeight: "normal" }}
+                          >
+                            <b style={{ fontSize: "23px" }}>ชื่อครุภัณฑ์</b>
+                          </th>
+                          <th
+                            className="table-header text-right pr-5"
+                            style={{ fontWeight: "normal" }}
+                          >
+                            <b style={{ fontSize: "23px" }}>
+                              {" "}
+                              หน่วยงานที่รับผิดชอบ
+                            </b>
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {this.genDeactImove()}
+                        {this.genDeactMove()}
+                      </tbody>
+                    </Table>
+                  </CardBody>
+                </Col>
+              </Row>
+            </TabPane>
           </TabContent>
         </Card>
       </>
@@ -300,7 +440,7 @@ export default class ItemDetail extends Component {
       showDetail: false,
       itemId: ""
     });
-  }
+  };
 
   render() {
     const { readyToRender1, readyToRender2 } = this.state;

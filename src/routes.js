@@ -1,9 +1,9 @@
-import Dashboard from "views/Dashboard.jsx";
+import Dashboard from "views/dashboard/Dashboard.jsx";
 import Settings from "views/settings/Settings.jsx";
 import Form from "views/form/Form";
 import ItemDetail from "views/detail/ItemDetail"
+import ItemBorrow from "views/borrow/ItemBorrow";
 import Icons from "views/Icons.jsx";
-//import Typography from "views/Typography.jsx";
 //import Maps from "views/Map.jsx";
 //import UserPage from "views/User.jsx";
 import Logout from "views/Logout.jsx";
@@ -35,6 +35,13 @@ var routes = [
     name: "รายการครุภัณฑ์ทั้งหมด",
     icon: "nc-icon nc-bullet-list-67",
     component: ItemDetail,
+    layout: "/admin"
+  },
+  {
+    path: "/item-borrow",
+    name: "การ ยืม/คืน ครุภัณฑ์",
+    icon: "nc-icon nc-basket",
+    component: ItemBorrow,
     layout: "/admin"
   },
   /*

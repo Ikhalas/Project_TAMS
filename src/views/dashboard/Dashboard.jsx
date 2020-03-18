@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom'
-import { db } from '../api/firebase'
+import { db } from '../../api/firebase'
 import {
   Card,
   CardBody,
