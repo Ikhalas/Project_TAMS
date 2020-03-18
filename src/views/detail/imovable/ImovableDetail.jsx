@@ -5,6 +5,12 @@ import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
 import { db } from "../../../api/firebase";
 import { apiKey } from "../../../api/google-map";
 import { Link } from "react-router-dom";
+import ResModal from "./responsibility/ResModal";
+import ValModal from "./valueAdded/ValModal";
+import BenModal from "./benefit/BenModal";
+import MainModal from "./maintenance/MainModal";
+import DeactCollapse from "./deactivation/DeactCollapse";
+import DeactivateInfo from "./deactivation/DeactivateInfo";
 import {
   Card,
   CardHeader,
@@ -14,10 +20,10 @@ import {
   Col,
   Table,
   Alert,
-  Button
+  Button,
+  Collapse
 } from "reactstrap";
 
-/*
 var notiAlert = {
   place: "tc",
   message: (
@@ -29,7 +35,18 @@ var notiAlert = {
   icon: "nc-icon nc-cloud-upload-94",
   autoDismiss: 3
 };
-*/
+
+var notiDeact = {
+  place: "tc",
+  message: (
+    <div>
+      <div style={{ fontSize: "23px" }}>จำหน่ายครุภัณฑ์สำเร็จ</div>
+    </div>
+  ),
+  type: "danger",
+  icon: "nc-icon nc-cloud-upload-94",
+  autoDismiss: 3
+};
 
 function DetailTable(props) {
   return (
@@ -53,10 +70,18 @@ class ImovableDetail extends Component {
       main: "",
 
       readyToRender: false,
-      refresher: false
+      refresher: false,
+
+      resModal: false,
+      valModal: false,
+      benModal: false,
+      mainModal: false,
+
+      deactOpen: false
     };
 
     this._isMounted = false;
+    this._statusLabel = "text-secondary";
   }
 
   componentDidMount() {
@@ -69,10 +94,16 @@ class ImovableDetail extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.refresher !== prevState.refresher) {
+      this._isMounted && this.getItemDetail();
+    }
+  }
+
   getItemDetail() {
     // if (this.props.itemId) {
     db.collection("itemImovable")
-      .doc(this.props.itemId) //mock this.props.itemId
+      .doc(this.props.itemId) //mock  nJfNUbGbLYz4CzbMonCb
       .get()
       .then(doc => {
         this._isMounted &&
@@ -80,9 +111,12 @@ class ImovableDetail extends Component {
             itemDetail: Object(doc.data()),
             readyToRender: true
           });
-        console.log(this.state.itemDetail);
+        //console.log(this.state.itemDetail);
         this._isMounted && this.getResponsibility();
         this._isMounted && this.getLandValue();
+        this._isMounted && this.getBenefit();
+        this._isMounted && this.getMaintenance();
+        this._isMounted && this.statusLabel();
       })
       .catch(error => console.log(error));
     // }
@@ -98,7 +132,7 @@ class ImovableDetail extends Component {
           res.push(doc.data());
         });
         this._isMounted && this.setState({ res });
-        console.log(Object(this.state.res));
+        //console.log(Object(this.state.res));
       })
       .catch(error => console.log(error));
   }
@@ -113,13 +147,13 @@ class ImovableDetail extends Component {
           val.push(doc.data());
         });
         this._isMounted && this.setState({ val });
-        console.log(Object(this.state.val));
+        //console.log(Object(this.state.val));
       })
       .catch(error => console.log(error));
   }
 
   getBenefit() {
-    db.collection("landBenefit")
+    db.collection("landBen")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
       .then(snapshot => {
@@ -134,7 +168,7 @@ class ImovableDetail extends Component {
   }
 
   getMaintenance() {
-    db.collection("itemMaintenance")
+    db.collection("landMain")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
       .then(snapshot => {
@@ -146,6 +180,17 @@ class ImovableDetail extends Component {
         //console.log(this.state.main);
       })
       .catch(error => console.log(error));
+  }
+
+  statusLabel() {
+    const { itemDetail } = this.state;
+    if (itemDetail.status === "ใช้งานได้ดี") this._statusLabel = "text-success";
+    else if (itemDetail.status === "ชำรุด") this._statusLabel = "text-warning";
+    else if (itemDetail.status === "เสื่อมสภาพ")
+      this._statusLabel = "text-warning";
+    else if (itemDetail.status === "สูญหาย") this._statusLabel = "text-danger";
+    else if (itemDetail.status === "จำหน่าย") this._statusLabel = "text-danger";
+    else this._statusLabel = "text-secondary";
   }
 
   genResRows() {
@@ -255,15 +300,9 @@ class ImovableDetail extends Component {
       sorted &&
       sorted.map(ben => (
         <tr key={ben.seq}>
-          <td style={{ textAlign: "center" }}>
-            <b>{ben.date}</b>
-          </td>
-          <td style={{ textAlign: "center" }}>
-            <b>{ben.detail}</b>
-          </td>
-          <td style={{ textAlign: "center" }}>
-            <b>{ben.total}</b>
-          </td>
+          <td style={{ textAlign: "center" }}>{ben.date}</td>
+          <td style={{ textAlign: "center" }}>{ben.detail}</td>
+          <td style={{ textAlign: "center" }}>{ben.total}</td>
         </tr>
       ))
     );
@@ -293,20 +332,19 @@ class ImovableDetail extends Component {
       this.state.main &&
       sorted.map(main => (
         <tr key={main.seq}>
-          <td style={{ textAlign: "center" }}>
-            <b>{main.No}</b>
-          </td>
-
-          <td style={{ textAlign: "center" }}>
-            <b>{main.date}</b>
-          </td>
-          <td style={{ textAlign: "center" }}>
-            <b>{main.detail}</b>
-          </td>
+          <td style={{ textAlign: "center" }}>{main.seq}</td>
+          <td style={{ textAlign: "center" }}>{main.date}</td>
+          <td style={{ textAlign: "center" }}>{main.detail}</td>
         </tr>
       ))
     );
   }
+
+  toggleDeact = () => {
+    this.setState({ deactOpen: !this.state.deactOpen }, () => {
+      //console.log("done")
+    });
+  };
 
   deactivateLand() {
     if (this.state.itemDetail.status !== "จำหน่าย") {
@@ -317,16 +355,58 @@ class ImovableDetail extends Component {
             สถานะปัจจุบัน :
             <span style={{ fontSize: 23 }}>{this.state.itemDetail.status}</span>
           </div>
-          <Button outline color="danger" block>
+          <Button outline color="danger" block onClick={this.toggleDeact}>
             <span className="regular-th" style={{ fontWeight: "normal" }}>
-              จำหน่ายครุภัณฑ์
+              {this.state.deactOpen ? "ยกเลิก" : "จำหน่ายครุภัณฑ์"}
             </span>
           </Button>
           <br />
+          <Collapse isOpen={this.state.deactOpen}>
+            <DeactCollapse
+              itemId={this.props.itemId}
+              itemCode={this.state.itemDetail.itemCode}
+              itemName={this.state.itemDetail.itemName}
+              price={this.state.itemDetail.price}
+              toggleFn={this.toggleDeact}
+              toggleAlert={this.toggleAlert}
+            />
+          </Collapse>
         </>
       );
     }
   }
+
+  toggleAlert = res => {
+    if (res === "complete") {
+      this.setState({ refresher: !this.state.refresher });
+      this.refs.notify.notificationAlert(notiAlert);
+    }
+
+    if (res === "deactivated") {
+      this.setState({ refresher: !this.state.refresher });
+      this.refs.notify.notificationAlert(notiDeact);
+    }
+  };
+
+  toggleResModal = () => {
+    this.setState({ resModal: !this.state.resModal });
+  };
+
+  toggleValModal = () => {
+    this.setState({ valModal: !this.state.valModal });
+  };
+
+  toggleBenModal = () => {
+    this.setState({ benModal: !this.state.benModal }, () => {
+      //console.log("done")
+    });
+  };
+
+  toggleMainModal = () => {
+    this.setState({ mainModal: !this.state.mainModal }, () => {
+      //console.log("done")
+    });
+  };
 
   render() {
     const { readyToRender, itemDetail } = this.state;
@@ -357,6 +437,14 @@ class ImovableDetail extends Component {
               ย้อนกลับ
             </span>
           </Link>
+
+          {/* case: item deactivated */}
+          {itemDetail.status === "จำหน่าย" ? (
+            <DeactivateInfo itemCode={itemDetail.itemCode} />
+          ) : (
+            <></>
+          )}
+
           <CardHeader>
             <CardTitle>
               <Row>
@@ -367,7 +455,9 @@ class ImovableDetail extends Component {
                   style={{ fontSize: "25px", paddingRight: "50px" }}
                   className="text-right"
                 >
-                  สถานะ : {itemDetail.status}
+                  <p className={this._statusLabel}>
+                    สถานะ : {itemDetail.status}
+                  </p>
                 </Col>
               </Row>
             </CardTitle>
@@ -628,16 +718,22 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <button
-                        className="regular-th button-like-a text-info"
-                        onClick={() => this.toggleResModal()}
-                      >
-                        <i
-                          style={{ fontSize: "15px" }}
-                          className="far fa-plus-square"
-                        />{" "}
-                        เพิ่มรายการ
-                      </button>
+                      {itemDetail.status === "จำหน่าย" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <button
+                            className="regular-th button-like-a text-info"
+                            onClick={() => this.toggleResModal()}
+                          >
+                            <i
+                              style={{ fontSize: "15px" }}
+                              className="far fa-plus-square"
+                            />{" "}
+                            เพิ่มรายการ
+                          </button>
+                        </>
+                      )}
                     </Col>
                   </Row>
                 </CardTitle>
@@ -681,7 +777,7 @@ class ImovableDetail extends Component {
             </Card>
           </Col>
         </Row>
-        {/* ข้อมูลผู้ดูแลรับผิดชอบครุภัณฑ์ */}
+        {/* ข้อมูลการเพิ่มมูลค่าของที่ดิน */}
         <Row>
           <Col>
             <Card>
@@ -695,16 +791,22 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <button
-                        className="regular-th button-like-a text-info"
-                        onClick={() => this.toggleResModal()}
-                      >
-                        <i
-                          style={{ fontSize: "15px" }}
-                          className="far fa-plus-square"
-                        />{" "}
-                        เพิ่มรายการ
-                      </button>
+                      {itemDetail.status === "จำหน่าย" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <button
+                            className="regular-th button-like-a text-info"
+                            onClick={() => this.toggleValModal()}
+                          >
+                            <i
+                              style={{ fontSize: "15px" }}
+                              className="far fa-plus-square"
+                            />{" "}
+                            เพิ่มรายการ
+                          </button>
+                        </>
+                      )}
                     </Col>
                   </Row>
                 </CardTitle>
@@ -729,7 +831,7 @@ class ImovableDetail extends Component {
                           color: "#66615b"
                         }}
                       >
-                        เปอร์เซ็นต์
+                        มูลค่าเพิ่มขึ้น(%)
                       </th>
                       <th
                         style={{
@@ -738,7 +840,7 @@ class ImovableDetail extends Component {
                           color: "#66615b"
                         }}
                       >
-                        ราคาปัจจุบัน
+                        มูลค่าปัจจุบัน
                       </th>
                       <th style={{ width: "10%" }}></th>
                     </tr>
@@ -763,13 +865,22 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <button className="regular-th button-like-a text-info">
-                        <i
-                          style={{ fontSize: "15px" }}
-                          className="far fa-plus-square"
-                        />{" "}
-                        เพิ่มรายการ
-                      </button>
+                      {itemDetail.status === "จำหน่าย" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <button
+                            className="regular-th button-like-a text-info"
+                            onClick={() => this.toggleBenModal()}
+                          >
+                            <i
+                              style={{ fontSize: "15px" }}
+                              className="far fa-plus-square"
+                            />{" "}
+                            เพิ่มรายการ
+                          </button>
+                        </>
+                      )}
                     </Col>
                   </Row>
                 </CardTitle>
@@ -827,13 +938,22 @@ class ImovableDetail extends Component {
                       style={{ fontSize: "22px", paddingRight: "50px" }}
                       className="text-right text-success"
                     >
-                      <button className="regular-th button-like-a text-info">
-                        <i
-                          style={{ fontSize: "15px" }}
-                          className="far fa-plus-square"
-                        />{" "}
-                        เพิ่มรายการ
-                      </button>
+                      {itemDetail.status === "จำหน่าย" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <button
+                            className="regular-th button-like-a text-info"
+                            onClick={() => this.toggleMainModal()}
+                          >
+                            <i
+                              style={{ fontSize: "15px" }}
+                              className="far fa-plus-square"
+                            />{" "}
+                            เพิ่มรายการ
+                          </button>
+                        </>
+                      )}
                     </Col>
                   </Row>
                 </CardTitle>
@@ -879,6 +999,47 @@ class ImovableDetail extends Component {
         </Row>
         {/* การจำหน่ายครุภัณฑ์ */}
         {this.deactivateLand()}
+
+        {this.state.resModal && (
+          <ResModal
+            resModal={this.state.resModal}
+            toggleFn={this.toggleResModal}
+            itemCode={this.state.itemDetail.itemCode}
+            department={this.state.itemDetail.department}
+            res={this.state.res}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.valModal && (
+          <ValModal
+            valModal={this.state.valModal}
+            toggleFn={this.toggleValModal}
+            itemCode={this.state.itemDetail.itemCode}
+            val={this.state.val}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.benModal && (
+          <BenModal
+            benModal={this.state.benModal}
+            toggleFn={this.toggleBenModal}
+            itemCode={this.state.itemDetail.itemCode}
+            ben={this.state.ben}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.mainModal && (
+          <MainModal
+            mainModal={this.state.mainModal}
+            toggleFn={this.toggleMainModal}
+            itemCode={this.state.itemDetail.itemCode}
+            main={this.state.main}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
       </>
     ) : (
       <div className="content">

@@ -103,15 +103,15 @@ export default class DeactCollapse extends Component {
 
     //console.log(data);
 
-    this.deactivateItem(data);
+    this.deactivateLand(data);
   }
 
-  deactivateItem(data) {
+  deactivateLand(data) {
     if (data) {
-      db.collection("deactivatedItem")
+      db.collection("deactivatedLand")
         .add(data)
         .then(() => {
-          db.collection("itemMovable")
+          db.collection("itemImovable")
             .doc(this.props.itemId)
             .update({ status: "จำหน่าย" })
             .then(() => {

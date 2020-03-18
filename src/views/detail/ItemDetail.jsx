@@ -31,8 +31,8 @@ export default class ItemDetail extends Component {
       readyToRender2: false,
 
       showDetail: false, //false
-      showMovable: false, //false
-      showImovable: false, 
+      showMovable: false, 
+      showImovable: false, //false
       itemId: ""
     };
 
