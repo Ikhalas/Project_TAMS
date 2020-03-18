@@ -444,7 +444,7 @@ export default class MovableForm extends Component {
                 perMonth: Number(depreciat[0]),
                 perYear: Number(depreciat[1]),
                 cumulative: Number(depreciat[2]),
-                note: ""
+                note: "-- ราคาเริ่มต้น --"
               };
 
               this.uploadData(newItem, itemRes, itemDep);
@@ -507,7 +507,7 @@ export default class MovableForm extends Component {
         perMonth: Number(depreciat[0]),
         perYear: Number(depreciat[1]),
         cumulative: Number(depreciat[2]),
-        note: ""
+        note: "-- ราคาเริ่มต้น --"
       };
 
       this.uploadData(newItem, itemRes, itemDep);

@@ -40,6 +40,7 @@ export default class Departments extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.refresher !== prevProps.refresher) {
       this._isMounted && this.getDepartment();
+      this._isMounted && this.getSubDepartment();
     }
   }
 
@@ -75,7 +76,9 @@ export default class Departments extends Component {
       this.state.departments &&
       this.state.departments.map(dep => (
         <ListGroupItem
-          className="listGroupItem"
+          className="listGroupItem regular-th"
+          tag="button"
+
           action
           key={dep.label}
           onClick={() => this.setState({ depSelected: dep.label })}

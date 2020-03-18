@@ -38,7 +38,7 @@ function TextInput(props) {
         <>
           {" "}
           <span style={{ fontSize: "18px", color: "red" }}>
-            รหัส/ตัวย่อ มีอยู่ในระบบแล้ว
+            {props.errorMsg}
           </span>
         </>
       ) : (
@@ -54,7 +54,6 @@ export default class AddDepartmant extends Component {
     this.state = {
       code: "",
       name: "",
-      note: "",
       codeCheck: true,
       nameCheck: true,
       inProgress: false
@@ -91,13 +90,13 @@ export default class AddDepartmant extends Component {
         .get()
         .then(snapshot => {
           if (snapshot.empty) {
-            console.log("No matching documents. can submit");
+            //console.log("No matching documents. can submit");
             this.setState({ codeCheck: true }); //can submit
             return;
           }
           snapshot.forEach(doc => {
             let data = doc.data();
-            console.log(this.state.code + "|" + data.code + "can't submit");
+            //console.log(this.state.code + "|" + data.code + "can't submit");
             this.setState({ codeCheck: false, inProgress: false }); //can't submit
           });
         })
@@ -110,13 +109,13 @@ export default class AddDepartmant extends Component {
         .get()
         .then(snapshot => {
           if (snapshot.empty) {
-            console.log("No matching documents. can submit");
+            //console.log("No matching documents. can submit");
             this.setState({ nameCheck: true }); //can submit
             return;
           }
           snapshot.forEach(doc => {
             let data = doc.data();
-            console.log(this.state.code + "|" + data.label + "can't submit");
+            //console.log(this.state.code + "|" + data.label + "can't submit");
             this.setState({ nameCheck: false, inProgress: false }); //can't submit
           });
         })
@@ -130,10 +129,9 @@ export default class AddDepartmant extends Component {
       code: this.state.code,
       label: this.state.name,
       value: this.state.name,
-      note: this.state.note
     };
 
-    console.log(data);
+    //console.log(data);
 
     db.collection("departments")
     .add(data)
@@ -178,6 +176,7 @@ export default class AddDepartmant extends Component {
                   onChange={this.handleInputTextChange}
                   required={true}
                   check={codeCheck}
+                  errorMsg="รหัส/ตัวย่อ มีอยู่ในระบบแล้ว"
                 />
                 <TextInput
                   label="ชื่อหน่วยงาน"
@@ -185,12 +184,7 @@ export default class AddDepartmant extends Component {
                   onChange={this.handleInputTextChange}
                   required={true}
                   check={nameCheck}
-                />
-                <TextInput
-                  label="หมายเหตุ (ถ้ามี)"
-                  name="note"
-                  onChange={this.handleInputTextChange}
-                  check={true}
+                  errorMsg="ชื่อหน่วยงาน มีอยู่ในระบบแล้ว"
                 />
               </Col>
             </Row>

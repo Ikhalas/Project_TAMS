@@ -238,6 +238,7 @@ export default class MovableDetail extends Component {
               <span>ยังไม่มีรายการ</span>
             </Alert>
           </td>
+          <td></td>
         </tr>
       );
     }
@@ -251,6 +252,9 @@ export default class MovableDetail extends Component {
           <tr key={dep.seq}>
             <td style={{ textAlign: "center" }}>{dep.date}</td>
             <td style={{ textAlign: "center" }}>{dep.balance}&nbsp;บาท</td>
+            <td style={{ textAlign: "center", fontSize: "18px" }}>
+              {dep.note}
+            </td>
           </tr>
         ))
       );
