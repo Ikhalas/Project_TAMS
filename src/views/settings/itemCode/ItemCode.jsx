@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import { db } from "../../../api/firebase";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Card, CardTitle, CardBody, Row, Col, Table, Button } from "reactstrap";
+import AddItemCode from "./AddItemCode";
 
-export default class ItemName extends Component {
+export default class itemsCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
       readyToRender: false,
-      itemName: []
+      itemName: [],
+
+      itemCodeModal: false
     };
     this._isMounted = false;
   }
@@ -20,6 +23,12 @@ export default class ItemName extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.refresher !== prevProps.refresher) {
+      this._isMounted && this.getItemName();
+    }
   }
 
   getItemName() {
@@ -44,13 +53,20 @@ export default class ItemName extends Component {
           <td>{item.code}</td>
           <td style={{ textAlign: "center" }}>{item.label}</td>
           <td style={{ textAlign: "center" }}>{item.type}</td>
-          <td style={{ textAlign: "center" }}>
-            {item.note === "" ? "-" : item.note}
-          </td>
         </tr>
       ))
     );
   }
+
+  toggleModal = () => {
+    this.setState({ itemCodeModal: !this.state.itemCodeModal });
+  };
+
+  toggleAlert = res => {
+    if (res) {
+      this.props.toggleAlert(res);
+    }
+  };
 
   render() {
     return this.state.readyToRender ? (
@@ -68,6 +84,7 @@ export default class ItemName extends Component {
                 style={{ padding: "0px 50px 0px 0px" }}
               >
                 <Button
+                  onClick={() => this.toggleModal()}
                   size="sm"
                   outline
                   color="info"
@@ -84,15 +101,8 @@ export default class ItemName extends Component {
               <thead>
                 <tr>
                   <th></th>
-                  <th style={{ fontSize: "23px", color: "#66615b" }}>รหัส</th>
-                  <th
-                    style={{
-                      fontSize: "23px",
-                      color: "#66615b",
-                      textAlign: "center"
-                    }}
-                  >
-                    ชื่อ
+                  <th style={{ fontSize: "23px", color: "#66615b" }}>
+                    รหัสครุภัณฑ์
                   </th>
                   <th
                     style={{
@@ -101,7 +111,7 @@ export default class ItemName extends Component {
                       textAlign: "center"
                     }}
                   >
-                    ประเภท
+                    ชื่อครุภัณฑ์
                   </th>
                   <th
                     style={{
@@ -109,9 +119,8 @@ export default class ItemName extends Component {
                       color: "#66615b",
                       textAlign: "center"
                     }}
-                    
                   >
-                    หมายเหตุ
+                    ประเภทครุภัณฑ์
                   </th>
                 </tr>
               </thead>
@@ -119,6 +128,13 @@ export default class ItemName extends Component {
             </Table>
           </CardBody>
         </Card>
+
+        <AddItemCode
+          itemCodeModal={this.state.itemCodeModal}
+          toggleFn={this.toggleModal}
+          toggleAlert={this.toggleAlert}
+        />
+
       </>
     ) : (
       <>

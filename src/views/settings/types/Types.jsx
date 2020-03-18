@@ -107,7 +107,7 @@ export default class Types extends Component {
             </Row>
           </CardTitle>
           <CardBody>
-            <Table size="sm" hover responsive>
+            <Table size="sm" hover>
               <thead>
                 <tr>
                   <th></th>

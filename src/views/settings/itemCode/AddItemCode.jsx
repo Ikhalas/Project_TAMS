@@ -14,18 +14,19 @@ import {
   Spinner
 } from "reactstrap";
 
-const moveOptions = [
-  { value: "สังหาริมทรัพย์", label: "สังหาริมทรัพย์" },
-  { value: "อสังหาริมทรัพย์", label: "อสังหาริมทรัพย์" }
-];
-
-export default class AddType extends Component {
+export default class AddItemCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      code: "",
       name: "",
-      move: "",
+      type: "",
 
+      typeOption: "",
+
+      readyToRender: false,
+
+      codeCheck: true,
       nameCheck: true,
       inProgress: false
     };
@@ -34,17 +35,32 @@ export default class AddType extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this._isMounted && this.getType();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
+  getType() {
+    db.collection("types")
+      .get()
+      .then(snapshot => {
+        let typeOption = [];
+        snapshot.forEach(doc => {
+          typeOption.push(doc.data());
+        });
+        this._isMounted && this.setState({ typeOption, readyToRender: true });
+      })
+      .catch(error => console.log(error));
+  }
+
   handleInputTextChange = e => {
     e.preventDefault();
     this.setState({
       [e.target.name]: e.target.value,
-      nameCheck: true
+      nameCheck: true,
+      codeCheck: true
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -55,7 +71,7 @@ export default class AddType extends Component {
 
     this._isMounted &&
       (await db
-        .collection("types")
+        .collection("itemsCode")
         .where("label", "==", this.state.name)
         .get()
         .then(snapshot => {
@@ -72,11 +88,31 @@ export default class AddType extends Component {
         })
         .catch(error => console.log(error)));
 
-    if (this.state.nameCheck) {
+    this._isMounted &&
+      (await db
+        .collection("itemsCode")
+        .where("code", "==", this.state.code)
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            //console.log("No matching documents. can submit");
+            this.setState({ codeCheck: true }); //can submit
+            return;
+          }
+          snapshot.forEach(doc => {
+            //let data = doc.data();
+            //console.log(this.state.name + "|" + data.label + " can't submit");
+            this.setState({ codeCheck: false, inProgress: false }); //can't submit
+          });
+        })
+        .catch(error => console.log(error)));
+
+    if (this.state.nameCheck && this.state.codeCheck) {
       const data = {
         label: this.state.name,
         value: this.state.name,
-        movable: this.state.move.label
+        code: this.state.code,
+        type: this.state.type.label
       };
       //console.log(data);
       this.uploadData(data);
@@ -84,23 +120,24 @@ export default class AddType extends Component {
   }
 
   uploadData(data) {
-    db.collection("types")
+    db.collection("itemsCode")
       .add(data)
       .then(() => {
         this.setState({ inProgress: false });
         this.props.toggleFn();
-        this.props.toggleAlert("types");
+        this.props.toggleAlert("itemsCode");
       });
   }
 
   render() {
-    const { typeModal } = this.props;
-    const { name, move, nameCheck, inProgress } = this.state;
-    return (
+    const { itemCodeModal } = this.props;
+    const { name, code, type ,typeOption } = this.state;
+    const { codeCheck, nameCheck, inProgress, readyToRender } = this.state;
+    return readyToRender ? (
       <>
         <Modal
           className="add-modal regular-th"
-          isOpen={typeModal}
+          isOpen={itemCodeModal}
           toggle={this.props.toggleFn}
           unmountOnClose={true}
           backdrop="static"
@@ -110,14 +147,40 @@ export default class AddType extends Component {
             className="pl-4"
             style={{ color: "white", fontSize: "25px" }}
           >
-            เพิ่มประเภทครุภัณฑ์
+            ชื่อและรหัสครุภัณฑ์
           </ModalHeader>
           <ModalBody>
             <Row>
               <Col className="pl-3" md="9" sm="12">
                 <FormGroup style={{ height: "110px" }}>
                   <label style={{ fontSize: "25px", color: "black" }}>
-                    <b>ประเภทครุภัณฑ์</b>&nbsp;
+                    <b>รหัสครุภัณฑ์</b>&nbsp;
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    name="code"
+                    className="regular-th"
+                    style={{ height: 40, fontSize: "22px" }}
+                    onChange={this.handleInputTextChange}
+                  />
+                  {!codeCheck ? (
+                    <>
+                      {" "}
+                      <span style={{ fontSize: "18px", color: "red" }}>
+                        รหัสครุภัณฑ์ มีอยู่ในระบบแล้ว
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </FormGroup>
+
+                <FormGroup style={{ height: "110px" }}>
+                  <label style={{ fontSize: "25px", color: "black" }}>
+                    <b>ชื่อครุภัณฑ์</b>&nbsp;
                     <span style={{ fontSize: "18px", color: "red" }}>
                       *จำเป็น
                     </span>
@@ -133,13 +196,14 @@ export default class AddType extends Component {
                     <>
                       {" "}
                       <span style={{ fontSize: "18px", color: "red" }}>
-                        ประเภทครุภัณฑ์ มีอยู่ในระบบแล้ว
+                        ชื่อครุภัณฑ์ มีอยู่ในระบบแล้ว
                       </span>
                     </>
                   ) : (
                     <></>
                   )}
                 </FormGroup>
+
                 <FormGroup style={{ height: "110px" }}>
                   <label style={{ fontSize: "25px", color: "black" }}>
                     <b>ประเภทครุภัณฑ์</b>&nbsp;
@@ -148,24 +212,27 @@ export default class AddType extends Component {
                     </span>
                   </label>
                   <Select
-                    value={move}
-                    onChange={move => this.setState({ move })}
-                    options={moveOptions}
+                    value={type}
+                    onChange={type => this.setState({ type })}
+                    options={typeOption}
                   />
                 </FormGroup>
               </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
-            {name && move ? (
+            
+            {name && code && type ? (
               <></>
             ) : (
               <>
-                <span style={{ fontSize: "20px", color: "red", paddingRight:'220px'  }}>
+                <span style={{ fontSize: "20px", color: "red", paddingRight:'220px' }}>
                   *กรุณากรอกฟิลด์ที่จำเป็นให้ครบถ้วน
-                </span>              
+                </span>
+               
               </>
             )}
+
             <Button
               className="btn-round regular-th"
               size="sm"
@@ -190,7 +257,7 @@ export default class AddType extends Component {
               color="info"
               onClick={this.handleSummit.bind(this)}
               style={{ fontSize: "25px", fontWeight: "normal" }}
-              disabled={!name || !move || inProgress}
+              disabled={!name || !code || !type || inProgress}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
               {inProgress ? (
@@ -206,6 +273,8 @@ export default class AddType extends Component {
           </ModalFooter>
         </Modal>
       </>
+    ) : (
+      <></>
     );
   }
 }

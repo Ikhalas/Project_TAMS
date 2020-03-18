@@ -194,11 +194,9 @@ export default class AddDepartmant extends Component {
               <></>
             ) : (
               <>
-                <span style={{ fontSize: "20px", color: "red" }}>
+                <span style={{ fontSize: "20px", color: "red", paddingRight:'220px'  }}>
                   *กรุณากรอกฟิลด์ที่จำเป็นให้ครบถ้วน
-                </span>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>              
               </>
             )}
             <Button
