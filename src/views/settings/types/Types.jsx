@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { db } from "../../../api/firebase";
+import AddType from "./AddType";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Card, CardTitle, CardBody, Row, Col, Table, Button } from "reactstrap";
 
@@ -8,7 +9,9 @@ export default class Types extends Component {
     super(props);
     this.state = {
       readyToRender: false,
-      types: []
+      types: [],
+
+      typeModal: false
     };
     this._isMounted = false;
   }
@@ -22,8 +25,15 @@ export default class Types extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.refresher !== prevProps.refresher) {
+      this._isMounted && this.getType();
+    }
+  }
+
   getType() {
     db.collection("types")
+      .orderBy("movable", "desc")
       .get()
       .then(snapshot => {
         let types = [];
@@ -52,13 +62,21 @@ export default class Types extends Component {
           >
             {type.movable}
           </td>
-          <td style={{ textAlign: "center" }}>
-            {type.note === "" ? "-" : type.note}
-          </td>
         </tr>
       ))
     );
   }
+
+  toggleTypeModal = () => {
+    this.setState({ typeModal: !this.state.typeModal });
+  };
+
+  toggleAlert = res => {
+    //console.log("Im here");
+    if (res) {
+      this.props.toggleAlert(res);
+    }
+  };
 
   render() {
     return this.state.readyToRender ? (
@@ -76,6 +94,7 @@ export default class Types extends Component {
                 style={{ padding: "0px 50px 0px 0px" }}
               >
                 <Button
+                  onClick={() => this.toggleTypeModal()}
                   size="sm"
                   outline
                   color="info"
@@ -102,22 +121,18 @@ export default class Types extends Component {
                   >
                     สังหาริมทรัพย์/อสังหาริมทรัพย์
                   </th>
-                  <th
-                    style={{
-                      fontSize: "23px",
-                      color: "#66615b",
-                      textAlign: "center"
-                    }}
-                    
-                  >
-                    หมายเหตุ
-                  </th>
                 </tr>
               </thead>
               <tbody>{this.genType()}</tbody>
             </Table>
           </CardBody>
         </Card>
+
+        <AddType
+          typeModal={this.state.typeModal}
+          toggleFn={this.toggleTypeModal}
+          toggleAlert={this.toggleAlert}
+        />
       </>
     ) : (
       <>

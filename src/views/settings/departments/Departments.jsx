@@ -21,6 +21,7 @@ export default class Departments extends Component {
       departments: [],
       subDepartments: [],
       depSelected: "",
+
       mainDepModal: false,
       subDepModal: false
     };
@@ -135,7 +136,7 @@ export default class Departments extends Component {
   };
 
   toggleAlert = res => {
-    console.log("Im here");
+    //console.log("Im here");
     if (res) {
       this.props.toggleAlert(res);
     }

@@ -71,7 +71,6 @@ export default class AddSubDepartment extends Component {
     e.preventDefault();
     this.setState({
       [e.target.name]: e.target.value,
-      codeCheck: true,
       nameCheck: true
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
@@ -90,18 +89,18 @@ export default class AddSubDepartment extends Component {
         .then(snapshot => {
           if (snapshot.empty) {
             //console.log("No matching documents. can submit");
-            this.setState({ codeCheck: true }); //can submit
+            this.setState({ nameCheck: true }); //can submit
             return;
           }
           snapshot.forEach(doc => {
-            let data = doc.data();
+            //let data = doc.data();
             //console.log(this.state.name + "|" + data.label + " can't submit");
             this.setState({ nameCheck: false, inProgress: false }); //can't submit
           });
         })
         .catch(error => console.log(error)));
 
-    if (this.state.codeCheck && this.state.nameCheck) {
+    if (this.state.nameCheck) {
       const data = {
         label: this.state.name,
         value: this.state.name,
@@ -130,7 +129,7 @@ export default class AddSubDepartment extends Component {
 
   render() {
     const { subDepModal } = this.props;
-    const { name, inProgress, nameCheck } = this.state
+    const { name, inProgress, nameCheck } = this.state;
     return (
       <>
         {" "}
@@ -142,28 +141,28 @@ export default class AddSubDepartment extends Component {
           backdrop="static"
           keyboard={false}
         >
-        <ModalHeader
-          className="pl-4"
-          style={{ color: "white", fontSize: "25px" }}
-        >
-          เพิ่มหน่วยงานย่อย
-        </ModalHeader>
-        <ModalBody>
-          <Row>
-            <Col className="pl-3" md="9" sm="12">
-              <TextInput
-                label="ชื่อหน่วยงานย่อย"
-                name="name"
-                onChange={this.handleInputTextChange}
-                required={true}
-                check={nameCheck}
-                errorMsg="ชื่อหน่วยงาน มีอยู่ในระบบแล้ว"
-              />
-            </Col>
-          </Row>
-        </ModalBody>
-        <ModalFooter>
-            { name ? (
+          <ModalHeader
+            className="pl-4"
+            style={{ color: "white", fontSize: "25px" }}
+          >
+            เพิ่มหน่วยงานย่อย
+          </ModalHeader>
+          <ModalBody>
+            <Row>
+              <Col className="pl-3" md="9" sm="12">
+                <TextInput
+                  label="ชื่อหน่วยงานย่อย"
+                  name="name"
+                  onChange={this.handleInputTextChange}
+                  required={true}
+                  check={nameCheck}
+                  errorMsg="ชื่อหน่วยงาน มีอยู่ในระบบแล้ว"
+                />
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            {name ? (
               <></>
             ) : (
               <>
@@ -174,7 +173,6 @@ export default class AddSubDepartment extends Component {
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </>
             )}
-
             <Button
               className="btn-round regular-th"
               size="sm"
@@ -213,7 +211,7 @@ export default class AddSubDepartment extends Component {
             </Button>{" "}
             &nbsp;&nbsp;&nbsp;&nbsp;
           </ModalFooter>
-          </Modal>
+        </Modal>
       </>
     );
   }

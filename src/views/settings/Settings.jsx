@@ -11,7 +11,21 @@ var optionsDep = {
   message: (
     <div>
       <div style={{ fontSize: "22px" }}>
-        เพิ่มรายการ <b style={{color:'white'}}>หน่วยงาน</b> สำเร็จ
+        เพิ่มรายการ <b style={{ color: "white" }}>หน่วยงาน</b> สำเร็จ
+      </div>
+    </div>
+  ),
+  type: "success",
+  icon: "nc-icon nc-cloud-upload-94",
+  autoDismiss: 3
+};
+
+var optionsType = {
+  place: "tc",
+  message: (
+    <div>
+      <div style={{ fontSize: "22px" }}>
+        เพิ่มรายการ <b style={{ color: "white" }}>ประเภทครุภัณฑ์</b> สำเร็จ
       </div>
     </div>
   ),
@@ -32,6 +46,9 @@ export default class Setting extends Component {
     if (res === "department") {
       this.refs.notify.notificationAlert(optionsDep);
       this.setState({ refresh: !this.state.refresh });
+    } else if (res === "types") {
+      this.refs.notify.notificationAlert(optionsType);
+      this.setState({ refresh: !this.state.refresh });
     } else {
       console.log("shit");
     }
@@ -48,7 +65,10 @@ export default class Setting extends Component {
           />
           <br />
           <br />
-          <Types />
+          <Types
+            refresher={this.state.refresh}
+            toggleAlert={this.toggleAlert}
+          />
           <br />
           <br />
           <ItemName />

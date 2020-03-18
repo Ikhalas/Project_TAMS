@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Select from "react-select";
 import { db } from "../../../api/firebase";
 import {
   Button,
@@ -13,48 +14,18 @@ import {
   Spinner
 } from "reactstrap";
 
-function TextInput(props) {
-  function onChangeHandle(e) {
-    if (props.onChange) props.onChange(e);
-  }
-  return (
-    <FormGroup style={{ height: "110px" }}>
-      <label style={{ fontSize: "25px", color: "black" }}>
-        <b>{props.label}</b>&nbsp;
-        {props.required ? (
-          <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-        ) : (
-          ""
-        )}
-      </label>
-      <Input
-        type="text"
-        name={props.name}
-        className="regular-th"
-        style={{ height: 40, fontSize: "22px" }}
-        onChange={onChangeHandle}
-      />
-      {!props.check ? (
-        <>
-          {" "}
-          <span style={{ fontSize: "18px", color: "red" }}>
-            {props.errorMsg}
-          </span>
-        </>
-      ) : (
-        <></>
-      )}
-    </FormGroup>
-  );
-}
+const moveOptions = [
+  { value: "สังหาริมทรัพย์", label: "สังหาริมทรัพย์" },
+  { value: "อสังหาริมทรัพย์", label: "อสังหาริมทรัพย์" }
+];
 
-export default class AddDepartmant extends Component {
+export default class AddType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: "",
       name: "",
-      codeCheck: true,
+      move: "",
+
       nameCheck: true,
       inProgress: false
     };
@@ -73,7 +44,6 @@ export default class AddDepartmant extends Component {
     e.preventDefault();
     this.setState({
       [e.target.name]: e.target.value,
-      codeCheck: true,
       nameCheck: true
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
@@ -85,8 +55,8 @@ export default class AddDepartmant extends Component {
 
     this._isMounted &&
       (await db
-        .collection("departments")
-        .where("code", "==", this.state.code)
+        .collection("types")
+        .where("label", "==", this.state.name)
         .get()
         .then(snapshot => {
           if (snapshot.empty) {
@@ -96,66 +66,41 @@ export default class AddDepartmant extends Component {
           }
           snapshot.forEach(doc => {
             //let data = doc.data();
-            //console.log(this.state.code + "|" + data.code + "can't submit");
-            this.setState({ codeCheck: false, inProgress: false }); //can't submit
-          });
-        })
-        .catch(error => console.log(error)));
-
-    this._isMounted &&
-      (await db
-        .collection("departments")
-        .where("label", "==", this.state.name)
-        .get()
-        .then(snapshot => {
-          if (snapshot.empty) {
-            //console.log("No matching documents. can submit");
-            this.setState({ nameCheck: true }); //can submit
-            return;
-          }
-          snapshot.forEach(doc => {
-            //let data = doc.data();
-            //console.log(this.state.code + "|" + data.label + "can't submit");
+            //console.log(this.state.name + "|" + data.label + " can't submit");
             this.setState({ nameCheck: false, inProgress: false }); //can't submit
           });
         })
         .catch(error => console.log(error)));
 
-    if (this.state.codeCheck && this.state.nameCheck) this.uploadData();
+    if (this.state.nameCheck) {
+      const data = {
+        label: this.state.name,
+        value: this.state.name,
+        movable: this.state.move.label
+      };
+      //console.log(data);
+      this.uploadData(data);
+    }
   }
 
-  uploadData() {
-    const data = {
-      code: this.state.code,
-      label: this.state.name,
-      value: this.state.name,
-    };
-
-    //console.log(data);
-
-    db.collection("departments")
-    .add(data)
-    .then(() => {
-      this.setState({ inProgress: false });
-      this.props.toggleFn();
-      this.handleResult()
-      
-    })    
-  }
-
-  handleResult = () => {
-    this.props.toggleAlert('department')
+  uploadData(data) {
+    db.collection("types")
+      .add(data)
+      .then(() => {
+        this.setState({ inProgress: false });
+        this.props.toggleFn();
+        this.props.toggleAlert("types");
+      });
   }
 
   render() {
-    const { mainDepModal } = this.props;
-    const { code, name } = this.state;
-    const { codeCheck, nameCheck, inProgress } = this.state;
+    const { typeModal } = this.props;
+    const { name, move, nameCheck, inProgress } = this.state;
     return (
       <>
         <Modal
           className="add-modal regular-th"
-          isOpen={mainDepModal}
+          isOpen={typeModal}
           toggle={this.props.toggleFn}
           unmountOnClose={true}
           backdrop="static"
@@ -165,32 +110,54 @@ export default class AddDepartmant extends Component {
             className="pl-4"
             style={{ color: "white", fontSize: "25px" }}
           >
-            เพิ่มหน่วยงาน
+            เพิ่มประเภทครุภัณฑ์
           </ModalHeader>
           <ModalBody>
             <Row>
               <Col className="pl-3" md="9" sm="12">
-                <TextInput
-                  label="รหัส/ตัวย่อ หน่วยงาน"
-                  name="code"
-                  onChange={this.handleInputTextChange}
-                  required={true}
-                  check={codeCheck}
-                  errorMsg="รหัส/ตัวย่อ มีอยู่ในระบบแล้ว"
-                />
-                <TextInput
-                  label="ชื่อหน่วยงาน"
-                  name="name"
-                  onChange={this.handleInputTextChange}
-                  required={true}
-                  check={nameCheck}
-                  errorMsg="ชื่อหน่วยงาน มีอยู่ในระบบแล้ว"
-                />
+                <FormGroup style={{ height: "110px" }}>
+                  <label style={{ fontSize: "25px", color: "black" }}>
+                    <b>ประเภทครุภัณฑ์</b>&nbsp;
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Input
+                    type="text"
+                    name="name"
+                    className="regular-th"
+                    style={{ height: 40, fontSize: "22px" }}
+                    onChange={this.handleInputTextChange}
+                  />
+                  {!nameCheck ? (
+                    <>
+                      {" "}
+                      <span style={{ fontSize: "18px", color: "red" }}>
+                        ประเภทครุภัณฑ์ มีอยู่ในระบบแล้ว
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </FormGroup>
+                <FormGroup style={{ height: "110px" }}>
+                  <label style={{ fontSize: "25px", color: "black" }}>
+                    <b>ประเภทครุภัณฑ์</b>&nbsp;
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Select
+                    value={move}
+                    onChange={move => this.setState({ move })}
+                    options={moveOptions}
+                  />
+                </FormGroup>
               </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
-            {code && name ? (
+            {name && move ? (
               <></>
             ) : (
               <>
@@ -225,7 +192,7 @@ export default class AddDepartmant extends Component {
               color="info"
               onClick={this.handleSummit.bind(this)}
               style={{ fontSize: "25px", fontWeight: "normal" }}
-              disabled={!code || !name || inProgress}
+              disabled={!name || !move || inProgress}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
               {inProgress ? (
