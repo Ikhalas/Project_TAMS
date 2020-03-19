@@ -1,181 +1,96 @@
 import React from "react";
-import { Link } from 'react-router-dom'
-import { db } from '../../api/firebase'
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardTitle,
-  Row,
-  Col
-} from "reactstrap";
+import ConcludeCard from './conclude/ConcludeCard'
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { db } from "../../api/firebase";
 
-class Dashboard extends React.Component {
+export default class Dashboard extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      users: []
-    }
-    this._isMounted = false
+      users: [],
+      itemsMove: [],
+      itemsImove : [],
+      ready1: false,
+      ready2: false,
+      ready3: false
+    };
+    this._isMounted = false;
   }
 
   componentDidMount() {
-    this._isMounted = true
+    this._isMounted = true;
     this._isMounted && this.getUser();
-  }
-
-  getUser() {
-    db.collection('staffs').get().then(snapshot => {
-      let users = []
-      snapshot.forEach(doc => {
-        users.push(doc.data())
-      })
-      this._isMounted && this.setState({ users })
-    }).catch(error => console.log(error))
-  }
-
-  getTotalUser() {
-    return this.state.users.length
+    this._isMounted && this.getitemMovable();
+    this._isMounted && this.getitemImovable();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
+  getUser() {
+    db.collection("staffs")
+      .get()
+      .then(snapshot => {
+        let users = [];
+        snapshot.forEach(doc => {
+          users.push(doc.data());
+        });
+        this._isMounted && this.setState({ users, ready1: true });
+      })
+      .catch(error => console.log(error));
+  }
+
+  getitemMovable() {
+    db.collection("itemMovable")
+      .orderBy("itemCode")
+      .get()
+      .then(snapshot => {
+        let itemsMove = [];
+        snapshot.forEach(doc => {
+          itemsMove.push(doc);
+        });
+        this._isMounted && this.setState({ itemsMove, ready2: true });
+      })
+      .catch(error => console.log(error));
+  }
+
+  getitemImovable() {
+    db.collection("itemImovable")
+      .orderBy("itemCode")
+      .get()
+      .then(snapshot => {
+        let itemsImove = [];
+        snapshot.forEach(doc => {
+          itemsImove.push(doc);
+        });
+        this._isMounted && this.setState({ itemsImove, ready3: true });
+      })
+      .catch(error => console.log(error));
+  }
+
+  
+
+  
+
   render() {
-    return (
+    const { ready1, ready2, ready3 } = this.state;
+    const { users, itemsMove, itemsImove } = this.state;
+    return  ready1 && ready2 && ready3 ? (
       <>
         <div className="content regular-th">
-          <Row>
-
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-bullet-list-67 text-info" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p style={{ fontSize: '20px' }} className="card-category">รายการครุภัณฑ์</p>
-                        <p style={{ fontSize: '25px' }} className="card-category">ทั้งหมด</p>
-                        <CardTitle tag="p">xxx รายการ</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    &nbsp;<i className="fas fa-info" /> &nbsp;
-                    <Link to='/admin/dashboard'>
-                      <span style={{ color: '#66615b' }}>ดูรายการทั้งหมด</span>
-                    </Link>
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-app text-warning" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p style={{ fontSize: '20px' }} className="card-category">รายการครุภัณฑ์</p>
-                        <p style={{ fontSize: '25px' }} className="card-category">สังหาริมทรัพย์</p>
-                        <CardTitle tag="p">xxx รายการ</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    &nbsp;<i className="fas fa-info" /> &nbsp;
-                    <Link to='/admin/dashboard'>
-                      <span style={{ color: '#66615b' }}>ดูรายการทั้งหมด</span>
-                    </Link>
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-bank text-warning" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p style={{ fontSize: '20px' }} className="card-category">รายการครุภัณฑ์</p>
-                        <p style={{ fontSize: '25px' }} className="card-category">อสังหาริมทรัพย์</p>
-                        <CardTitle tag="p">xxx รายการ</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    &nbsp;<i className="fas fa-info" /> &nbsp;
-                    <Link to='/admin/dashboard'>
-                      <span style={{ color: '#66615b' }}>ดูรายการทั้งหมด</span>
-                    </Link>
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-single-02 text-primary" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p style={{ fontSize: '20px' }} className="card-category">รายการบัญชีผู้ใช้</p>
-                        <p style={{ fontSize: '25px' }} className="card-category">ที่มีสิทธิ์ใช้งานระบบ</p>
-                        <CardTitle tag="p">{this.getTotalUser()} บัญชี</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    &nbsp;<i className="fas fa-info" /> &nbsp;
-                    <Link to='/admin/user-page'>
-                      <span style={{ color: '#66615b' }}>จัดการบัญชีผู้ใช้</span>
-                    </Link>
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-          </Row>
+          <ConcludeCard MoveSum={itemsMove.length} ImoveSum={itemsImove.length} usersSum={users.length} /> 
         </div>
       </>
+    ) : (
+      <div className="content">
+        <SkeletonTheme color="#fafafa">
+          <p>
+            <Skeleton height={600} />
+          </p>
+        </SkeletonTheme>
+      </div>
     );
   }
 }
 
-export default Dashboard;

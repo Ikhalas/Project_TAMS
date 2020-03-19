@@ -3,7 +3,7 @@ import Settings from "views/settings/Settings.jsx";
 import Form from "views/form/Form";
 import ItemDetail from "views/detail/ItemDetail"
 import ItemBorrow from "views/borrow/ItemBorrow";
-import Icons from "views/Icons.jsx";
+//import Icons from "views/Icons.jsx";
 //import Maps from "views/Map.jsx";
 //import UserPage from "views/User.jsx";
 import Logout from "views/Logout.jsx";
@@ -66,7 +66,7 @@ var routes = [
     component: UserPage,
     layout: "/admin"
   },
-  */
+  
   {
     path: "/icons",
     name: "Icons",
@@ -74,6 +74,7 @@ var routes = [
     component: Icons,
     layout: "/admin"
   },
+  */
   
   {
     pro: true,

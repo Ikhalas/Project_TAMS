@@ -2,12 +2,11 @@ import React from "react";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch } from "react-router-dom";
-import { auth } from '../api/firebase'
+import { auth } from "../api/firebase";
 
 import DemoNavbar from "components/Navbars/DemoNavbar.jsx";
 import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
-
 
 import routes from "routes.js";
 
@@ -21,42 +20,45 @@ class Dashboard extends React.Component {
       activeColor: "info",
       currentUser: null
     };
+    this._isMounted = false;
     this.mainPanel = React.createRef();
   }
+  
   componentDidMount() {
+    this._isMounted = true;
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(this.mainPanel.current);
       document.body.classList.toggle("perfect-scrollbar-on");
     }
-    auth.onAuthStateChanged(user => {
-      if (user)
-        this.setState({ currentUser: user })
-      else
-        this.setState({ currentUser: null })
-
-      if (!this.state.currentUser) {
-        this.props.history.push('/login')
-      } 
-    })
+    this._isMounted && this.checkAuth();
   }
+
   componentWillUnmount() {
+    this._isMounted = false;
     if (navigator.platform.indexOf("Win") > -1) {
       ps.destroy();
       document.body.classList.toggle("perfect-scrollbar-on");
     }
   }
+
   componentDidUpdate(e) {
     if (e.history.action === "PUSH") {
       this.mainPanel.current.scrollTop = 0;
       document.scrollingElement.scrollTop = 0;
     }
   }
-  handleActiveClick = color => {
-    this.setState({ activeColor: color });
-  };
-  handleBgClick = color => {
-    this.setState({ backgroundColor: color });
-  };
+
+  checkAuth() {
+    auth.onAuthStateChanged(user => {
+      if (user) this._isMounted && this.setState({ currentUser: user });
+      else this._isMounted && this.setState({ currentUser: null });
+
+      if (!this.state.currentUser) {
+        this.props.history.push("/login");
+      }
+    });
+  }
+
   render() {
     return (
       <div className="wrapper">
