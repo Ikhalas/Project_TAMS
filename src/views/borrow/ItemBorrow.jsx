@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import NotificationAlert from "react-notification-alert";
-import BorrowModal from "./BorrowModal";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import BorrowModal from "./borrow/BorrowModal";
+import ReturnModal from "./return/ReturnModal";
 import { db } from "../../api/firebase";
 import classnames from "classnames";
 import {
@@ -30,19 +32,38 @@ var optionsBor = {
   autoDismiss: 3
 };
 
+var optionsRet = {
+  place: "tc",
+  message: (
+    <div>
+      <div style={{ fontSize: "22px" }}>
+        ทำรายการ <b style={{ color: "white" }}>การคืนครุภัณฑ์</b> สำเร็จ
+      </div>
+    </div>
+  ),
+  type: "success",
+  icon: "nc-icon nc-cloud-upload-94",
+  autoDismiss: 3
+};
+
 export default class ItemBorrow extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeTab: "1",
-      readyToRender: false,
+      readyToRender1: false,
+      readyToRender2: false,
       refresher: false,
 
       itemsMove: "",
+      itemBorrow: "",
 
       borModal: false,
+      retModal: false,
       idToModal: "",
-      codeToModal: ""
+      nameToModal: "",
+      codeToModal: "",
+      retIdToModal: ""
     };
 
     this._isMounted = false;
@@ -51,6 +72,7 @@ export default class ItemBorrow extends Component {
   componentDidMount() {
     this._isMounted = true;
     this._isMounted && this.getitemMovable();
+    this._isMounted && this.getBorrow();
   }
 
   componentWillUnmount() {
@@ -60,8 +82,8 @@ export default class ItemBorrow extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.refresher !== prevState.refresher) {
-      //console.log('boom')
       this._isMounted && this.getitemMovable();
+      this._isMounted && this.getBorrow();
     }
   }
 
@@ -74,7 +96,21 @@ export default class ItemBorrow extends Component {
         snapshot.forEach(doc => {
           itemsMove.push(doc);
         });
-        this._isMounted && this.setState({ itemsMove, readyToRender: true });
+        this._isMounted && this.setState({ itemsMove, readyToRender1: true });
+      })
+      .catch(error => console.log(error));
+  }
+
+  getBorrow() {
+    db.collection("borrowList")
+      .orderBy("itemCode")
+      .get()
+      .then(snapshot => {
+        let itemBorrow = [];
+        snapshot.forEach(doc => {
+          itemBorrow.push(doc);
+        });
+        this._isMounted && this.setState({ itemBorrow, readyToRender2: true });
       })
       .catch(error => console.log(error));
   }
@@ -132,7 +168,8 @@ export default class ItemBorrow extends Component {
                         this.setState({
                           idToModal: item.id,
                           codeToModal: item.data().itemCode,
-                          borModal: !this.state.borModal
+                          borModal: !this.state.borModal,
+                          nameToModal: item.data().itemName
                         });
                       }}
                     >
@@ -160,103 +197,140 @@ export default class ItemBorrow extends Component {
   }
 
   genBorrowTrue() {
-    if (this.state.itemsMove) {
-      // filter only !== "จำหน่าย"
-      const filItem = this.state.itemsMove.filter(item => {
-        return item.data().borrowSta === true;
-      });
-
-      if (filItem.length)
-        return (
-          <>
-            <Row>
-              <Col sm="12">
-                <CardBody>
-                  <Table responsive hover size="sm">
-                    <thead className="text-primary">
-                      <tr>
-                        <th
-                          className="table-header"
-                          style={{ fontWeight: "normal" }}
-                        >
-                          <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
-                        </th>
-                        <th
-                          className="table-header"
-                          style={{ fontWeight: "normal" }}
-                        >
-                          <b style={{ fontSize: "23px" }}>ประเภทครุภัณฑ์</b>
-                        </th>
-                        <th
-                          className="table-header"
-                          style={{ fontWeight: "normal" }}
-                        >
-                          <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
-                        </th>
-                        <th
+    if (this.state.itemBorrow)
+      return (
+        <>
+          <Row>
+            <Col sm="12">
+              <CardBody>
+                <Table responsive hover size="sm">
+                  <thead className="text-primary">
+                    <tr>
+                      <th
+                        className="table-header"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
+                      </th>
+                      <th
+                        className="table-header"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
+                      </th>
+                      <th
+                        className="table-header"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>ชื่อผู้ยืม</b>
+                      </th>
+                      <th
+                        className="table-header text-right"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}> วันที่ยืม</b>
+                      </th>
+                      <th
+                        className="table-header text-right pr-5"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}> วันที่กำหนดคืน</b>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.itemBorrow.map(item => (
+                      <tr
+                        key={item.id}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.setState({
+                            retModal: !this.state.retModal,
+                            retIdToModal: item.id
+                          })
+                        }
+                      >
+                        <td style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().itemCode}
+                        </td>
+                        <td style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().itemName}
+                        </td>
+                        <td style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().borrower}
+                        </td>
+                        <td className="text-right" style={{ fontSize: 20 }}>
+                          &nbsp;
+                          {new Date(
+                            item.data().borrowDate.seconds * 1000
+                          ).getDate() +
+                            "/" +
+                            (new Date(
+                              item.data().borrowDate.seconds * 1000
+                            ).getMonth() +
+                              1) +
+                            "/" +
+                            (new Date(
+                              item.data().borrowDate.seconds * 1000
+                            ).getFullYear() +
+                              543)}
+                        </td>
+                        <td
                           className="table-header text-right pr-5"
-                          style={{ fontWeight: "normal" }}
+                          style={{ fontSize: 20 }}
                         >
-                          <b style={{ fontSize: "23px" }}>
-                            {" "}
-                            หน่วยงานที่รับผิดชอบ
-                          </b>
-                        </th>
+                          &nbsp;
+                          {new Date(
+                            item.data().returnDate.seconds * 1000
+                          ).getDate() +
+                            "/" +
+                            (new Date(
+                              item.data().returnDate.seconds * 1000
+                            ).getMonth() +
+                              1) +
+                            "/" +
+                            (new Date(
+                              item.data().returnDate.seconds * 1000
+                            ).getFullYear() +
+                              543)}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {filItem.map(item => (
-                        <tr
-                          key={item.id}
-                          style={{ cursor: "pointer" }}
-                          //onClick={() => {this.setState({})}}
-                        >
-                          <td style={{ fontSize: 20 }}>
-                            &nbsp;{item.data().itemCode}
-                          </td>
-                          <td style={{ fontSize: 20 }}>
-                            &nbsp;{item.data().itemType}
-                          </td>
-                          <td style={{ fontSize: 20 }}>
-                            &nbsp;{item.data().itemName}
-                          </td>
-                          <td
-                            className="text-right pr-5"
-                            style={{ fontSize: 20 }}
-                          >
-                            &nbsp;{item.data().department}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </CardBody>
-              </Col>
-            </Row>
-          </>
-        );
-      else
-        return (
-          <>
-            <br />
-            <div
-              className="text-center"
-              style={{ fontSize: "35px", height: "100px" }}
-            >
-              ไม่มีรายการครุภัณฑ์ที่ถูกยืม
-            </div>
-          </>
-        );
-    }
+                    ))}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Col>
+          </Row>
+        </>
+      );
+    else
+      return (
+        <>
+          <br />
+          <div
+            className="text-center"
+            style={{ fontSize: "35px", height: "100px" }}
+          >
+            ไม่มีรายการครุภัณฑ์ที่ถูกยืม
+          </div>
+        </>
+      );
   }
 
   toggleBorModal = () => {
     this.setState({ borModal: !this.state.borModal });
   };
 
+  toggleRetModal = () => {
+    this.setState({ retModal: !this.state.retModal });
+  };
+
   toggleAlert = res => {
-    if (res === "complete") {
+    if (res === "borrow") {
       this.refs.notify.notificationAlert(optionsBor);
+      this.setState({ refresher: !this.state.refresher });
+    } else if (res === "return") {
+      this.refs.notify.notificationAlert(optionsRet);
       this.setState({ refresher: !this.state.refresher });
     } else {
       //console.log("shit");
@@ -264,8 +338,8 @@ export default class ItemBorrow extends Component {
   };
 
   render() {
-    const { activeTab } = this.state;
-    return (
+    const { activeTab, readyToRender1, readyToRender2 } = this.state;
+    return readyToRender1 && readyToRender2 ? (
       <div className="content regular-th">
         <NotificationAlert ref="notify" />
         <Card>
@@ -307,13 +381,32 @@ export default class ItemBorrow extends Component {
           </TabContent>
         </Card>
 
-        <BorrowModal
-          borModal={this.state.borModal}
-          toggleFn={this.toggleBorModal}
-          itemId={this.state.idToModal}
-          itemCode={this.state.codeToModal}
-          toggleAlert={this.toggleAlert}
-        />
+        {this.state.borModal && (
+          <BorrowModal
+            borModal={this.state.borModal}
+            toggleFn={this.toggleBorModal}
+            itemId={this.state.idToModal}
+            itemCode={this.state.codeToModal}
+            itemName={this.state.nameToModal}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+        {this.state.retModal && (
+          <ReturnModal
+            retModal={this.state.retModal}
+            toggleFn={this.toggleRetModal}
+            itemid={this.state.retIdToModal}
+            toggleAlert={this.toggleAlert}
+          />
+        )}
+      </div>
+    ) : (
+      <div className="content">
+        <SkeletonTheme color="#fafafa">
+          <p>
+            <Skeleton height={600} />
+          </p>
+        </SkeletonTheme>
       </div>
     );
   }

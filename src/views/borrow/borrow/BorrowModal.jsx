@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { db } from "../../api/firebase";
+import { db } from "../../../api/firebase";
 import moment from "moment";
 import DatePicker from "react-date-picker";
-
 import {
   Button,
   Modal,
@@ -14,7 +13,7 @@ import {
   InputGroup,
   Spinner,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -86,7 +85,9 @@ export default class BorrowModal extends Component {
     this.setState({ inProgress: true });
 
     const data = {
+      itemId: this.props.itemId,
       itemCode: this.props.itemCode,
+      itemName: this.props.itemName,
       borrowDate: this.state.borrowDate,
       returnDate: this.state.returnDate,
       borrower: this.state.borrower,
@@ -108,7 +109,7 @@ export default class BorrowModal extends Component {
           .then(() => {
             this.setState({ inProgress: false });
             this.props.toggleFn();
-            this.props.toggleAlert("complete");
+            this.props.toggleAlert("borrow");
           });
         //console.log("add itemResponsibility complete !!");
       });
@@ -170,7 +171,7 @@ export default class BorrowModal extends Component {
                     </InputGroup>
                   </Col>
                   {/* Return Date */}
-                  <Col md="6" sm="12">
+                  <Col md="6" sm="12" style={{ height: "120px" }}>
                     <InputGroup>
                       <label style={{ fontSize: "23px", color: "black" }}>
                         <b>วันที่ต้องคืน</b>{" "}
@@ -202,8 +203,8 @@ export default class BorrowModal extends Component {
                       </InputGroup>
                       {this.state.dateToShow ? (
                         <>
-                          อีก {this.state.dateToShow} วัน
-                          (นับตั้งแต่วันที่เริ่มยืม){" "}
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; อีก{" "}
+                          {this.state.dateToShow} วัน (นับตั้งแต่วันที่เริ่มยืม){" "}
                         </>
                       ) : (
                         <></>
