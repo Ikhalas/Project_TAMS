@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/.vscode
+.firebase
 /node_modules
 /src/api
 /src/common
@@ -11,8 +11,6 @@
 
 # production
 /build
-
-.color
 
 # misc
 .DS_Store

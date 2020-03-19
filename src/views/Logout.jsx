@@ -7,6 +7,7 @@ export default class Logout extends React.Component {
     return (
       <>
         <div className="content regular-th">
+          <br/><br/>
           <Row>
             <Col md="12" style={{ height: "300%", textAlign: 'center' }}>
               <div style={{marginTop:'100px', fontSize:'25px'}}>

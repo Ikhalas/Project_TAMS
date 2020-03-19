@@ -197,124 +197,126 @@ export default class ItemBorrow extends Component {
   }
 
   genBorrowTrue() {
-    if (this.state.itemBorrow)
-      return (
-        <>
-          <Row>
-            <Col sm="12">
-              <CardBody>
-                <Table responsive hover size="sm">
-                  <thead className="text-primary">
-                    <tr>
-                      <th
-                        className="table-header"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
-                      </th>
-                      <th
-                        className="table-header"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
-                      </th>
-                      <th
-                        className="table-header"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <b style={{ fontSize: "23px" }}>ชื่อผู้ยืม</b>
-                      </th>
-                      <th
-                        className="table-header text-right"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <b style={{ fontSize: "23px" }}> วันที่ยืม</b>
-                      </th>
-                      <th
-                        className="table-header text-right pr-5"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <b style={{ fontSize: "23px" }}> วันที่กำหนดคืน</b>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.itemBorrow.map(item => (
-                      <tr
-                        key={item.id}
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          this.setState({
-                            retModal: !this.state.retModal,
-                            retIdToModal: item.id
-                          })
-                        }
-                      >
-                        <td style={{ fontSize: 20 }}>
-                          &nbsp;{item.data().itemCode}
-                        </td>
-                        <td style={{ fontSize: 20 }}>
-                          &nbsp;{item.data().itemName}
-                        </td>
-                        <td style={{ fontSize: 20 }}>
-                          &nbsp;{item.data().borrower}
-                        </td>
-                        <td className="text-right" style={{ fontSize: 20 }}>
-                          &nbsp;
-                          {new Date(
-                            item.data().borrowDate.seconds * 1000
-                          ).getDate() +
-                            "/" +
-                            (new Date(
-                              item.data().borrowDate.seconds * 1000
-                            ).getMonth() +
-                              1) +
-                            "/" +
-                            (new Date(
-                              item.data().borrowDate.seconds * 1000
-                            ).getFullYear() +
-                              543)}
-                        </td>
-                        <td
-                          className="table-header text-right pr-5"
-                          style={{ fontSize: 20 }}
+    if (this.state.itemBorrow) {
+      if (this.state.itemBorrow.length)
+        return (
+          <>
+            <Row>
+              <Col sm="12">
+                <CardBody>
+                  <Table responsive hover size="sm">
+                    <thead className="text-primary">
+                      <tr>
+                        <th
+                          className="table-header"
+                          style={{ fontWeight: "normal" }}
                         >
-                          &nbsp;
-                          {new Date(
-                            item.data().returnDate.seconds * 1000
-                          ).getDate() +
-                            "/" +
-                            (new Date(
-                              item.data().returnDate.seconds * 1000
-                            ).getMonth() +
-                              1) +
-                            "/" +
-                            (new Date(
-                              item.data().returnDate.seconds * 1000
-                            ).getFullYear() +
-                              543)}
-                        </td>
+                          <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
+                        </th>
+                        <th
+                          className="table-header"
+                          style={{ fontWeight: "normal" }}
+                        >
+                          <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
+                        </th>
+                        <th
+                          className="table-header"
+                          style={{ fontWeight: "normal" }}
+                        >
+                          <b style={{ fontSize: "23px" }}>ชื่อผู้ยืม</b>
+                        </th>
+                        <th
+                          className="table-header text-right"
+                          style={{ fontWeight: "normal" }}
+                        >
+                          <b style={{ fontSize: "23px" }}> วันที่ยืม</b>
+                        </th>
+                        <th
+                          className="table-header text-right pr-5"
+                          style={{ fontWeight: "normal" }}
+                        >
+                          <b style={{ fontSize: "23px" }}> วันที่กำหนดคืน</b>
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Col>
-          </Row>
-        </>
-      );
-    else
-      return (
-        <>
-          <br />
-          <div
-            className="text-center"
-            style={{ fontSize: "35px", height: "100px" }}
-          >
-            ไม่มีรายการครุภัณฑ์ที่ถูกยืม
-          </div>
-        </>
-      );
+                    </thead>
+                    <tbody>
+                      {this.state.itemBorrow.map(item => (
+                        <tr
+                          key={item.id}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            this.setState({
+                              retModal: !this.state.retModal,
+                              retIdToModal: item.id
+                            })
+                          }
+                        >
+                          <td style={{ fontSize: 20 }}>
+                            &nbsp;{item.data().itemCode}
+                          </td>
+                          <td style={{ fontSize: 20 }}>
+                            &nbsp;{item.data().itemName}
+                          </td>
+                          <td style={{ fontSize: 20 }}>
+                            &nbsp;{item.data().borrower}
+                          </td>
+                          <td className="text-right" style={{ fontSize: 20 }}>
+                            &nbsp;
+                            {new Date(
+                              item.data().borrowDate.seconds * 1000
+                            ).getDate() +
+                              "/" +
+                              (new Date(
+                                item.data().borrowDate.seconds * 1000
+                              ).getMonth() +
+                                1) +
+                              "/" +
+                              (new Date(
+                                item.data().borrowDate.seconds * 1000
+                              ).getFullYear() +
+                                543)}
+                          </td>
+                          <td
+                            className="table-header text-right pr-5"
+                            style={{ fontSize: 20 }}
+                          >
+                            &nbsp;
+                            {new Date(
+                              item.data().returnDate.seconds * 1000
+                            ).getDate() +
+                              "/" +
+                              (new Date(
+                                item.data().returnDate.seconds * 1000
+                              ).getMonth() +
+                                1) +
+                              "/" +
+                              (new Date(
+                                item.data().returnDate.seconds * 1000
+                              ).getFullYear() +
+                                543)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </CardBody>
+              </Col>
+            </Row>
+          </>
+        );
+      else
+        return (
+          <>
+            <br />
+            <div
+              className="text-center"
+              style={{ fontSize: "35px", height: "100px" }}
+            >
+              ไม่มีรายการครุภัณฑ์ที่ถูกยืม
+            </div>
+          </>
+        );
+    }
   }
 
   toggleBorModal = () => {

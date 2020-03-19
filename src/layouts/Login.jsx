@@ -68,9 +68,10 @@ class Login extends React.Component {
     const message = this.state.message;
     return (
       <div className="full-height regular-th">
+        <br/>
         <h2 className="title">
           {" "}
-          องค์การบริหารส่วนตำบลกันตังใต้ อำเภอกันตัง จังหวัดตรัง{" "}
+          องค์การบริหารส่วนตำบลท่าข้าม อำเภอหาดใหญ่ จังหวัดสงขลา{" "}
         </h2>
 
         <div className="cont">
