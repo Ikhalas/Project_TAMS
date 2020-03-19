@@ -417,7 +417,8 @@ export default class MovableForm extends Component {
                 price: Number(this.state.price),
                 budgetOf: budgetOf,
                 url: url,
-                note: this.state.note
+                note: this.state.note,
+                borrowSta: false
               };
 
               const itemRes = {
@@ -481,7 +482,8 @@ export default class MovableForm extends Component {
         derivedDate: this.state.derivedDate,
         price: Number(this.state.price),
         budgetOf: budgetOf,
-        note: this.state.note
+        note: this.state.note,
+        borrowSta: false
       };
 
       const itemRes = {

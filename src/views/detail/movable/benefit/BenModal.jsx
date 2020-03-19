@@ -225,10 +225,7 @@ export default class BenModal extends Component {
             </Row>
             </Col>
             </Row>
-          </ModalBody>
-
-                    
-                 
+          </ModalBody>   
           <ModalFooter>
             <Button
               className="btn-round regular-th"
