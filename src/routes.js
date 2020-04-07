@@ -3,9 +3,8 @@ import Settings from "views/settings/Settings.jsx";
 import Form from "views/form/Form";
 import ItemDetail from "views/detail/ItemDetail"
 import ItemBorrow from "views/borrow/ItemBorrow";
-//import Icons from "views/Icons.jsx";
-//import Maps from "views/Map.jsx";
-//import UserPage from "views/User.jsx";
+import Icons from "views/Icons.jsx";
+
 import Logout from "views/Logout.jsx";
 
 var routes = [
@@ -44,28 +43,8 @@ var routes = [
     component: ItemBorrow,
     layout: "/admin"
   },
-  /*
-  {
-    path: "/maps",
-    name: "แผนที่",
-    icon: "nc-icon nc-pin-3",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "จัดทำเอกสาร",
-    icon: "nc-icon nc-single-copy-04",
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    path: "/user-page",
-    name: "จัดการสิทธิ์เข้าใช้ระบบ",
-    icon: "nc-icon nc-badge",
-    component: UserPage,
-    layout: "/admin"
-  },
+
+
   
   {
     path: "/icons",
@@ -74,7 +53,7 @@ var routes = [
     component: Icons,
     layout: "/admin"
   },
-  */
+  
   
   {
     pro: true,

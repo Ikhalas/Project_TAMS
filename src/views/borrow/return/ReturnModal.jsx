@@ -62,7 +62,9 @@ export default class ReturnModal extends Component {
     const data = {
       borDetail: this.state.itemBorrow,
       returner: this.state.returner,
-      returnDate: this.state.returnDate
+      returnDate: this.state.returnDate,
+      header: "คืน",
+      timestamp: new Date()
     };
 
     //console.log(this.state.itemBorrow.itemId);

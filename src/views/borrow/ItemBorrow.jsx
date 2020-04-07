@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import BorrowLog from "./borrowLog/BorrowLog";
 import NotificationAlert from "react-notification-alert";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import BorrowModal from "./borrow/BorrowModal";
 import ReturnModal from "./return/ReturnModal";
 import { db } from "../../api/firebase";
+import moment from "moment";
 import classnames from "classnames";
 import {
   Row,
@@ -15,7 +17,7 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Table
+  Table,
 } from "reactstrap";
 
 var optionsBor = {
@@ -29,7 +31,7 @@ var optionsBor = {
   ),
   type: "success",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 var optionsRet = {
@@ -43,7 +45,7 @@ var optionsRet = {
   ),
   type: "success",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 export default class ItemBorrow extends Component {
@@ -55,6 +57,8 @@ export default class ItemBorrow extends Component {
       readyToRender2: false,
       refresher: false,
 
+      renderLog: false, // Default Value : false
+
       itemsMove: "",
       itemBorrow: "",
 
@@ -63,7 +67,7 @@ export default class ItemBorrow extends Component {
       idToModal: "",
       nameToModal: "",
       codeToModal: "",
-      retIdToModal: ""
+      retIdToModal: "",
     };
 
     this._isMounted = false;
@@ -91,38 +95,67 @@ export default class ItemBorrow extends Component {
     db.collection("itemMovable")
       .orderBy("itemCode")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let itemsMove = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           itemsMove.push(doc);
         });
         this._isMounted && this.setState({ itemsMove, readyToRender1: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getBorrow() {
     db.collection("borrowList")
-      .orderBy("itemCode")
+      .orderBy("returnDate") //เรียงจากน้อยไปมาก
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let itemBorrow = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           itemBorrow.push(doc);
         });
         this._isMounted && this.setState({ itemBorrow, readyToRender2: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
-  toggle = tab => {
+  toggle = (tab) => {
     this.setState({ activeTab: tab });
   };
 
+  calDate(ret) {
+    if (ret) {
+      let a = moment(new Date());
+      let b = moment(new Date(ret.seconds * 1000));
+      let dateToShow = b.diff(a, "days") + 1 ; // b-a 
+
+      //console.log(dateToShow)
+      if (dateToShow <= 0)
+        return (
+          <>
+            <p className="text-danger">เกินกำหนดวันคืน</p>
+          </>
+        );
+      else if (dateToShow <= 5 && dateToShow > 0)
+        return (
+          <>
+            <p className="text-danger">เหลืออีก {dateToShow} วัน</p>
+          </>
+        );
+      else
+        return (
+          <>
+            <p>เหลืออีก {dateToShow} วัน</p>
+          </>
+        );
+    }
+  }
+
+  /* การยืม */
   genBorrowFalse() {
     if (this.state.itemsMove) {
       // filter only !== "จำหน่าย"
-      const filItem = this.state.itemsMove.filter(item => {
+      const filItem = this.state.itemsMove.filter((item) => {
         return item.data().borrowSta === false;
       });
 
@@ -160,7 +193,7 @@ export default class ItemBorrow extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {filItem.map(item => (
+                  {filItem.map((item) => (
                     <tr
                       key={item.id}
                       style={{ cursor: "pointer" }}
@@ -169,7 +202,7 @@ export default class ItemBorrow extends Component {
                           idToModal: item.id,
                           codeToModal: item.data().itemCode,
                           borModal: !this.state.borModal,
-                          nameToModal: item.data().itemName
+                          nameToModal: item.data().itemName,
                         });
                       }}
                     >
@@ -196,6 +229,7 @@ export default class ItemBorrow extends Component {
     }
   }
 
+  /* การคืน */
   genBorrowTrue() {
     if (this.state.itemBorrow) {
       if (this.state.itemBorrow.length)
@@ -240,14 +274,14 @@ export default class ItemBorrow extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.itemBorrow.map(item => (
+                      {this.state.itemBorrow.map((item) => (
                         <tr
                           key={item.id}
                           style={{ cursor: "pointer" }}
                           onClick={() =>
                             this.setState({
                               retModal: !this.state.retModal,
-                              retIdToModal: item.id
+                              retIdToModal: item.id,
                             })
                           }
                         >
@@ -294,6 +328,8 @@ export default class ItemBorrow extends Component {
                                 item.data().returnDate.seconds * 1000
                               ).getFullYear() +
                                 543)}
+                            &nbsp;
+                            {this.calDate(item.data().returnDate)}
                           </td>
                         </tr>
                       ))}
@@ -327,7 +363,7 @@ export default class ItemBorrow extends Component {
     this.setState({ retModal: !this.state.retModal });
   };
 
-  toggleAlert = res => {
+  toggleAlert = (res) => {
     if (res === "borrow") {
       this.refs.notify.notificationAlert(optionsBor);
       this.setState({ refresher: !this.state.refresher });
@@ -339,26 +375,31 @@ export default class ItemBorrow extends Component {
     }
   };
 
-  render() {
-    const { activeTab, readyToRender1, readyToRender2 } = this.state;
-    return readyToRender1 && readyToRender2 ? (
-      <div className="content regular-th">
-        <NotificationAlert ref="notify" />
+  renderMain() {
+    const { activeTab } = this.state;
+    return (
+      <>
         <Card>
-          <br />
+          <p
+            onClick={() => this.setState({ renderLog: true })}
+            className="text-right button-like-a pr-3 pt-2 text-primary"
+            style={{ fontSize: "20px" }}
+          >
+            ประวัติการยืมคืนครุภัณฑ์
+          </p>
           <Nav tabs className="px-3">
             <NavItem>
               <NavLink
                 className={classnames({ active: activeTab === "1" })}
                 style={{
                   backgroundColor: activeTab === "1" ? "#f5f5f5" : "",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 onClick={() => {
                   this.toggle("1");
                 }}
               >
-                <span style={{ fontSize: "23px" }}>จัดทำรายการยืม</span>
+                <span style={{ fontSize: "23px" }}>ยืมครุภัณฑ์</span>
               </NavLink>
             </NavItem>
 
@@ -367,7 +408,7 @@ export default class ItemBorrow extends Component {
                 className={classnames({ active: activeTab === "2" })}
                 style={{
                   backgroundColor: activeTab === "2" ? "#f5f5f5" : "",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 onClick={() => {
                   this.toggle("2");
@@ -377,11 +418,31 @@ export default class ItemBorrow extends Component {
               </NavLink>
             </NavItem>
           </Nav>
+
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">{this.genBorrowFalse()}</TabPane>
             <TabPane tabId="2">{this.genBorrowTrue()}</TabPane>
           </TabContent>
         </Card>
+      </>
+    );
+  }
+
+  renderLog() {
+    return (
+      <>
+        <BorrowLog />
+      </>
+    );
+  }
+
+  render() {
+    const { renderLog, readyToRender1, readyToRender2 } = this.state;
+    return readyToRender1 && readyToRender2 ? (
+      <div className="content regular-th">
+        <NotificationAlert ref="notify" />
+
+        {renderLog ? this.renderLog() : this.renderMain()}
 
         {this.state.borModal && (
           <BorrowModal

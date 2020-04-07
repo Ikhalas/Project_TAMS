@@ -1,5 +1,5 @@
 import React from "react";
-import ConcludeCard from './conclude/ConcludeCard'
+import ConcludeCard from "./conclude/ConcludeCard";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { db } from "../../api/firebase";
 
@@ -9,7 +9,7 @@ export default class Dashboard extends React.Component {
     this.state = {
       users: [],
       itemsMove: [],
-      itemsImove : [],
+      itemsImove: [],
       ready1: false,
       ready2: false,
       ready3: false
@@ -69,17 +69,17 @@ export default class Dashboard extends React.Component {
       .catch(error => console.log(error));
   }
 
-  
-
-  
-
   render() {
     const { ready1, ready2, ready3 } = this.state;
     const { users, itemsMove, itemsImove } = this.state;
-    return  ready1 && ready2 && ready3 ? (
+    return ready1 && ready2 && ready3 ? (
       <>
         <div className="content regular-th">
-          <ConcludeCard MoveSum={itemsMove.length} ImoveSum={itemsImove.length} usersSum={users.length} /> 
+          <ConcludeCard
+            MoveSum={itemsMove.length}
+            ImoveSum={itemsImove.length}
+            usersSum={users.length}
+          />
         </div>
       </>
     ) : (
@@ -93,4 +93,3 @@ export default class Dashboard extends React.Component {
     );
   }
 }
-

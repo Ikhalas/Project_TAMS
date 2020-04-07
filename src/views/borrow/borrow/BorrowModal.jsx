@@ -56,27 +56,24 @@ export default class BorrowModal extends Component {
       borrower: "",
       detail: "",
 
-      dateToShow: ""
+      dateToShow: "",
     };
     this._isMounted = false;
   }
 
   handleDateChange = () => {
     if (this.state.borrowDate && this.state.returnDate) {
-      //let dateToShow = moment(this.state.borrowDate).format("YYYY-MM-DD");
       let a = moment(this.state.returnDate);
       let b = moment(this.state.borrowDate);
       let dateToShow = a.diff(b, "days") + 1; // include the start
-      //let dateToShow = moment().add(543, 'years')._d
-      //console.log(this.state.borrowDate)
       this.setState({ dateToShow });
     }
   };
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -91,27 +88,37 @@ export default class BorrowModal extends Component {
       borrowDate: this.state.borrowDate,
       returnDate: this.state.returnDate,
       borrower: this.state.borrower,
-      detail: this.state.detail
+      detail: this.state.detail,
+    };
+
+    const dataLog = {
+      header: "ยืม",
+      borDetail: data,
+      timestamp: new Date()
     };
 
     //console.log(data);
 
-    this.addBorToDatabase(data);
+    this.addBorToDatabase(data, dataLog);
   }
 
-  addBorToDatabase(data) {
-    db.collection("borrowList")
-      .add(data)
+  addBorToDatabase(data, dataLog) {
+    db.collection("borrowLog")
+      .add(dataLog)
       .then(() => {
-        db.collection("itemMovable")
-          .doc(this.props.itemId)
-          .update({ borrowSta: true })
+        db.collection("borrowList")
+          .add(data)
           .then(() => {
-            this.setState({ inProgress: false });
-            this.props.toggleFn();
-            this.props.toggleAlert("borrow");
+            db.collection("itemMovable")
+              .doc(this.props.itemId)
+              .update({ borrowSta: true })
+              .then(() => {
+                this.setState({ inProgress: false });
+                this.props.toggleFn();
+                this.props.toggleAlert("borrow");
+              });
+            //console.log("add itemResponsibility complete !!");
           });
-        //console.log("add itemResponsibility complete !!");
       });
   }
 
@@ -161,7 +168,7 @@ export default class BorrowModal extends Component {
                           calendarClassName="calendar-class"
                           locale="th-TH"
                           value={borrowDate}
-                          onChange={borrowDate =>
+                          onChange={(borrowDate) =>
                             this.setState({ borrowDate }, () =>
                               this.handleDateChange()
                             )
@@ -194,7 +201,7 @@ export default class BorrowModal extends Component {
                           locale="th-TH"
                           minDate={borrowDate}
                           value={returnDate}
-                          onChange={returnDate =>
+                          onChange={(returnDate) =>
                             this.setState({ returnDate }, () =>
                               this.handleDateChange()
                             )
@@ -241,7 +248,7 @@ export default class BorrowModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

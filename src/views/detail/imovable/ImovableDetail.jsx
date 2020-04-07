@@ -429,7 +429,7 @@ class ImovableDetail extends Component {
               className="regular-th"
               style={{
                 fontSize: "25px",
-                color: "black",
+                color: "gray",
                 fontWeight: "normal"
               }}
             >
