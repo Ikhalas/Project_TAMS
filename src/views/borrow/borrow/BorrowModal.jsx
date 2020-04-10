@@ -86,7 +86,7 @@ export default class BorrowModal extends Component {
       itemCode: this.props.itemCode,
       itemName: this.props.itemName,
       borrowDate: this.state.borrowDate,
-      returnDate: this.state.returnDate,
+      mustReturnDate: this.state.returnDate,
       borrower: this.state.borrower,
       detail: this.state.detail,
     };

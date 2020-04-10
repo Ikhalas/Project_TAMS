@@ -24,12 +24,76 @@ function DetailTable(props) {
         ) : (
           <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-</>
         )}
+
+        {props.overdue ? (
+          <span style={{ fontSize: "20px" }} className="text-danger">
+            &nbsp;&nbsp;&nbsp;เกินกำหนด&nbsp;{props.overdue}&nbsp;วัน
+          </span>
+        ) : (
+          <>&nbsp;</>
+        )}
       </td>
     </tr>
   );
 }
 
 export default class LogModal extends Component {
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    return (
+      <>
+        {" "}
+        {new Date(date.seconds * 1000).getDate() +
+          " " +
+          month[new Date(date.seconds * 1000).getMonth()] +
+          " " +
+          (new Date(date.seconds * 1000).getFullYear() + 543)}
+      </>
+    );
+  }
+
+  convertTime(time) {
+    //console.log(new Date(time.seconds * 1000).getSeconds().toString().length);
+    if (new Date(time.seconds * 1000).getSeconds().toString().length === 1) {
+      return (
+        <>
+          {new Date(time.seconds * 1000).getHours() +
+            ":" +
+            new Date(time.seconds * 1000).getMinutes() +
+            ":" +
+            "0" +
+            new Date(time.seconds * 1000).getSeconds()}
+          &nbsp;น.
+        </>
+      );
+    } else {
+      return (
+        <>
+          {new Date(time.seconds * 1000).getHours() +
+            ":" +
+            new Date(time.seconds * 1000).getMinutes() +
+            ":" +
+            new Date(time.seconds * 1000).getSeconds()}
+          &nbsp;น.
+        </>
+      );
+    }
+  }
+
   render() {
     const {
       logTimestamp,
@@ -37,6 +101,7 @@ export default class LogModal extends Component {
       logDetail,
       returnDate,
       returner,
+      overdue,
     } = this.props;
     return (
       <>
@@ -54,21 +119,12 @@ export default class LogModal extends Component {
           <ModalBody>
             <Row>
               <Col className="pl-3" md="12" sm="12">
-                  {/* วันที่ */}
+                {/* วันที่ */}
                 <i style={{ fontSize: "35px" }}>
-                  &nbsp;&nbsp;วันที่&nbsp;
-                  {new Date(logTimestamp.seconds * 1000).getDate() +
-                    "/" +
-                    (new Date(logTimestamp.seconds * 1000).getMonth() + 1) +
-                    "/" +
-                    (new Date(logTimestamp.seconds * 1000).getFullYear() + 543)}
+                  &nbsp;&nbsp;วันที่
+                  {this.convertDate(logTimestamp)}
                   &nbsp;&nbsp;เวลา&nbsp;
-                  {new Date(logTimestamp.seconds * 1000).getHours() +
-                    ":" +
-                    new Date(logTimestamp.seconds * 1000).getMinutes() +
-                    ":" +
-                    new Date(logTimestamp.seconds * 1000).getSeconds()}
-                  &nbsp;น.
+                  {this.convertTime(logTimestamp)}
                 </i>
 
                 {header === "คืน" ? (
@@ -132,10 +188,10 @@ export default class LogModal extends Component {
                 )}
                 <p></p>
                 <i className="pl-3" style={{ fontSize: "25px", color: "gray" }}>
-                  รายละเอียดการ<b style={{ fontSize: "27px"}}> ยืม </b>ครุภัณฑ์
+                  รายละเอียดการ<b style={{ fontSize: "27px" }}> ยืม </b>ครุภัณฑ์
                 </i>
 
-                {/* borrow detail card */}
+                {/* Borrow detail card */}
                 <Card>
                   <CardBody>
                     <Row>
@@ -156,39 +212,13 @@ export default class LogModal extends Component {
                             />
                             <DetailTable
                               label="วันที่ยืม"
-                              detail={
-                                new Date(
-                                  logDetail.borrowDate.seconds * 1000
-                                ).getDate() +
-                                "/" +
-                                (new Date(
-                                  logDetail.borrowDate.seconds * 1000
-                                ).getMonth() +
-                                  1) +
-                                "/" +
-                                (new Date(
-                                  logDetail.borrowDate.seconds * 1000
-                                ).getFullYear() +
-                                  543)
-                              }
+                              detail={this.convertDate(logDetail.borrowDate)}
                             />
                             <DetailTable
                               label="วันที่ต้องคืน"
-                              detail={
-                                new Date(
-                                  logDetail.returnDate.seconds * 1000
-                                ).getDate() +
-                                "/" +
-                                (new Date(
-                                  logDetail.returnDate.seconds * 1000
-                                ).getMonth() +
-                                  1) +
-                                "/" +
-                                (new Date(
-                                  logDetail.returnDate.seconds * 1000
-                                ).getFullYear() +
-                                  543)
-                              }
+                              detail={this.convertDate(
+                                logDetail.mustReturnDate
+                              )}
                             />
                             <DetailTable
                               label="รายละเอียดอื่น ๆ"
@@ -208,8 +238,10 @@ export default class LogModal extends Component {
                       className="pl-3"
                       style={{ fontSize: "25px", color: "gray" }}
                     >
-                      รายละเอียดการ<b style={{ fontSize: "27px"}}> คืน </b>ครุภัณฑ์
+                      รายละเอียดการ<b style={{ fontSize: "27px" }}> คืน </b>
+                      ครุภัณฑ์
                     </i>
+                    {/* Return detail Card */}
                     <Card>
                       <CardBody>
                         <Row>
@@ -218,36 +250,10 @@ export default class LogModal extends Component {
                               <tbody>
                                 <DetailTable
                                   label="วันที่คืน"
-                                  detail={
-                                    new Date(
-                                      returnDate.seconds * 1000
-                                    ).getDate() +
-                                    "/" +
-                                    (new Date(
-                                      returnDate.seconds * 1000
-                                    ).getMonth() +
-                                      1) +
-                                    "/" +
-                                    (new Date(
-                                      returnDate.seconds * 1000
-                                    ).getFullYear() +
-                                      543) +
-                                    "," +
-                                    " " +
-                                    new Date(
-                                      returnDate.seconds * 1000
-                                    ).getHours() +
-                                    ":" +
-                                    new Date(
-                                      returnDate.seconds * 1000
-                                    ).getMinutes() +
-                                    ":" +
-                                    new Date(
-                                      returnDate.seconds * 1000
-                                    ).getSeconds() +
-                                    " น."
-                                  }
+                                  detail={this.convertDate(returnDate)}
+                                  overdue={overdue}
                                 />
+
                                 <DetailTable label="ผู้คืน" detail={returner} />
                               </tbody>
                             </Table>

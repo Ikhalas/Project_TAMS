@@ -107,7 +107,7 @@ export default class ItemBorrow extends Component {
 
   getBorrow() {
     db.collection("borrowList")
-      .orderBy("returnDate") //เรียงจากน้อยไปมาก
+      .orderBy("mustReturnDate") //เรียงจากน้อยไปมาก
       .get()
       .then((snapshot) => {
         let itemBorrow = [];
@@ -127,28 +127,56 @@ export default class ItemBorrow extends Component {
     if (ret) {
       let a = moment(new Date());
       let b = moment(new Date(ret.seconds * 1000));
-      let dateToShow = b.diff(a, "days") + 1 ; // b-a 
+      let dateToShow = b.diff(a, "days") + 1; // b-a
 
       //console.log(dateToShow)
       if (dateToShow <= 0)
         return (
           <>
-            <p className="text-danger">เกินกำหนดวันคืน</p>
+            <span style={{fontSize:'17px'}} className="text-danger"> (เกินกำหนดวันคืน)</span>
           </>
         );
       else if (dateToShow <= 5 && dateToShow > 0)
         return (
           <>
-            <p className="text-danger">เหลืออีก {dateToShow} วัน</p>
+            <span style={{fontSize:'17px'}} className="text-danger"> (เหลืออีก {dateToShow} วัน)</span>
           </>
         );
       else
         return (
           <>
-            <p>เหลืออีก {dateToShow} วัน</p>
+            <span style={{fontSize:'17px'}}> (เหลืออีก {dateToShow} วัน)</span>
           </>
         );
     }
+  }
+
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[(new Date(date.seconds * 1000).getMonth() + 1)])
+    return (
+      <>
+        {" "}
+        {new Date(date.seconds * 1000).getDate() +
+          " " +
+          month[(new Date(date.seconds * 1000).getMonth())] +
+          " " +
+          (new Date(date.seconds * 1000).getFullYear() + 543)}
+      </>
+    );
   }
 
   /* การยืม */
@@ -173,13 +201,13 @@ export default class ItemBorrow extends Component {
                       <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
                     </th>
                     <th
-                      className="table-header"
+                      className="table-header text-center"
                       style={{ fontWeight: "normal" }}
                     >
                       <b style={{ fontSize: "23px" }}>ประเภทครุภัณฑ์</b>
                     </th>
                     <th
-                      className="table-header"
+                      className="table-header text-center"
                       style={{ fontWeight: "normal" }}
                     >
                       <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
@@ -209,10 +237,10 @@ export default class ItemBorrow extends Component {
                       <td style={{ fontSize: 20 }}>
                         &nbsp;{item.data().itemCode}
                       </td>
-                      <td style={{ fontSize: 20 }}>
+                      <td className="text-center" style={{ fontSize: 20 }}>
                         &nbsp;{item.data().itemType}
                       </td>
-                      <td style={{ fontSize: 20 }}>
+                      <td className="text-center" style={{ fontSize: 20 }}>
                         &nbsp;{item.data().itemName}
                       </td>
                       <td className="text-right pr-5" style={{ fontSize: 20 }}>
@@ -242,25 +270,25 @@ export default class ItemBorrow extends Component {
                     <thead className="text-primary">
                       <tr>
                         <th
-                          className="table-header"
+                          className="table-header text-left"
                           style={{ fontWeight: "normal" }}
                         >
                           <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
                         </th>
                         <th
-                          className="table-header"
+                          className="table-header text-center"
                           style={{ fontWeight: "normal" }}
                         >
                           <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
                         </th>
                         <th
-                          className="table-header"
+                          className="table-header text-center"
                           style={{ fontWeight: "normal" }}
                         >
                           <b style={{ fontSize: "23px" }}>ชื่อผู้ยืม</b>
                         </th>
                         <th
-                          className="table-header text-right"
+                          className="table-header text-center"
                           style={{ fontWeight: "normal" }}
                         >
                           <b style={{ fontSize: "23px" }}> วันที่ยืม</b>
@@ -285,51 +313,27 @@ export default class ItemBorrow extends Component {
                             })
                           }
                         >
-                          <td style={{ fontSize: 20 }}>
+                          <td className="text-left" style={{ fontSize: 20 }}>
                             &nbsp;{item.data().itemCode}
                           </td>
-                          <td style={{ fontSize: 20 }}>
+                          <td className="text-center" style={{ fontSize: 20 }}>
                             &nbsp;{item.data().itemName}
                           </td>
-                          <td style={{ fontSize: 20 }}>
+                          <td className="text-center" style={{ fontSize: 20 }}>
                             &nbsp;{item.data().borrower}
                           </td>
-                          <td className="text-right" style={{ fontSize: 20 }}>
+                          <td className="text-center" style={{ fontSize: 20 }}>
                             &nbsp;
-                            {new Date(
-                              item.data().borrowDate.seconds * 1000
-                            ).getDate() +
-                              "/" +
-                              (new Date(
-                                item.data().borrowDate.seconds * 1000
-                              ).getMonth() +
-                                1) +
-                              "/" +
-                              (new Date(
-                                item.data().borrowDate.seconds * 1000
-                              ).getFullYear() +
-                                543)}
+                            {this.convertDate(item.data().borrowDate)}                       
                           </td>
                           <td
-                            className="table-header text-right pr-5"
+                            className="text-right pr-5"
                             style={{ fontSize: 20 }}
                           >
                             &nbsp;
-                            {new Date(
-                              item.data().returnDate.seconds * 1000
-                            ).getDate() +
-                              "/" +
-                              (new Date(
-                                item.data().returnDate.seconds * 1000
-                              ).getMonth() +
-                                1) +
-                              "/" +
-                              (new Date(
-                                item.data().returnDate.seconds * 1000
-                              ).getFullYear() +
-                                543)}
+                            {this.convertDate(item.data().mustReturnDate)}                           
                             &nbsp;
-                            {this.calDate(item.data().returnDate)}
+                            {this.calDate(item.data().mustReturnDate)}
                           </td>
                         </tr>
                       ))}
@@ -375,18 +379,22 @@ export default class ItemBorrow extends Component {
     }
   };
 
+  togglePage = () => {
+    this.setState({ renderLog: !this.state.renderLog });
+  };
+
   renderMain() {
     const { activeTab } = this.state;
     return (
       <>
         <Card>
-          <p
-            onClick={() => this.setState({ renderLog: true })}
+          <div
+            onClick={() => this.togglePage()}
             className="text-right button-like-a pr-3 pt-2 text-primary"
             style={{ fontSize: "20px" }}
           >
             ประวัติการยืมคืนครุภัณฑ์
-          </p>
+          </div>
           <Nav tabs className="px-3">
             <NavItem>
               <NavLink
@@ -431,7 +439,7 @@ export default class ItemBorrow extends Component {
   renderLog() {
     return (
       <>
-        <BorrowLog />
+        <BorrowLog togglePageFn={this.togglePage} />
       </>
     );
   }

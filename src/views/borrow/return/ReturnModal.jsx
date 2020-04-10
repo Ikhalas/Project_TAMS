@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import DatePicker from "react-date-picker";
 import { db } from "../../../api/firebase";
+import moment from "moment";
 import {
   Button,
   Modal,
@@ -11,7 +12,7 @@ import {
   Spinner,
   Input,
   FormGroup,
-  InputGroup
+  InputGroup,
 } from "reactstrap";
 
 export default class ReturnModal extends Component {
@@ -24,10 +25,12 @@ export default class ReturnModal extends Component {
       listId: "",
       itemBorrow: "",
       returnDate: new Date(),
-      returner: ""
+      returner: "",
+      overdue: "",
     };
 
     this._isMounted = false;
+    this._overdue = 0;
   }
 
   componentDidMount() {
@@ -44,15 +47,16 @@ export default class ReturnModal extends Component {
     db.collection("borrowList")
       .doc(this.props.itemid)
       .get()
-      .then(doc => {
+      .then((doc) => {
         this._isMounted &&
           this.setState({
             listId: doc.id,
             itemBorrow: Object(doc.data()),
-            readyToRender: true
+            readyToRender: true,
+            overdue: "ไม่เกินกำหนด",
           });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   handleSummit(e) {
@@ -64,7 +68,8 @@ export default class ReturnModal extends Component {
       returner: this.state.returner,
       returnDate: this.state.returnDate,
       header: "คืน",
-      timestamp: new Date()
+      timestamp: new Date(),
+      overdue: Number(this._overdue),
     };
 
     //console.log(this.state.itemBorrow.itemId);
@@ -93,6 +98,61 @@ export default class ReturnModal extends Component {
       });
   }
 
+  calOverdue(mustReturnDate) {
+    if (this.state.returnDate) {
+      //console.log(mustReturnDate + this.state.returnDate)
+      let a = moment(new Date(mustReturnDate.seconds * 1000));
+      let b = moment(this.state.returnDate);
+      let dueDate = b.diff(a, "days"); // b-a
+
+      //console.log(new Date(mustReturnDate.seconds * 1000))
+      //console.log(this.state.returnDate)
+      console.log(dueDate);
+
+      if (dueDate > 0) {
+        this._overdue = dueDate;
+        return (
+          <>
+            <p className="text-danger" style={{ fontSize: "25px" }}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* เกินกำหนด {dueDate} วัน
+            </p>
+          </>
+        );
+      } else {
+        this._overdue = 0;
+        return <></>;
+      }
+    }
+  }
+
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    return (
+      <b style={{ fontSize: "25px" }}>
+        {" "}
+        {new Date(date.seconds * 1000).getDate() +
+          " " +
+          month[new Date(date.seconds * 1000).getMonth()] +
+          " " +
+          (new Date(date.seconds * 1000).getFullYear() + 543)}
+      </b>
+    );
+  }
+
   render() {
     const { readyToRender, itemBorrow } = this.state;
     const { returnDate, returner, inProgress } = this.state;
@@ -113,7 +173,7 @@ export default class ReturnModal extends Component {
             <div
               style={{
                 backgroundColor: "#def8ff",
-                padding: "8px 10px 8px 20px"
+                padding: "8px 10px 8px 20px",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -138,20 +198,12 @@ export default class ReturnModal extends Component {
             <br />
             รายละเอียด :{" "}
             <b style={{ fontSize: "25px" }}>
-              {itemBorrow.detail ? itemBorrow.detail : "-"}
+              {itemBorrow.detail ? itemBorrow.detail : <>&nbsp;&nbsp;-</>}
             </b>
             <br />
-            วันที่ยืม :{" "}
-            <b style={{ fontSize: "25px" }}>
-              {" "}
-              {new Date(itemBorrow.borrowDate.seconds * 1000).getDate() +
-                "/" +
-                (new Date(itemBorrow.borrowDate.seconds * 1000).getMonth() +
-                  1) +
-                "/" +
-                (new Date(itemBorrow.borrowDate.seconds * 1000).getFullYear() +
-                  543)}
-            </b>
+            วันที่ยืม : {this.convertDate(itemBorrow.borrowDate)}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; วันที่กำหนดคืน :{" "}
+            {this.convertDate(itemBorrow.mustReturnDate)}
             <hr />
             <InputGroup>
               <label style={{ fontSize: "23px", color: "black" }}>
@@ -171,10 +223,17 @@ export default class ReturnModal extends Component {
                   className="date-picker"
                   calendarClassName="calendar-class"
                   locale="th-TH"
-                  minDate={returnDate}
+                  minDate={
+                    new Date(
+                      itemBorrow.borrowDate.seconds * 1000 +
+                        itemBorrow.borrowDate.nanoseconds / 1000
+                    )
+                  } //Firebase firestore timestamp to Formatted Date
                   value={returnDate}
-                  onChange={returnDate => this.setState({ returnDate })}
+                  onChange={(returnDate) => this.setState({ returnDate })}
                 />
+
+                {this.calOverdue(itemBorrow.mustReturnDate)}
               </InputGroup>
             </InputGroup>
             <FormGroup>
@@ -187,7 +246,7 @@ export default class ReturnModal extends Component {
                 name="returner"
                 className="regular-th"
                 style={{ height: 40, fontSize: "22px" }}
-                onChange={e => this.setState({ returner: e.target.value })}
+                onChange={(e) => this.setState({ returner: e.target.value })}
               />
             </FormGroup>
           </ModalBody>
@@ -202,7 +261,7 @@ export default class ReturnModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;
@@ -216,7 +275,7 @@ export default class ReturnModal extends Component {
               onClick={this.handleSummit.bind(this)}
               style={{
                 fontSize: "25px",
-                fontWeight: "normal"
+                fontWeight: "normal",
               }}
               disabled={!returner || !returnDate || inProgress}
             >

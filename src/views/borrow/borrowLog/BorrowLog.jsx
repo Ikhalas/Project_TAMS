@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import LogModal from "./LogModal";
 import { db } from "../../../api/firebase";
@@ -14,7 +13,7 @@ export default class BorrowLog extends Component {
       logModal: false, //toggle log modal
       logDetail: "", //detail to show in modal
       logHeader: "", //detail to show in modal
-      logTimestamp: "" //detail to show in modal
+      logTimestamp: "", //detail to show in modal
     };
 
     this._isMounted = false;
@@ -45,6 +44,62 @@ export default class BorrowLog extends Component {
       .catch((error) => console.log(error));
   }
 
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    return (
+      <>
+        {" "}
+        {new Date(date.seconds * 1000).getDate() +
+          " " +
+          month[new Date(date.seconds * 1000).getMonth()] +
+          " " +
+          (new Date(date.seconds * 1000).getFullYear() + 543)}
+      </>
+    );
+  }
+
+  convertTime(time) {
+    //console.log(new Date(time.seconds * 1000).getSeconds().toString().length);
+    if (new Date(time.seconds * 1000).getSeconds().toString().length === 1) {
+      return (
+        <>
+          {new Date(time.seconds * 1000).getHours() +
+            ":" +
+            new Date(time.seconds * 1000).getMinutes() +
+            ":" +
+            "0" +
+            new Date(time.seconds * 1000).getSeconds()}
+          &nbsp;น.
+        </>
+      );
+    } else {
+      return (
+        <>
+          {new Date(time.seconds * 1000).getHours() +
+            ":" +
+            new Date(time.seconds * 1000).getMinutes() +
+            ":" +
+            new Date(time.seconds * 1000).getSeconds()}
+          &nbsp;น.
+        </>
+      );
+    }
+  }
+
   genLogRow() {
     if (this.state.logList) {
       return this.state.logList.map((item) => (
@@ -59,24 +114,14 @@ export default class BorrowLog extends Component {
               logTimestamp: item.data().timestamp,
               returnDate: item.data().returnDate,
               returner: item.data().returner,
+              overdue: item.data().overdue,
             })
           }
         >
           <td style={{ fontSize: 20 }}>
             &nbsp;
-            {new Date(item.data().timestamp.seconds * 1000).getDate() +
-              "/" +
-              (new Date(item.data().timestamp.seconds * 1000).getMonth() + 1) +
-              "/" +
-              (new Date(item.data().timestamp.seconds * 1000).getFullYear() +
-                543)}
-            , &nbsp;
-            {new Date(item.data().timestamp.seconds * 1000).getHours() +
-              ":" +
-              new Date(item.data().timestamp.seconds * 1000).getMinutes() +
-              ":" +
-              new Date(item.data().timestamp.seconds * 1000).getSeconds()}
-            &nbsp; น.
+            {this.convertDate(item.data().timestamp)}, &nbsp;
+            {this.convertTime(item.data().timestamp)}
           </td>
           <td style={{ fontSize: 20 }}>{item.data().borDetail.itemCode}</td>
           <td style={{ fontSize: 20 }}>{item.data().borDetail.itemName}</td>
@@ -100,33 +145,32 @@ export default class BorrowLog extends Component {
   };
 
   render() {
-    const { readyToRender } = this.state
+    const { readyToRender } = this.state;
     return readyToRender ? (
       <>
         <div className="content regular-th">
           <Card>
-          <Link
-            to="/admin/item-borrow"
-            onClick={() => this.props.backButton()}
-            className="pl-2 pt-2"
-            style={{ textDecorationColor: "black" }}
-          >
-            <i
-              style={{ fontSize: "15px", color: "black" }}
-              className="nc-icon nc-minimal-left"
-            />
-            <span
-              className="regular-th"
-              style={{
-                fontSize: "25px",
-                color: "gray",
-                fontWeight: "normal"
-              }}
+            <button
+              onClick={this.props.togglePageFn}
+              className="pl-2 pt-2 button-like-a text-left"
             >
-              {" "}
-              ย้อนกลับ
-            </span>
-          </Link>
+              <i
+                style={{ fontSize: "15px", color: "black" }}
+                className="nc-icon nc-minimal-left"
+              />
+              <span
+                className="regular-th"
+                style={{
+                  fontSize: "25px",
+                  color: "gray",
+                  fontWeight: "normal",
+                }}
+              >
+                {" "}
+                ย้อนกลับ
+              </span>
+            </button>
+
             <CardHeader>
               <CardTitle tag="h5" style={{ color: "#66615b" }}>
                 ประวัติการยืม-คืนครุภัณฑ์
@@ -181,8 +225,9 @@ export default class BorrowLog extends Component {
             logDetail={this.state.logDetail}
             header={this.state.logHeader}
             logTimestamp={this.state.logTimestamp}
-            returnDate= {this.state.returnDate}
-            returner= {this.state.returner}
+            returnDate={this.state.returnDate}
+            returner={this.state.returner}
+            overdue={this.state.overdue}
           />
         )}
       </>
@@ -194,6 +239,6 @@ export default class BorrowLog extends Component {
           </p>
         </SkeletonTheme>
       </div>
-    )
+    );
   }
 }
