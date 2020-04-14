@@ -107,7 +107,7 @@ export default class ReturnModal extends Component {
 
       //console.log(new Date(mustReturnDate.seconds * 1000))
       //console.log(this.state.returnDate)
-      console.log(dueDate);
+      //console.log(dueDate);
 
       if (dueDate > 0) {
         this._overdue = dueDate;

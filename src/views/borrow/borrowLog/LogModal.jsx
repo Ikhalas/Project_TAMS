@@ -253,7 +253,6 @@ export default class LogModal extends Component {
                                   detail={this.convertDate(returnDate)}
                                   overdue={overdue}
                                 />
-
                                 <DetailTable label="ผู้คืน" detail={returner} />
                               </tbody>
                             </Table>

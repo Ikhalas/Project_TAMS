@@ -324,10 +324,10 @@ class ImovableForm extends Component {
     var lng = position.lng();
     this.currentPosition = { lat: lat, lng: lng };
     this.setState({ haveLocate: true }, () =>
-      console.log(this.state.haveLocate)
+      //console.log(this.state.haveLocate)
     );
 
-    console.log(this.currentPosition);
+    //console.log(this.currentPosition);
   };
 
   onMouseoverMarker = (props, marker, e) => {
@@ -336,7 +336,7 @@ class ImovableForm extends Component {
     var lng = position.lng();
     this.currentPosition = { lat: lat, lng: lng };
 
-    console.log(this.currentPosition);
+    //console.log(this.currentPosition);
   };
 
   onMarkerDragEnd = (coord, index) => {
@@ -350,7 +350,7 @@ class ImovableForm extends Component {
       return { markers };
     });
     this.setState({ haveLocate: true }, () =>
-      console.log(this.state.haveLocate)
+      //console.log(this.state.haveLocate)
     );
   };
   /*------------------- /map ---------------------*/
@@ -527,15 +527,15 @@ class ImovableForm extends Component {
     db.collection("itemImovable")
       .add(newLand)
       .then(() => {
-        console.log("add item complete !! 1");
+        //console.log("add item complete !! 1");
         db.collection("landRes")
           .add(landRes)
           .then(() => {
-            console.log("add landRes complete !! 2");
+            //console.log("add landRes complete !! 2");
             db.collection("landValue")
               .add(landValue)
               .then(() => {
-                console.log("add landValue complete !! 3");
+                //console.log("add landValue complete !! 3");
                 this.setState({ isUploading: false });
               });
           });

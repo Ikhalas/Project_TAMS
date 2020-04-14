@@ -133,19 +133,28 @@ export default class ItemBorrow extends Component {
       if (dateToShow <= 0)
         return (
           <>
-            <span style={{fontSize:'17px'}} className="text-danger"> (เกินกำหนดวันคืน)</span>
+            <span style={{ fontSize: "17px" }} className="text-danger">
+              {" "}
+              (เกินกำหนดวันคืน)
+            </span>
           </>
         );
       else if (dateToShow <= 5 && dateToShow > 0)
         return (
           <>
-            <span style={{fontSize:'17px'}} className="text-danger"> (เหลืออีก {dateToShow} วัน)</span>
+            <span style={{ fontSize: "17px" }} className="text-danger">
+              {" "}
+              (เหลืออีก {dateToShow} วัน)
+            </span>
           </>
         );
       else
         return (
           <>
-            <span style={{fontSize:'17px'}}> (เหลืออีก {dateToShow} วัน)</span>
+            <span style={{ fontSize: "17px" }}>
+              {" "}
+              (เหลืออีก {dateToShow} วัน)
+            </span>
           </>
         );
     }
@@ -172,7 +181,7 @@ export default class ItemBorrow extends Component {
         {" "}
         {new Date(date.seconds * 1000).getDate() +
           " " +
-          month[(new Date(date.seconds * 1000).getMonth())] +
+          month[new Date(date.seconds * 1000).getMonth()] +
           " " +
           (new Date(date.seconds * 1000).getFullYear() + 543)}
       </>
@@ -181,78 +190,99 @@ export default class ItemBorrow extends Component {
 
   /* การยืม */
   genBorrowFalse() {
+    //console.log(this.state.itemsMove.length)
     if (this.state.itemsMove) {
       // filter only !== "จำหน่าย"
       const filItem = this.state.itemsMove.filter((item) => {
-        return item.data().borrowSta === false;
+        return item.data().borrowSta === false && item.data().status === "ใช้งานได้ดี";
       });
-
-      return (
-        <Row>
-          <Col sm="12">
-            <CardBody>
-              <Table responsive hover size="sm">
-                <thead className="text-primary">
-                  <tr>
-                    <th
-                      className="table-header"
-                      style={{ fontWeight: "normal" }}
-                    >
-                      <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
-                    </th>
-                    <th
-                      className="table-header text-center"
-                      style={{ fontWeight: "normal" }}
-                    >
-                      <b style={{ fontSize: "23px" }}>ประเภทครุภัณฑ์</b>
-                    </th>
-                    <th
-                      className="table-header text-center"
-                      style={{ fontWeight: "normal" }}
-                    >
-                      <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
-                    </th>
-                    <th
-                      className="table-header text-right pr-5"
-                      style={{ fontWeight: "normal" }}
-                    >
-                      <b style={{ fontSize: "23px" }}> หน่วยงานที่รับผิดชอบ</b>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filItem.map((item) => (
-                    <tr
-                      key={item.id}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        this.setState({
-                          idToModal: item.id,
-                          codeToModal: item.data().itemCode,
-                          borModal: !this.state.borModal,
-                          nameToModal: item.data().itemName,
-                        });
-                      }}
-                    >
-                      <td style={{ fontSize: 20 }}>
-                        &nbsp;{item.data().itemCode}
-                      </td>
-                      <td className="text-center" style={{ fontSize: 20 }}>
-                        &nbsp;{item.data().itemType}
-                      </td>
-                      <td className="text-center" style={{ fontSize: 20 }}>
-                        &nbsp;{item.data().itemName}
-                      </td>
-                      <td className="text-right pr-5" style={{ fontSize: 20 }}>
-                        &nbsp;{item.data().department}
-                      </td>
+      //console.log(filItem.length)
+      if (filItem.length) {
+        return (
+          <Row>
+            <Col sm="12">
+              <CardBody>
+                <Table responsive hover size="sm">
+                  <thead className="text-primary">
+                    <tr>
+                      <th
+                        className="table-header"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>เลขรหัสครุภัณฑ์</b>
+                      </th>
+                      <th
+                        className="table-header text-center"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>ประเภทครุภัณฑ์</b>
+                      </th>
+                      <th
+                        className="table-header text-center"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>ชื่อพัสดุ</b>
+                      </th>
+                      <th
+                        className="table-header text-right pr-5"
+                        style={{ fontWeight: "normal" }}
+                      >
+                        <b style={{ fontSize: "23px" }}>
+                          {" "}
+                          หน่วยงานที่รับผิดชอบ
+                        </b>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Col>
-        </Row>
+                  </thead>
+                  <tbody>
+                    {filItem.map((item) => (
+                      <tr
+                        key={item.id}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          this.setState({
+                            idToModal: item.id,
+                            codeToModal: item.data().itemCode,
+                            borModal: !this.state.borModal,
+                            nameToModal: item.data().itemName,
+                          });
+                        }}
+                      >
+                        <td style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().itemCode}
+                        </td>
+                        <td className="text-center" style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().itemType}
+                        </td>
+                        <td className="text-center" style={{ fontSize: 20 }}>
+                          &nbsp;{item.data().itemName}
+                        </td>
+                        <td
+                          className="text-right pr-5"
+                          style={{ fontSize: 20 }}
+                        >
+                          &nbsp;{item.data().department}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Col>
+          </Row>
+        );
+      }
+      else
+      return (
+        <>
+          <br />
+          <div
+            className="text-center"
+            style={{ fontSize: "35px", height: "100px" }}
+          >
+            ไม่มีรายการครุภัณฑ์ที่สามารถให้ยืมได้
+          </div>
+        </>
       );
     }
   }
@@ -324,14 +354,14 @@ export default class ItemBorrow extends Component {
                           </td>
                           <td className="text-center" style={{ fontSize: 20 }}>
                             &nbsp;
-                            {this.convertDate(item.data().borrowDate)}                       
+                            {this.convertDate(item.data().borrowDate)}
                           </td>
                           <td
                             className="text-right pr-5"
                             style={{ fontSize: 20 }}
                           >
                             &nbsp;
-                            {this.convertDate(item.data().mustReturnDate)}                           
+                            {this.convertDate(item.data().mustReturnDate)}
                             &nbsp;
                             {this.calDate(item.data().mustReturnDate)}
                           </td>

@@ -265,7 +265,7 @@ export default class MovableForm extends Component {
             return null;
           });
 
-          console.log(allCode.length);
+          //(allCode.length);
 
           if (allCode.length > 0) {
             let newValue = (Math.max(...allCode) + 1).toString();
@@ -520,15 +520,15 @@ export default class MovableForm extends Component {
     db.collection("itemMovable")
       .add(newItem)
       .then(() => {
-        console.log("add item complete !! 1");
+        //console.log("add item complete !! 1");
         db.collection("itemRes")
           .add(itemRes)
           .then(() => {
-            console.log("add itemRes complete !! 2");
+            //console.log("add itemRes complete !! 2");
             db.collection("itemDep")
               .add(itemDep)
               .then(() => {
-                console.log("add itemDep complete !! 3");
+                //console.log("add itemDep complete !! 3");
                 this.setState({ isUploading: false });
               });
           });
