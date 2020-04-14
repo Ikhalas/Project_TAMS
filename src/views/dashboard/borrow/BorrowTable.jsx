@@ -83,7 +83,7 @@ export default class BorrowTable extends Component {
         return (
           <>
             <Row>
-              <Col sm="12" style={{height:'550px'}}>
+              <Col sm="12">
                 <CardHeader>
                   <CardTitle tag="h5" style={{ color: "#66615b" }}>
                     &nbsp;รายการครุภัณฑ์ที่ต้องคืน
@@ -167,7 +167,11 @@ export default class BorrowTable extends Component {
       else
         return (
           <>
-            <br />
+            <CardHeader>
+              <CardTitle tag="h5" style={{ color: "#66615b" }}>
+                &nbsp;รายการครุภัณฑ์ที่ต้องคืน
+              </CardTitle>
+            </CardHeader>
             <div
               className="text-center"
               style={{ fontSize: "35px", height: "100px" }}

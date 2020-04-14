@@ -323,7 +323,7 @@ class ImovableForm extends Component {
     var lat = position.lat();
     var lng = position.lng();
     this.currentPosition = { lat: lat, lng: lng };
-    this.setState({ haveLocate: true }, () =>
+    this.setState({ haveLocate: true }
       //console.log(this.state.haveLocate)
     );
 
@@ -349,7 +349,7 @@ class ImovableForm extends Component {
       markers[index] = { ...markers[index], position: { lat, lng } };
       return { markers };
     });
-    this.setState({ haveLocate: true }, () =>
+    this.setState({ haveLocate: true }
       //console.log(this.state.haveLocate)
     );
   };
