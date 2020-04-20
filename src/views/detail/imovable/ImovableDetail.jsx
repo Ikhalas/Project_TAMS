@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import NotificationAlert from "react-notification-alert";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NumberFormat from "react-number-format";
 import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
 import { db } from "../../../api/firebase";
 import { apiKey } from "../../../api/google-map";
@@ -21,7 +22,7 @@ import {
   Table,
   Alert,
   Button,
-  Collapse
+  Collapse,
 } from "reactstrap";
 
 var notiAlert = {
@@ -33,7 +34,7 @@ var notiAlert = {
   ),
   type: "success",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 var notiDeact = {
@@ -45,7 +46,7 @@ var notiDeact = {
   ),
   type: "danger",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 function DetailTable(props) {
@@ -77,7 +78,7 @@ class ImovableDetail extends Component {
       benModal: false,
       mainModal: false,
 
-      deactOpen: false
+      deactOpen: false,
     };
 
     this._isMounted = false;
@@ -105,11 +106,11 @@ class ImovableDetail extends Component {
     db.collection("itemImovable")
       .doc(this.props.itemId) //mock  nJfNUbGbLYz4CzbMonCb
       .get()
-      .then(doc => {
+      .then((doc) => {
         this._isMounted &&
           this.setState({
             itemDetail: Object(doc.data()),
-            readyToRender: true
+            readyToRender: true,
           });
         //console.log(this.state.itemDetail);
         this._isMounted && this.getResponsibility();
@@ -118,7 +119,7 @@ class ImovableDetail extends Component {
         this._isMounted && this.getMaintenance();
         this._isMounted && this.statusLabel();
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
     // }
   }
 
@@ -126,60 +127,60 @@ class ImovableDetail extends Component {
     db.collection("landRes")
       .where("itemCode", "==", this.state.itemDetail.itemCode) //mock => this.props.itemId
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let res = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           res.push(doc.data());
         });
         this._isMounted && this.setState({ res });
         //console.log(Object(this.state.res));
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getLandValue() {
     db.collection("landValue")
       .where("itemCode", "==", this.state.itemDetail.itemCode) //mock => this.props.itemId
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let val = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           val.push(doc.data());
         });
         this._isMounted && this.setState({ val });
         //console.log(Object(this.state.val));
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getBenefit() {
     db.collection("landBen")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let ben = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           ben.push(doc.data());
         });
         this._isMounted && this.setState({ ben });
         //console.log(this.state.ben);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getMaintenance() {
     db.collection("landMain")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let main = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           main.push(doc.data());
         });
         this._isMounted && this.setState({ main });
         //console.log(this.state.main);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   statusLabel() {
@@ -216,17 +217,13 @@ class ImovableDetail extends Component {
       sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
       return (
         sorted &&
-        sorted.map(res => (
+        sorted.map((res) => (
           <tr key={res.seq}>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.date}
+            <td className="text-left" style={{ textAlign: "center" }}>
+              {this.convertDate(res.date)}
             </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.resSubDepartment}
-            </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.resName}
-            </td>
+            <td style={{ textAlign: "center" }}>{res.resSubDepartment}</td>
+            <td style={{ textAlign: "center" }}>{res.resName}</td>
           </tr>
         ))
       );
@@ -256,16 +253,19 @@ class ImovableDetail extends Component {
       sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
       return (
         sorted &&
-        sorted.map(val => (
+        sorted.map((val) => (
           <tr key={val.seq}>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {val.date}
+            <td className="text-left" style={{ textAlign: "center" }}>
+              {this.convertDate(val.date)}
             </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {val.percent} %
-            </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {val.balance} บาท
+            <td style={{ textAlign: "center" }}>{val.percent} %</td>
+            <td style={{ textAlign: "center" }}>
+              <NumberFormat
+                value={val.balance}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;บาท
             </td>
             <td style={{ textAlign: "center", fontSize: "18px" }}>
               {val.note}
@@ -298,11 +298,18 @@ class ImovableDetail extends Component {
     this.state.ben && sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
     return (
       sorted &&
-      sorted.map(ben => (
+      sorted.map((ben) => (
         <tr key={ben.seq}>
-          <td style={{ textAlign: "center" }}>{ben.date}</td>
+          <td className="text-left">{this.convertDate(ben.date)}</td>
           <td style={{ textAlign: "center" }}>{ben.detail}</td>
-          <td style={{ textAlign: "center" }}>{ben.total}</td>
+          <td style={{ textAlign: "center" }}>
+            <NumberFormat
+              value={ben.total}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+            &nbsp;บาท{ben.per}
+          </td>
         </tr>
       ))
     );
@@ -330,10 +337,12 @@ class ImovableDetail extends Component {
     this.state.main && sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
     return (
       this.state.main &&
-      sorted.map(main => (
+      sorted.map((main) => (
         <tr key={main.seq}>
-          <td style={{ textAlign: "center" }}>{main.seq}</td>
-          <td style={{ textAlign: "center" }}>{main.date}</td>
+          <td className="text-left" style={{ textAlign: "center" }}>
+            &nbsp;&nbsp;{main.seq}
+          </td>
+          <td style={{ textAlign: "center" }}>{this.convertDate(main.date)}</td>
           <td style={{ textAlign: "center" }}>{main.detail}</td>
         </tr>
       ))
@@ -376,7 +385,7 @@ class ImovableDetail extends Component {
     }
   }
 
-  toggleAlert = res => {
+  toggleAlert = (res) => {
     if (res === "complete") {
       this.setState({ refresher: !this.state.refresher });
       this.refs.notify.notificationAlert(notiAlert);
@@ -408,6 +417,38 @@ class ImovableDetail extends Component {
     });
   };
 
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    if (date) {
+      return (
+        <>
+          {" "}
+          {new Date(date.seconds * 1000).getDate() +
+            " " +
+            month[new Date(date.seconds * 1000).getMonth()] +
+            " " +
+            (new Date(date.seconds * 1000).getFullYear() + 543)}
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  }
+
   render() {
     const { readyToRender, itemDetail } = this.state;
     return readyToRender ? (
@@ -430,7 +471,7 @@ class ImovableDetail extends Component {
               style={{
                 fontSize: "25px",
                 color: "gray",
-                fontWeight: "normal"
+                fontWeight: "normal",
               }}
             >
               {" "}
@@ -498,7 +539,7 @@ class ImovableDetail extends Component {
                 <div
                   style={{
                     paddingBottom: "20px",
-                    textAlign: "center"
+                    textAlign: "center",
                   }}
                 >
                   <img
@@ -544,7 +585,7 @@ class ImovableDetail extends Component {
                   google={this.props.google}
                   style={{
                     width: "96%",
-                    height: "500px"
+                    height: "500px",
                   }}
                   zoom={15}
                   initialCenter={{ lat: itemDetail.lat, lng: itemDetail.lng }}
@@ -664,10 +705,17 @@ class ImovableDetail extends Component {
               <Col md="6" sm="12">
                 <Table size="sm" hover>
                   <tbody>
-                    <DetailTable
-                      label="วันที่ซื้อ/ได้มา"
-                      detail={itemDetail.derivedDate}
-                    />
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>วันที่ซื้อ/ได้มา</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        {itemDetail.derivedDate
+                          ? this.convertDate(itemDetail.derivedDate)
+                          : "-"}
+                      </td>
+                    </tr>
+
                     <DetailTable
                       label="เลขที่หนังสืออนุมัติ/ลงวันที่"
                       detail={itemDetail.letterNo}
@@ -678,7 +726,19 @@ class ImovableDetail extends Component {
               <Col md="6" sm="12">
                 <Table size="sm" hover>
                   <tbody>
-                    <DetailTable label="ราคา" detail={itemDetail.price} />
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>ราคา</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        <NumberFormat
+                          value={itemDetail.price}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                        />
+                        &nbsp;บาท
+                      </td>
+                    </tr>
                     <DetailTable
                       label="หน่วยงานเจ้าของงบประมาณ"
                       detail={itemDetail.budgetOf}
@@ -743,19 +803,20 @@ class ImovableDetail extends Component {
                   <thead>
                     <tr>
                       <th
+                        className="text-left"
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ชื่อส่วนราชการ
@@ -764,7 +825,7 @@ class ImovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ชื่อหัวหน้าส่วนราชการ
@@ -816,19 +877,19 @@ class ImovableDetail extends Component {
                   <thead>
                     <tr>
                       <th
+                        className="text-left"
                         style={{
-                          textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         มูลค่าเพิ่มขึ้น(%)
@@ -837,7 +898,7 @@ class ImovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         มูลค่าปัจจุบัน
@@ -891,18 +952,17 @@ class ImovableDetail extends Component {
                     <tr>
                       <th
                         style={{
-                          textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         รายการ
@@ -911,7 +971,7 @@ class ImovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ผลประโยชน์ที่ได้รับ (บาท)
@@ -963,10 +1023,10 @@ class ImovableDetail extends Component {
                   <thead>
                     <tr>
                       <th
+                        className="text-left"
                         style={{
-                          textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ครั้งที่
@@ -975,7 +1035,7 @@ class ImovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         วันที่
@@ -984,7 +1044,7 @@ class ImovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         รายการซ่อม/ปรับปรุงแก้ไข
@@ -1054,5 +1114,5 @@ class ImovableDetail extends Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: apiKey
+  apiKey: apiKey,
 })(ImovableDetail);

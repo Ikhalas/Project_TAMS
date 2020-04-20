@@ -21,7 +21,7 @@ import {
   CardBody,
   Modal,
   ModalHeader,
-  ModalBody
+  ModalBody,
 } from "reactstrap";
 
 import "../../assets/css/Form.css";
@@ -70,8 +70,8 @@ class ImovableForm extends Component {
       markers: [
         {
           name: "Current position",
-          position: { lat: 7.0486814, lng: 100.5712017 }
-        }
+          position: { lat: 7.0486814, lng: 100.5712017 },
+        },
       ],
       haveLocate: false,
 
@@ -92,7 +92,7 @@ class ImovableForm extends Component {
       otherSize: "",
 
       derivedDate: "",
-      derivedDateValue: "", //for show
+
       letterNo: "",
       price: 0,
       budgetOf: "",
@@ -107,7 +107,7 @@ class ImovableForm extends Component {
       btn2: true,
       btn3: true,
       isUploading: false,
-      modal: false
+      modal: false,
     };
     this._isMounted = false;
     this._newItemCode = "xxx-xx-xxxx";
@@ -148,7 +148,7 @@ class ImovableForm extends Component {
         buildingType: null,
         material: null,
         derivedDate: "",
-        derivedDateValue: "",
+
         typeSelected: "",
         subDepartment: "",
         itemCodeSt: "",
@@ -166,7 +166,7 @@ class ImovableForm extends Component {
         note: "",
         address: "",
         haveLocate: false,
-        resName: ""
+        resName: "",
       });
 
       this._newItemCode = "xxx-xx-xxxx";
@@ -180,7 +180,7 @@ class ImovableForm extends Component {
 
       this.setState({ fakeReload: true });
       setTimeout(
-        function() {
+        function () {
           this.setState({ fakeReload: false });
         }.bind(this),
         1000
@@ -191,32 +191,32 @@ class ImovableForm extends Component {
   getDepOptions() {
     db.collection("departments")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let depOptions = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           depOptions.push(doc.data());
         });
         this._isMounted && this.setState({ depOptions, readyToRender1: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getSubDepOptions() {
     db.collection("subDepartments")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let subDep = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           subDep.push(doc.data());
         });
         this._isMounted && this.setState({ subDep });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genSubDevOptions() {
     if (this.state.selectedDep.label) {
-      let filterOptions = this.state.subDep.filter(sub => {
+      let filterOptions = this.state.subDep.filter((sub) => {
         return sub.parent === this.state.selectedDep.label;
       });
 
@@ -237,14 +237,14 @@ class ImovableForm extends Component {
     db.collection("itemsCode")
       .where("type", "==", this.props.typeSelected.label)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let nameOptions = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           nameOptions.push(doc.data());
         });
         this._isMounted && this.setState({ nameOptions, readyToRender2: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genItemCode() {
@@ -253,14 +253,14 @@ class ImovableForm extends Component {
       db.collection("itemImovable")
         .where("itemName", "==", this.state.selectedName.value)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           let oldItemName = [];
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             oldItemName.push(doc.data());
           });
 
           let allCode = [];
-          oldItemName.map(name => {
+          oldItemName.map((name) => {
             allCode.push(name.itemCodeTh);
             return null;
           });
@@ -273,7 +273,7 @@ class ImovableForm extends Component {
               {
                 itemCodeSt: Number(this.state.selectedName.code),
                 itemCodeNd: 183 - new Date().getYear(),
-                itemCodeTh: Math.max(...allCode) + 1
+                itemCodeTh: Math.max(...allCode) + 1,
               },
               () => console.log(this.state.itemCodeTh)
             );
@@ -297,7 +297,7 @@ class ImovableForm extends Component {
             this.setState({
               itemCodeSt: Number(this.state.selectedName.code),
               itemCodeNd: 183 - new Date().getYear(),
-              itemCodeTh: 1
+              itemCodeTh: 1,
             });
             this._newItemCode =
               this.state.selectedName.code +
@@ -310,10 +310,10 @@ class ImovableForm extends Component {
           this.setState({
             itemCode: this._newItemCode,
             newItemCode: this._newItemCode,
-            oldListNo: allCode.length
+            oldListNo: allCode.length,
           });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     }
   }
 
@@ -323,7 +323,8 @@ class ImovableForm extends Component {
     var lat = position.lat();
     var lng = position.lng();
     this.currentPosition = { lat: lat, lng: lng };
-    this.setState({ haveLocate: true }
+    this.setState(
+      { haveLocate: true }
       //console.log(this.state.haveLocate)
     );
 
@@ -344,26 +345,27 @@ class ImovableForm extends Component {
     const lat = latLng.lat();
     const lng = latLng.lng();
 
-    this.setState(prevState => {
+    this.setState((prevState) => {
       const markers = [...this.state.markers];
       markers[index] = { ...markers[index], position: { lat, lng } };
       return { markers };
     });
-    this.setState({ haveLocate: true }
+    this.setState(
+      { haveLocate: true }
       //console.log(this.state.haveLocate)
     );
   };
   /*------------------- /map ---------------------*/
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
 
-  imgSelectedHandler = e => {
+  imgSelectedHandler = (e) => {
     //console.log(e.target.files[0]);
     this._selectedFile = e.target.files[0];
     this._imgType = this._selectedFile.type.replace("image/", "");
@@ -372,7 +374,7 @@ class ImovableForm extends Component {
     reader.onloadend = () => {
       this.setState({
         imagePreviewUrl: reader.result,
-        haveImg: true
+        haveImg: true,
       });
     };
 
@@ -404,12 +406,12 @@ class ImovableForm extends Component {
       fd.append("image", this._selectedFile, imgName);
       axios
         .post("https://us-central1-tams-psu.cloudfunctions.net/uploadFile", fd)
-        .then(res => {
+        .then((res) => {
           storage
             .ref()
             .child(imgName)
             .getDownloadURL()
-            .then(url => {
+            .then((url) => {
               const newLand = {
                 status: "ใช้งานได้ดี", //สภาพพัสดุ
                 itemType: this.props.typeSelected.label, //ประเภท
@@ -438,7 +440,7 @@ class ImovableForm extends Component {
                 address: this.state.address, //ที่ตั้ง
                 lat: lat,
                 lng: lng,
-                url: url
+                url: url,
               };
 
               const landRes = {
@@ -448,7 +450,7 @@ class ImovableForm extends Component {
                 resDepartment: this.state.resDepartment.label,
                 resSubDepartment: this.state.resSubDepartment.label,
                 resName: this.state.resName,
-                note: ""
+                note: "",
               };
 
               const landValue = {
@@ -457,7 +459,7 @@ class ImovableForm extends Component {
                 date: this.state.derivedDate,
                 percent: 0,
                 balance: Number(this.state.price),
-                note: "-- ราคาเริ่มต้น --"
+                note: "-- ราคาเริ่มต้น --",
               };
 
               //console.log(newLand)
@@ -465,7 +467,7 @@ class ImovableForm extends Component {
               //console.log(landValue)
               this.uploadData(newLand, landRes, landValue);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
             });
         });
@@ -497,7 +499,7 @@ class ImovableForm extends Component {
         note: this.state.note, //หมายเหตุ
         address: this.state.address, //ที่ตั้ง
         lat: lat,
-        lng: lng
+        lng: lng,
       };
 
       const landRes = {
@@ -507,7 +509,7 @@ class ImovableForm extends Component {
         resDepartment: this.state.resDepartment.label,
         resSubDepartment: this.state.resSubDepartment.label,
         resName: this.state.resName,
-        note: ""
+        note: "",
       };
 
       const landValue = {
@@ -516,7 +518,7 @@ class ImovableForm extends Component {
         date: this.state.derivedDate,
         percent: "-",
         balance: Number(this.state.price),
-        note: "-- ราคาเริ่มต้น --"
+        note: "-- ราคาเริ่มต้น --",
       };
 
       this.uploadData(newLand, landRes, landValue);
@@ -552,7 +554,7 @@ class ImovableForm extends Component {
     const { selectedName, nameOptions, newItemCode, oldListNo } = this.state;
     const { imagePreviewUrl } = this.state;
     const { buildingType, material } = this.state;
-    const { derivedDateValue } = this.state;
+    const { derivedDate } = this.state;
     const { budgetOf } = this.state;
     const { resSubDepartment, resDepartment } = this.state;
 
@@ -560,12 +562,12 @@ class ImovableForm extends Component {
 
     const buildingOptions = [
       { value: "อาคารเดี่ยว", label: "อาคารเดี่ยว" },
-      { value: "อาคารแถว", label: "อาคารแถว" }
+      { value: "อาคารแถว", label: "อาคารแถว" },
     ];
     const materialOption = [
       { value: "ตึก", label: "ตึก" },
       { value: "ไม้", label: "ไม้" },
-      { value: "ครึ่งตกครึ่งไม้", label: "ครึ่งตกครึ่งไม้" }
+      { value: "ครึ่งตกครึ่งไม้", label: "ครึ่งตกครึ่งไม้" },
     ];
     return fakeReload ? (
       <>
@@ -607,7 +609,7 @@ class ImovableForm extends Component {
                           style={{
                             color: "#66615b",
                             fontSize: "40px",
-                            fontWeight: "bold"
+                            fontWeight: "bold",
                           }}
                         >
                           "{this.props.typeSelected.label} (
@@ -620,7 +622,7 @@ class ImovableForm extends Component {
                     style={{
                       color: "#66615b",
                       fontSize: "25px",
-                      lineHeight: "50%"
+                      lineHeight: "50%",
                     }}
                   >
                     ข้อมูลเบื้องต้นของพัสดุครุภัณฑ์
@@ -638,12 +640,12 @@ class ImovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={selectedDep}
-                          onChange={selectedDep => {
+                          onChange={(selectedDep) => {
                             this.setState({
                               selectedDep,
                               department: selectedDep,
                               resDepartment: selectedDep,
-                              btn1: false
+                              btn1: false,
                             });
                           }}
                           options={depOptions}
@@ -667,11 +669,11 @@ class ImovableForm extends Component {
                             <Select
                               style={{ height: 40, fontSize: "22px" }}
                               value={subDepartment}
-                              onChange={subDepartment => {
+                              onChange={(subDepartment) => {
                                 this.setState({
                                   subDepartment,
                                   resSubDepartment: subDepartment,
-                                  btn3: false
+                                  btn3: false,
                                 });
                               }}
                               options={this.genSubDevOptions()}
@@ -703,12 +705,12 @@ class ImovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={selectedName}
-                          onChange={selectedName => {
+                          onChange={(selectedName) => {
                             this.setState(
                               {
                                 selectedName,
                                 itemName: selectedName,
-                                btn2: false
+                                btn2: false,
                               },
                               () => {
                                 this.genItemCode();
@@ -740,7 +742,7 @@ class ImovableForm extends Component {
                                 <Col md="7" className="text-right">
                                   <span
                                     style={{
-                                      fontSize: "16px"
+                                      fontSize: "16px",
                                     }}
                                   >
                                     {!oldListNo ? (
@@ -829,7 +831,7 @@ class ImovableForm extends Component {
                     google={this.props.google}
                     style={{
                       width: "96%",
-                      height: "400px"
+                      height: "400px",
                     }}
                     zoom={15}
                     initialCenter={{ lat: 7.0486814, lng: 100.5712017 }}
@@ -878,7 +880,7 @@ class ImovableForm extends Component {
                                 position: "absolute",
                                 top: "0px",
                                 right: "10px",
-                                fontWeight: "normal"
+                                fontWeight: "normal",
                               }}
                             >
                               ยกเลิก
@@ -909,12 +911,17 @@ class ImovableForm extends Component {
                           size="sm"
                           outline
                           color="danger"
-                          onClick={() => this.setState({ imagePreviewUrl: "", haveLocate: false })}
+                          onClick={() =>
+                            this.setState({
+                              imagePreviewUrl: "",
+                              haveLocate: false,
+                            })
+                          }
                           style={{
                             position: "absolute",
                             top: "0px",
                             right: "10px",
-                            fontWeight: "normal"
+                            fontWeight: "normal",
                           }}
                         >
                           ยกเลิก
@@ -942,7 +949,7 @@ class ImovableForm extends Component {
                             height: "100px",
                             border: "dashed #adb5bd 2px",
                             backgroundColor: "rgba(255,255,255,.8)",
-                            textAlign: "center"
+                            textAlign: "center",
                           }}
                         />
                       </>
@@ -960,7 +967,7 @@ class ImovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         เนื้อที่
@@ -1029,7 +1036,7 @@ class ImovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ประเภทโรงเรือน
@@ -1042,7 +1049,7 @@ class ImovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={buildingType}
-                          onChange={buildingType => {
+                          onChange={(buildingType) => {
                             this.setState({ buildingType });
                           }}
                           options={buildingOptions}
@@ -1056,7 +1063,7 @@ class ImovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={material}
-                          onChange={material => {
+                          onChange={(material) => {
                             this.setState({ material });
                           }}
                           options={materialOption}
@@ -1094,7 +1101,7 @@ class ImovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         อื่น ๆ
@@ -1122,7 +1129,7 @@ class ImovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ที่มาของครุภัณฑ์
@@ -1144,21 +1151,10 @@ class ImovableForm extends Component {
                           <DatePicker
                             className="date-picker"
                             calendarClassName="calendar-class"
-                            value={derivedDateValue}
-                            onChange={date => {
-                              if (date) {
-                                let formatted_date =
-                                  date.getDate() +
-                                  "/" +
-                                  (date.getMonth() + 1) +
-                                  "/" +
-                                  (date.getFullYear() + 543);
-
-                                this.setState({
-                                  derivedDate: formatted_date,
-                                  derivedDateValue: date
-                                });
-                              }
+                            locale="th-TH"
+                            value={derivedDate}
+                            onChange={(derivedDate) => {
+                              this.setState({ derivedDate });
                             }}
                           />
                         </InputGroup>
@@ -1196,7 +1192,7 @@ class ImovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={budgetOf}
-                          onChange={budgetOf => {
+                          onChange={(budgetOf) => {
                             this.setState({ budgetOf });
                           }}
                           options={depOptions}
@@ -1213,7 +1209,7 @@ class ImovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ผู้ดูแลและรับผิดชอบ
@@ -1324,7 +1320,7 @@ class ImovableForm extends Component {
                 style={{
                   width: "500px",
                   height: "300px",
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 <br />
@@ -1347,7 +1343,7 @@ class ImovableForm extends Component {
                       className="nc-icon nc-check-2"
                       style={{
                         color: "#28a745",
-                        fontSize: "60px"
+                        fontSize: "60px",
                       }}
                     ></i>
                     <br />
@@ -1400,5 +1396,5 @@ class ImovableForm extends Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: apiKey
+  apiKey: apiKey,
 })(ImovableForm);

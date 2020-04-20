@@ -13,7 +13,7 @@ import {
   InputGroup,
   Spinner,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -39,25 +39,19 @@ function TextInput(props) {
 
 const options = [
   { value: "รายเดือน", label: "รายเดือน" },
-  { value: "รายปี", label: "รายปี" }
+  { value: "รายปี", label: "รายปี" },
+  { value: "ต่อครั้ง", label: "ต่อครั้ง" },
 ];
 
 export default class BenModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateToShow: new Date(),
       inProgress: false,
-
       detail: "",
       total: 0,
       selected: "",
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543)
+      date: new Date(),
     };
     this._isMounted = false;
   }
@@ -70,10 +64,10 @@ export default class BenModal extends Component {
     this._isMounted = false;
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -87,7 +81,7 @@ export default class BenModal extends Component {
     if (this.props.ben.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.ben.map(function(obj) {
+        this.props.ben.map(function (obj) {
           return obj.seq;
         })
       );
@@ -95,21 +89,21 @@ export default class BenModal extends Component {
 
     let _total = "";
     if (this.state.selected.value === "รายเดือน") {
-      _total = "ต่อเดือน";
-    } else {
-      _total = "ต่อปี";
-    }
+      _total = "เดือน";
+    } else if (this.state.selected.value === "ต่อปี") {
+      _total = "ปี";
+    } else if (this.state.selected.value === "ต่อครั้ง") {
+      _total = "ครั้ง";
+    } else _total = "";
 
     const data = {
       seq: Number(_lastSeq) + 1,
       date: this.state.date,
       itemCode: this.props.itemCode,
       detail: this.state.detail,
-      total: this.state.total + " บาท/" + _total
+      total: this.state.total,
+      per: "/" + _total,
     };
-
-    //console.log(data)
-
     this.addBenToDatabase(data);
   }
 
@@ -126,7 +120,7 @@ export default class BenModal extends Component {
 
   render() {
     const { detail, total, date, selected } = this.state;
-    const { dateToShow, inProgress } = this.state;
+    const { inProgress } = this.state;
 
     return (
       <>
@@ -165,21 +159,10 @@ export default class BenModal extends Component {
                     <DatePicker
                       className="date-picker"
                       calendarClassName="calendar-class"
-                      value={dateToShow}
-                      onChange={date => {
-                        if (date) {
-                          let formatted_date =
-                            date.getDate() +
-                            "/" +
-                            (date.getMonth() + 1) +
-                            "/" +
-                            (date.getFullYear() + 543);
-
-                          this.setState({
-                            date: formatted_date,
-                            dateToShow: date
-                          });
-                        }
+                      locale="th-TH"
+                      value={date}
+                      onChange={(date) => {
+                        this.setState({ date });
                       }}
                     />
                   </InputGroup>
@@ -217,7 +200,7 @@ export default class BenModal extends Component {
                       </label>
                       <Select
                         value={selected}
-                        onChange={selected => {
+                        onChange={(selected) => {
                           this.setState({ selected });
                         }}
                         options={options}
@@ -241,7 +224,7 @@ export default class BenModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

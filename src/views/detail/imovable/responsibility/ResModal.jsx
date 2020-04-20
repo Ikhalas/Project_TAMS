@@ -13,7 +13,7 @@ import {
   InputGroup,
   Spinner,
   Col,
-  Row
+  Row,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -30,7 +30,7 @@ function TextInput(props) {
         type="text"
         name={props.name}
         className="regular-th"
-        style={{ height: 40, fontSize: "22px"}}
+        style={{ height: 40, fontSize: "22px" }}
         onChange={onChangeHandle}
       />
     </FormGroup>
@@ -42,18 +42,11 @@ export default class ResModal extends Component {
     super(props);
     this.state = {
       subDep: "",
-      dateToShow: new Date(),
       inProgress: false,
-
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543),
+      date: new Date(),
       selectedDep: "",
       resName: "",
-      resUser: ""
+      resUser: "",
     };
     this._isMounted = false;
   }
@@ -72,21 +65,21 @@ export default class ResModal extends Component {
       db.collection("subDepartments")
         .where("parent", "==", this.props.department)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           let subDep = [];
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             subDep.push(doc.data());
           });
           this._isMounted && this.setState({ subDep });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     }
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -99,7 +92,7 @@ export default class ResModal extends Component {
     if (this.props.res.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.res.map(function(obj) {
+        this.props.res.map(function (obj) {
           return obj.seq;
         })
       );
@@ -112,7 +105,7 @@ export default class ResModal extends Component {
       resDepartment: this.props.department,
       resSubDepartment: this.state.selectedDep.label,
       resUser: this.state.resUser,
-      resName: this.state.resName
+      resName: this.state.resName,
     };
 
     this.addResToDatabase(data);
@@ -131,7 +124,7 @@ export default class ResModal extends Component {
 
   render() {
     const { inProgress, resName, resUser, date } = this.state;
-    const { dateToShow, selectedDep, subDep } = this.state;
+    const { selectedDep, subDep } = this.state;
 
     return (
       <>
@@ -147,78 +140,71 @@ export default class ResModal extends Component {
             เพิ่มรายการผู้ดูแลรับผิดชอบครุภัณฑ์
           </ModalHeader>
           <ModalBody>
-          <Row>
+            <Row>
               <Col className="pl-3" md="9" sm="12">
-            <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
-            <hr />
-            <FormGroup>
-              <label style={{ fontSize: "23px", color: "black" }}>
-                <b>วันที่ซื้อ/ได้มา</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <InputGroup>
-                <label>
-                  {" "}
-                  <i
-                    className="nc-icon nc-calendar-60 pl-2"
-                    style={{ fontSize: "20px", paddingTop: "10px" }}
-                  />
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                </label>
-                <DatePicker
-                  className="date-picker"
-                  calendarClassName="calendar-class"
-                  value={dateToShow}
-                  onChange={date => {
-                    if (date) {
-                      let formatted_date =
-                        date.getDate() +
-                        "/" +
-                        (date.getMonth() + 1) +
-                        "/" +
-                        (date.getFullYear() + 543);
+                <p style={{ fontSize: "30px" }}>/{this.props.itemCode}</p>
+                <hr />
+                <FormGroup>
+                  <label style={{ fontSize: "23px", color: "black" }}>
+                    <b>วันที่ซื้อ/ได้มา</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <InputGroup>
+                    <label>
+                      {" "}
+                      <i
+                        className="nc-icon nc-calendar-60 pl-2"
+                        style={{ fontSize: "20px", paddingTop: "10px" }}
+                      />
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                    <DatePicker
+                      className="date-picker"
+                      locale="th-TH"
+                      calendarClassName="calendar-class"
+                      value={date}
+                      onChange={(date) => {
+                        this.setState({ date });
+                      }}
+                    />
+                  </InputGroup>
+                </FormGroup>
 
+                <FormGroup>
+                  <label>
+                    <b>ชื่อส่วนราชการ</b>{" "}
+                    <span style={{ fontSize: "18px", color: "red" }}>
+                      *จำเป็น
+                    </span>
+                  </label>
+                  <Select
+                    style={{ height: 40, fontSize: "22px" }}
+                    value={selectedDep}
+                    onChange={(selectedDep) => {
                       this.setState({
-                        date: formatted_date,
-                        dateToShow: date
+                        selectedDep,
                       });
-                    }
-                  }}
+                    }}
+                    options={subDep}
+                    placeholder="เลือกส่วนราชการ..."
+                    className="regular-th"
+                  />
+                </FormGroup>
+
+                <TextInput
+                  label="ชื่อผู้ใช้ครุภัณฑ์"
+                  name="resUser"
+                  onChange={this.handleInputTextChange}
                 />
-              </InputGroup>
-            </FormGroup>
 
-            <FormGroup>
-              <label>
-                <b>ชื่อส่วนราชการ</b>{" "}
-                <span style={{ fontSize: "18px", color: "red" }}>*จำเป็น</span>
-              </label>
-              <Select
-                style={{ height: 40, fontSize: "22px" }}
-                value={selectedDep}
-                onChange={selectedDep => {
-                  this.setState({
-                    selectedDep
-                  });
-                }}
-                options={subDep}
-                placeholder="เลือกส่วนราชการ..."
-                className="regular-th"
-              />
-            </FormGroup>
-
-            <TextInput
-              label="ชื่อผู้ใช้ครุภัณฑ์"
-              name="resUser"
-              onChange={this.handleInputTextChange}
-            />
-
-            <TextInput
-              label="ชื่อหัวหน้าส่วนราชการ"
-              name="resName"
-              onChange={this.handleInputTextChange}
-            />
-            </Col>
+                <TextInput
+                  label="ชื่อหัวหน้าส่วนราชการ"
+                  name="resName"
+                  onChange={this.handleInputTextChange}
+                />
+              </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
@@ -233,7 +219,7 @@ export default class ResModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

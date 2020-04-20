@@ -2,7 +2,18 @@ import React, { Component } from "react";
 import { db } from "../../../api/firebase";
 import AddType from "./AddType";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { Card, CardTitle, CardBody, Row, Col, Table, Button } from "reactstrap";
+import {
+  Card,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  Table,
+  Button,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+} from "reactstrap";
 
 export default class Types extends Component {
   constructor(props) {
@@ -10,10 +21,12 @@ export default class Types extends Component {
     this.state = {
       readyToRender: false,
       types: [],
-
-      typeModal: false
+      typeModal: false,
+      currentPage: 0,
     };
     this._isMounted = false;
+    this.pageSize = 5;
+    //this.pagesCount = Math.ceil(this.dataSet.length / this.pageSize);
   }
 
   componentDidMount() {
@@ -35,43 +48,55 @@ export default class Types extends Component {
     db.collection("types")
       .orderBy("movable", "desc")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let types = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           types.push(doc.data());
         });
         this._isMounted && this.setState({ types, readyToRender: true });
+        //console.log(this.pagesCount);
+        //console.log(this.state.types.length)
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genType() {
+    const { currentPage } = this.state;
     return (
       this.state.types &&
-      this.state.types.map(type => (
-        <tr key={type.label}>
-          <td></td>
-          <td>{type.label}</td>
-          <td
-            className={
-              type.movable === "สังหาริมทรัพย์"
-                ? "text-success"
-                : "text-warning"
-            }
-            style={{ textAlign: "center" }}
-          >
-            {type.movable}
-          </td>
-        </tr>
-      ))
+      this.state.types
+        .slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
+        .map((type) => (
+          <tr key={type.label}>
+            <td></td>
+            <td>{type.label}</td>
+            <td
+              className={
+                type.movable === "สังหาริมทรัพย์"
+                  ? "text-success"
+                  : "text-warning"
+              }
+              style={{ textAlign: "center" }}
+            >
+              {type.movable}
+            </td>
+          </tr>
+        ))
     );
+  }
+
+  handlePagination(e, index) {
+    e.preventDefault();
+    this.setState({
+      currentPage: index,
+    });
   }
 
   toggleTypeModal = () => {
     this.setState({ typeModal: !this.state.typeModal });
   };
 
-  toggleAlert = res => {
+  toggleAlert = (res) => {
     //console.log("Im here");
     if (res) {
       this.props.toggleAlert(res);
@@ -79,6 +104,8 @@ export default class Types extends Component {
   };
 
   render() {
+    this.pagesCount = Math.ceil(this.state.types.length / this.pageSize); // number of pagination
+    const { currentPage } = this.state;
     return this.state.readyToRender ? (
       <>
         <Card>
@@ -107,7 +134,7 @@ export default class Types extends Component {
             </Row>
           </CardTitle>
           <CardBody>
-            <Table size="sm" hover>
+            <Table size="sm" hover responsive>
               <thead>
                 <tr>
                   <th></th>
@@ -116,7 +143,7 @@ export default class Types extends Component {
                     style={{
                       fontSize: "23px",
                       color: "#66615b",
-                      textAlign: "center"
+                      textAlign: "center",
                     }}
                   >
                     สังหาริมทรัพย์/อสังหาริมทรัพย์
@@ -126,6 +153,40 @@ export default class Types extends Component {
               <tbody>{this.genType()}</tbody>
             </Table>
           </CardBody>
+
+          <div style={{ textAlign: "center", overflowX: "auto" }}>
+            <Pagination
+              aria-label="Page navigation example"
+              style={{
+                justifyContent: "center",
+                margin: "15px",
+                fontSize: "13px",
+              }}
+              className="regular-th"
+            >
+              <PaginationItem disabled={currentPage <= 0}>
+                <PaginationLink
+                  onClick={(e) => this.handlePagination(e, currentPage - 1)}
+                  previous
+                />
+              </PaginationItem>
+
+              {[...Array(this.pagesCount)].map((page, i) => (
+                <PaginationItem active={i === currentPage} key={i}>
+                  <PaginationLink onClick={(e) => this.handlePagination(e, i)}>
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                <PaginationLink
+                  onClick={(e) => this.handlePagination(e, currentPage + 1)}
+                  next
+                />
+              </PaginationItem>
+            </Pagination>
+          </div>
         </Card>
 
         <AddType

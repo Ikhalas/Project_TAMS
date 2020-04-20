@@ -14,7 +14,7 @@ import {
   Spinner,
   Row,
   Col,
-  Table
+  Table,
 } from "reactstrap";
 
 export default class DepModal extends Component {
@@ -22,17 +22,10 @@ export default class DepModal extends Component {
     super(props);
     this.state = {
       dep: "",
-      dateToShow: new Date(),
       inProgress: false,
       readyToRender: false,
-
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543),
-      balance: ""
+      date: new Date(),
+      balance: "",
     };
     this._isMounted = false;
   }
@@ -52,31 +45,31 @@ export default class DepModal extends Component {
       .where("itemCode", "==", this.props.itemCode)
       .where("seq", "==", 0)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let dep = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           dep.push(doc.data());
         });
         this._isMounted && this.setState({ dep, readyToRender: true });
         //console.log(this.state.dep);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   calBalance() {
     //console.log(this.props.dep)
     if (this.props.dep) {
-      var depreciation = this.props.dep.map(depreciation => depreciation);
+      var depreciation = this.props.dep.map((depreciation) => depreciation);
       var maxIndex = depreciation.length - 1;
       //console.log(maxIndex)
 
       var Cumulative = this.props.dep.map(
-        depreciation => depreciation.cumulative
+        (depreciation) => depreciation.cumulative
       );
       //console.log(Cumulative)
 
       var lastBalance = this.props.dep.map(
-        depreciation => depreciation.balance
+        (depreciation) => depreciation.balance
       );
 
       var B = lastBalance[maxIndex] - Cumulative[0];
@@ -84,10 +77,42 @@ export default class DepModal extends Component {
     }
   }
 
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    if (date) {
+      return (
+        <>
+          {" "}
+          {new Date(date.seconds * 1000).getDate() +
+            " " +
+            month[new Date(date.seconds * 1000).getMonth()] +
+            " " +
+            (new Date(date.seconds * 1000).getFullYear() + 543)}
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  }
+
   renderDetail() {
     return (
       this.state.dep &&
-      this.state.dep.map(seq => (
+      this.state.dep.map((seq) => (
         <Row key={seq.seq}>
           <Col md="4">
             <Table>
@@ -96,7 +121,7 @@ export default class DepModal extends Component {
                   <td style={{ fontSize: 19 }}>
                     <b>วันที่ได้มา</b>
                   </td>
-                  <td style={{ fontSize: 19 }}>{seq.date}</td>
+                  <td style={{ fontSize: 19 }}>{this.convertDate(seq.date)}</td>
                 </tr>
                 <tr>
                   <td style={{ fontSize: 19 }}>
@@ -166,10 +191,10 @@ export default class DepModal extends Component {
     );
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -182,7 +207,7 @@ export default class DepModal extends Component {
     if (this.props.dep.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.dep.map(function(obj) {
+        this.props.dep.map(function (obj) {
           return obj.seq;
         })
       );
@@ -192,7 +217,7 @@ export default class DepModal extends Component {
       seq: Number(_lastSeq) + 1,
       date: this.state.date,
       itemCode: this.props.itemCode,
-      balance: this.state.balance
+      balance: this.state.balance,
     };
 
     //console.log(data)
@@ -212,7 +237,7 @@ export default class DepModal extends Component {
   }
 
   render() {
-    const { dateToShow, balance, readyToRender } = this.state;
+    const { balance, readyToRender } = this.state;
     const { date, inProgress } = this.state;
     return (
       <>
@@ -255,21 +280,10 @@ export default class DepModal extends Component {
                         <DatePicker
                           className="date-picker"
                           calendarClassName="calendar-class"
-                          value={dateToShow}
-                          onChange={date => {
-                            if (date) {
-                              let formatted_date =
-                                date.getDate() +
-                                "/" +
-                                (date.getMonth() + 1) +
-                                "/" +
-                                (date.getFullYear() + 543);
-
-                              this.setState({
-                                date: formatted_date,
-                                dateToShow: date
-                              });
-                            }
+                          locale="th-TH"
+                          value={date}
+                          onChange={(date) => {
+                            this.setState({ date });
                           }}
                         />
                       </InputGroup>
@@ -306,7 +320,7 @@ export default class DepModal extends Component {
                     fontSize: "25px",
                     fontWeight: "normal",
                     backgroundColor: "#f8f9fa",
-                    color: "gray"
+                    color: "gray",
                   }}
                 >
                   &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

@@ -19,7 +19,7 @@ import {
   CardBody,
   Modal,
   ModalHeader,
-  ModalBody
+  ModalBody,
 } from "reactstrap";
 
 import "../../assets/css/Form.css";
@@ -99,10 +99,6 @@ export default class MovableForm extends Component {
       monthRate: "",
       yearRate: "",
 
-      insuranceDateValue: "",
-      derivedDateValue: "",
-      insuranceExpDateValue: "",
-
       imagePreviewUrl: "",
       btn1: true,
       btn2: true,
@@ -110,7 +106,7 @@ export default class MovableForm extends Component {
       haveImg: false,
 
       modal: false,
-      isUploading: false
+      isUploading: false,
     };
     this._isMounted = false;
     this._newItemCode = "xxx-xx-xxxx";
@@ -172,7 +168,7 @@ export default class MovableForm extends Component {
         percent: "",
         lifeTime: "",
         monthRate: "",
-        yearRate: ""
+        yearRate: "",
       });
       this._isMounted && this.getDepOptions();
       this._isMounted && this.getSubDepOptions();
@@ -180,7 +176,7 @@ export default class MovableForm extends Component {
 
       this.setState({ fakeReload: true });
       setTimeout(
-        function() {
+        function () {
           this.setState({ fakeReload: false });
         }.bind(this),
         1000
@@ -191,46 +187,46 @@ export default class MovableForm extends Component {
   getDepOptions() {
     db.collection("departments")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let depOptions = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           depOptions.push(doc.data());
         });
         this._isMounted && this.setState({ depOptions, readyToRender1: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getSubDepOptions() {
     db.collection("subDepartments")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let subDep = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           subDep.push(doc.data());
         });
         this._isMounted && this.setState({ subDep });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getItemCodeOptions() {
     db.collection("itemsCode")
       .where("type", "==", this.props.typeSelected.label)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let codeOptions = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           codeOptions.push(doc.data());
         });
         this._isMounted && this.setState({ codeOptions, readyToRender2: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genSubDevOptions() {
     if (this.state.selectedDep.label) {
-      let filterOptions = this.state.subDep.filter(sub => {
+      let filterOptions = this.state.subDep.filter((sub) => {
         return sub.parent === this.state.selectedDep.label;
       });
 
@@ -253,14 +249,14 @@ export default class MovableForm extends Component {
       db.collection("itemMovable")
         .where("itemName", "==", this.state.selectedName.value)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           let oldItemName = [];
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             oldItemName.push(doc.data());
           });
 
           let allCode = [];
-          oldItemName.map(name => {
+          oldItemName.map((name) => {
             allCode.push(name.itemCodeTh);
             return null;
           });
@@ -273,7 +269,7 @@ export default class MovableForm extends Component {
               {
                 itemCodeSt: Number(this.state.selectedName.code),
                 itemCodeNd: 183 - new Date().getYear(),
-                itemCodeTh: Math.max(...allCode) + 1
+                itemCodeTh: Math.max(...allCode) + 1,
               },
               () => console.log(this.state.itemCodeTh)
             );
@@ -297,7 +293,7 @@ export default class MovableForm extends Component {
             this.setState({
               itemCodeSt: Number(this.state.selectedName.code),
               itemCodeNd: 183 - new Date().getYear(),
-              itemCodeTh: 1
+              itemCodeTh: 1,
             });
             this._newItemCode =
               this.state.selectedName.code +
@@ -310,22 +306,22 @@ export default class MovableForm extends Component {
           this.setState({
             itemCode: this._newItemCode,
             newItemCode: this._newItemCode,
-            oldListNo: allCode.length
+            oldListNo: allCode.length,
           });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     }
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
 
-  imgSelectedHandler = e => {
+  imgSelectedHandler = (e) => {
     //console.log(e.target.files[0]);
     this._selectedFile = e.target.files[0];
     this._imgType = this._selectedFile.type.replace("image/", "");
@@ -334,7 +330,7 @@ export default class MovableForm extends Component {
     reader.onloadend = () => {
       this.setState({
         imagePreviewUrl: reader.result,
-        haveImg: true
+        haveImg: true,
       });
     };
 
@@ -383,12 +379,12 @@ export default class MovableForm extends Component {
       fd.append("image", this._selectedFile, imgName);
       axios
         .post("https://us-central1-tams-psu.cloudfunctions.net/uploadFile", fd)
-        .then(res => {
+        .then((res) => {
           storage
             .ref()
             .child(imgName)
             .getDownloadURL()
-            .then(url => {
+            .then((url) => {
               const newItem = {
                 status: "ใช้งานได้ดี",
                 itemType: this.props.typeSelected.label,
@@ -418,7 +414,7 @@ export default class MovableForm extends Component {
                 budgetOf: budgetOf,
                 url: url,
                 note: this.state.note,
-                borrowSta: false
+                borrowSta: false,
               };
 
               const itemRes = {
@@ -429,7 +425,7 @@ export default class MovableForm extends Component {
                 resSubDepartment: this.state.subDepartment.label,
                 resName: this.state.resName,
                 resUser: this.state.resUser,
-                note: ""
+                note: "",
               };
 
               let depreciat = this.calDepreciations();
@@ -445,12 +441,12 @@ export default class MovableForm extends Component {
                 perMonth: Number(depreciat[0]),
                 perYear: Number(depreciat[1]),
                 cumulative: Number(depreciat[2]),
-                note: "-- ราคาเริ่มต้น --"
+                note: "-- ราคาเริ่มต้น --",
               };
 
               this.uploadData(newItem, itemRes, itemDep);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
             });
         });
@@ -483,7 +479,7 @@ export default class MovableForm extends Component {
         price: Number(this.state.price),
         budgetOf: budgetOf,
         note: this.state.note,
-        borrowSta: false
+        borrowSta: false,
       };
 
       const itemRes = {
@@ -494,7 +490,7 @@ export default class MovableForm extends Component {
         resSubDepartment: this.state.subDepartment.label,
         resName: this.state.resName,
         resUser: this.state.resUser,
-        note: ""
+        note: "",
       };
 
       let depreciat = this.calDepreciations();
@@ -509,7 +505,7 @@ export default class MovableForm extends Component {
         perMonth: Number(depreciat[0]),
         perYear: Number(depreciat[1]),
         cumulative: Number(depreciat[2]),
-        note: "-- ราคาเริ่มต้น --"
+        note: "-- ราคาเริ่มต้น --",
       };
 
       this.uploadData(newItem, itemRes, itemDep);
@@ -552,9 +548,10 @@ export default class MovableForm extends Component {
       newItemCode,
       oldListNo,
       budgetOf,
-      derivedDateValue,
-      insuranceDateValue,
-      insuranceExpDateValue,
+
+      insuranceDate,
+      insuranceExpDate,
+      derivedDate,
 
       resDepartment,
       resSubDepartment,
@@ -564,7 +561,7 @@ export default class MovableForm extends Component {
       btn2,
       btn3,
 
-      modal
+      modal,
     } = this.state;
     return fakeReload ? (
       <>
@@ -603,7 +600,7 @@ export default class MovableForm extends Component {
                           style={{
                             color: "#66615b",
                             fontSize: "40px",
-                            fontWeight: "bold"
+                            fontWeight: "bold",
                           }}
                         >
                           "{this.props.typeSelected.label} (
@@ -616,7 +613,7 @@ export default class MovableForm extends Component {
                     style={{
                       color: "#66615b",
                       fontSize: "25px",
-                      lineHeight: "50%"
+                      lineHeight: "50%",
                     }}
                   >
                     ข้อมูลเบื้องต้นของครุภัณฑ์
@@ -635,12 +632,12 @@ export default class MovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={selectedDep}
-                          onChange={selectedDep => {
+                          onChange={(selectedDep) => {
                             this.setState({
                               selectedDep,
                               department: selectedDep,
                               resDepartment: selectedDep,
-                              btn1: false
+                              btn1: false,
                             });
                           }}
                           options={depOptions}
@@ -663,11 +660,11 @@ export default class MovableForm extends Component {
                             <Select
                               style={{ height: 40, fontSize: "22px" }}
                               value={subDepartment}
-                              onChange={subDepartment => {
+                              onChange={(subDepartment) => {
                                 this.setState({
                                   subDepartment,
                                   resSubDepartment: subDepartment,
-                                  btn3: false
+                                  btn3: false,
                                 });
                               }}
                               options={this.genSubDevOptions()}
@@ -700,12 +697,12 @@ export default class MovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={selectedName}
-                          onChange={selectedName => {
+                          onChange={(selectedName) => {
                             this.setState(
                               {
                                 selectedName,
                                 itemName: selectedName,
-                                btn2: false
+                                btn2: false,
                               },
                               () => {
                                 this.genItemCode();
@@ -736,7 +733,7 @@ export default class MovableForm extends Component {
                                 <Col md="7" className="text-right">
                                   <span
                                     style={{
-                                      fontSize: "16px"
+                                      fontSize: "16px",
                                     }}
                                   >
                                     {!oldListNo ? (
@@ -874,7 +871,7 @@ export default class MovableForm extends Component {
                             position: "absolute",
                             top: "0px",
                             right: "10px",
-                            fontWeight: "normal"
+                            fontWeight: "normal",
                           }}
                         >
                           ยกเลิก
@@ -902,7 +899,7 @@ export default class MovableForm extends Component {
                             height: "100px",
                             border: "dashed #adb5bd 2px",
                             backgroundColor: "rgba(255,255,255,.8)",
-                            textAlign: "center"
+                            textAlign: "center",
                           }}
                         />
                       </>
@@ -914,14 +911,13 @@ export default class MovableForm extends Component {
               <Row>
                 <Col md="6" sm="12">
                   <Card>
-                    
                     <CardBody>
                       <p
                         style={{
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ข้อมูลที่มาของครุภัณฑ์
@@ -948,21 +944,10 @@ export default class MovableForm extends Component {
                           <DatePicker
                             className="date-picker"
                             calendarClassName="calendar-class"
-                            value={derivedDateValue}
-                            onChange={date => {
-                              if (date) {
-                                let formatted_date =
-                                  date.getDate() +
-                                  "/" +
-                                  (date.getMonth() + 1) +
-                                  "/" +
-                                  (date.getFullYear() + 543);
-
-                                this.setState({
-                                  derivedDate: formatted_date,
-                                  derivedDateValue: date
-                                });
-                              }
+                            locale="th-TH"
+                            value={derivedDate}
+                            onChange={(derivedDate) => {
+                              this.setState({ derivedDate });
                             }}
                           />
                         </InputGroup>
@@ -995,7 +980,7 @@ export default class MovableForm extends Component {
                         <Select
                           style={{ height: 40, fontSize: "22px" }}
                           value={budgetOf}
-                          onChange={budgetOf => {
+                          onChange={(budgetOf) => {
                             this.setState({ budgetOf });
                           }}
                           options={depOptions}
@@ -1014,7 +999,7 @@ export default class MovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ข้อมูลการประกันครุภัณฑ์
@@ -1046,22 +1031,11 @@ export default class MovableForm extends Component {
                           </label>
                           <DatePicker
                             className="date-picker"
-                            value={insuranceDateValue}
+                            value={insuranceDate}
+                            locale="th-TH"
                             calendarClassName="calendar-class"
-                            onChange={date => {
-                              if (date) {
-                                let formatted_date =
-                                  date.getDate() +
-                                  "/" +
-                                  (date.getMonth() + 1) +
-                                  "/" +
-                                  (date.getFullYear() + 543);
-
-                                this.setState({
-                                  insuranceDate: formatted_date,
-                                  insuranceDateValue: date
-                                });
-                              }
+                            onChange={(insuranceDate) => {
+                              this.setState({ insuranceDate });
                             }}
                           />
                         </InputGroup>
@@ -1082,20 +1056,11 @@ export default class MovableForm extends Component {
                           <DatePicker
                             className="date-picker"
                             calendarClassName="calendar-class"
-                            value={insuranceExpDateValue}
-                            onChange={date => {
-                              if (date) {
-                                let formatted_date =
-                                  date.getDate() +
-                                  "-" +
-                                  (date.getMonth() + 1) +
-                                  "-" +
-                                  (date.getFullYear() + 543);
-
-                                this.setState({
-                                  insuranceExpDate: formatted_date,
-                                  insuranceExpDateValue: date
-                                });
+                            value={insuranceExpDate}
+                            locale="th-TH"
+                            onChange={(insuranceExpDate) => {
+                              if (insuranceExpDate) {
+                                this.setState({ insuranceExpDate });
                               }
                             }}
                           />
@@ -1115,7 +1080,7 @@ export default class MovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         ผู้ดูแลรับผิดชอบ
@@ -1166,7 +1131,7 @@ export default class MovableForm extends Component {
                           color: "#66615b",
                           fontSize: "25px",
                           lineHeight: "50%",
-                          paddingTop: "10px"
+                          paddingTop: "10px",
                         }}
                       >
                         อัตราค่าเสื่อมราคา
@@ -1364,7 +1329,7 @@ export default class MovableForm extends Component {
                 style={{
                   width: "500px",
                   height: "300px",
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 <br />
@@ -1387,7 +1352,7 @@ export default class MovableForm extends Component {
                       className="nc-icon nc-check-2"
                       style={{
                         color: "#28a745",
-                        fontSize: "60px"
+                        fontSize: "60px",
                       }}
                     ></i>
                     <br />

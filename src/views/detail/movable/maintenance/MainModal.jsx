@@ -12,7 +12,7 @@ import {
   InputGroup,
   Spinner,
   Col,
-  Row
+  Row,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -40,19 +40,13 @@ export default class MainModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateToShow: new Date(),
       inProgress: false,
 
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543),
+      date: new Date(),
       docNo: "",
       detail: "",
       amount: "",
-      resName: ""
+      resName: "",
     };
     this._isMounted = false;
   }
@@ -65,10 +59,10 @@ export default class MainModal extends Component {
     this._isMounted = false;
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -82,7 +76,7 @@ export default class MainModal extends Component {
     if (this.props.main.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.main.map(function(obj) {
+        this.props.main.map(function (obj) {
           return obj.seq;
         })
       );
@@ -95,7 +89,7 @@ export default class MainModal extends Component {
       docNo: this.state.docNo,
       detail: this.state.detail,
       amount: this.state.amount,
-      resName: this.state.resName
+      resName: this.state.resName,
     };
 
     //console.log(data)
@@ -116,7 +110,7 @@ export default class MainModal extends Component {
 
   render() {
     const { date, docNo, detail, amount, resName } = this.state;
-    const { dateToShow, inProgress } = this.state;
+    const { inProgress } = this.state;
 
     return (
       <>
@@ -155,21 +149,10 @@ export default class MainModal extends Component {
                     <DatePicker
                       className="date-picker"
                       calendarClassName="calendar-class"
-                      value={dateToShow}
-                      onChange={date => {
-                        if (date) {
-                          let formatted_date =
-                            date.getDate() +
-                            "/" +
-                            (date.getMonth() + 1) +
-                            "/" +
-                            (date.getFullYear() + 543);
-
-                          this.setState({
-                            date: formatted_date,
-                            dateToShow: date
-                          });
-                        }
+                      locale="th-TH"
+                      value={date}
+                      onChange={(date) => {
+                        this.setState({ date });
                       }}
                     />
                   </InputGroup>
@@ -224,7 +207,7 @@ export default class MainModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

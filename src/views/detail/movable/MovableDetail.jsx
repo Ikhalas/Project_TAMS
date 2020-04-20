@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import NotificationAlert from "react-notification-alert";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NumberFormat from "react-number-format";
 import { db } from "../../../api/firebase";
 import { Link } from "react-router-dom";
 import ResModal from "./responsibility/ResModal";
@@ -19,7 +20,7 @@ import {
   Table,
   Alert,
   Button,
-  Collapse
+  Collapse,
 } from "reactstrap";
 
 var notiAlert = {
@@ -31,7 +32,7 @@ var notiAlert = {
   ),
   type: "success",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 var notiDeact = {
@@ -43,7 +44,7 @@ var notiDeact = {
   ),
   type: "danger",
   icon: "nc-icon nc-cloud-upload-94",
-  autoDismiss: 3
+  autoDismiss: 3,
 };
 
 function DetailTable(props) {
@@ -75,7 +76,7 @@ export default class MovableDetail extends Component {
       benModal: false,
       mainModal: false,
 
-      deactOpen: false
+      deactOpen: false,
     };
 
     this._isMounted = false;
@@ -103,11 +104,11 @@ export default class MovableDetail extends Component {
       db.collection("itemMovable")
         .doc(this.props.itemId) //mock  X32UtvVTayGD5ykl9qSH
         .get()
-        .then(doc => {
+        .then((doc) => {
           this._isMounted &&
             this.setState({
               itemDetail: Object(doc.data()),
-              readyToRender: true
+              readyToRender: true,
             });
           //console.log(this.state._id)
           this._isMounted && this.getResponsibility();
@@ -116,7 +117,7 @@ export default class MovableDetail extends Component {
           this._isMounted && this.getMaintenance();
           this._isMounted && this.statusLabel();
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     }
   }
 
@@ -124,60 +125,60 @@ export default class MovableDetail extends Component {
     db.collection("itemRes")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let res = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           res.push(doc.data());
         });
         this._isMounted && this.setState({ res });
         //console.log(Object(this.state.res));
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getDepreciations() {
     db.collection("itemDep")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let dep = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           dep.push(doc.data());
         });
         this._isMounted && this.setState({ dep });
         //console.log(Object(this.state.dep));
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getBenefit() {
     db.collection("itemBen")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let ben = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           ben.push(doc.data());
         });
         this._isMounted && this.setState({ ben });
         //console.log(this.state.ben);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   getMaintenance() {
     db.collection("itemMain")
       .where("itemCode", "==", this.state.itemDetail.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let main = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           main.push(doc.data());
         });
         this._isMounted && this.setState({ main });
         //console.log(this.state.main);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genResRows() {
@@ -206,20 +207,12 @@ export default class MovableDetail extends Component {
       sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
       return (
         sorted &&
-        sorted.map(res => (
+        sorted.map((res) => (
           <tr key={res.seq}>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.date}
-            </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.resSubDepartment}
-            </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.resUser}
-            </td>
-            <td style={{ textAlign: "center", fontSize: "23px" }}>
-              {res.resName}
-            </td>
+            <td style={{ textAlign: "left" }}>{this.convertDate(res.date)}</td>
+            <td style={{ textAlign: "center" }}>{res.resSubDepartment}</td>
+            <td style={{ textAlign: "center" }}>{res.resUser}</td>
+            <td style={{ textAlign: "center" }}>{res.resName}</td>
           </tr>
         ))
       );
@@ -248,10 +241,17 @@ export default class MovableDetail extends Component {
       sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
       return (
         sorted &&
-        sorted.map(dep => (
+        sorted.map((dep) => (
           <tr key={dep.seq}>
-            <td style={{ textAlign: "center" }}>{dep.date}</td>
-            <td style={{ textAlign: "center" }}>{dep.balance}&nbsp;บาท</td>
+            <td style={{ textAlign: "left" }}>{this.convertDate(dep.date)}</td>
+            <td style={{ textAlign: "center" }}>
+              <NumberFormat
+                value={dep.balance}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;บาท
+            </td>
             <td style={{ textAlign: "center", fontSize: "18px" }}>
               {dep.note}
             </td>
@@ -283,11 +283,17 @@ export default class MovableDetail extends Component {
     this.state.ben && sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
     return (
       sorted &&
-      sorted.map(ben => (
+      sorted.map((ben) => (
         <tr key={ben.seq}>
-          <td style={{ textAlign: "center" }}>{ben.date}</td>
+          <td style={{ textAlign: "left" }}>{this.convertDate(ben.date)}</td>
           <td style={{ textAlign: "center" }}>{ben.detail}</td>
-          <td style={{ textAlign: "center" }}>{ben.total}</td>
+          <td style={{ textAlign: "center" }}>
+            <NumberFormat
+              value={ben.total}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
         </tr>
       ))
     );
@@ -315,11 +321,11 @@ export default class MovableDetail extends Component {
     this.state.main && sorted.sort((a, b) => (a.seq > b.seq ? 1 : -1)); //sort seq
     return (
       this.state.main &&
-      sorted.map(main => (
+      sorted.map((main) => (
         <tr key={main.seq}>
           <td style={{ textAlign: "center" }}>{main.seq}</td>
 
-          <td style={{ textAlign: "center" }}>{main.date}</td>
+          <td style={{ textAlign: "center" }}>{this.convertDate(main.date)}</td>
           <td style={{ textAlign: "center" }}>{main.detail}</td>
         </tr>
       ))
@@ -342,7 +348,7 @@ export default class MovableDetail extends Component {
     });
   };
 
-  toggleAlert = res => {
+  toggleAlert = (res) => {
     if (res === "complete") {
       this.setState({ refresher: !this.state.refresher });
       this.refs.notify.notificationAlert(notiAlert);
@@ -405,6 +411,38 @@ export default class MovableDetail extends Component {
     this.setState({ resModal: !this.state.resModal });
   };
 
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    if (date) {
+      return (
+        <>
+          {" "}
+          {new Date(date.seconds * 1000).getDate() +
+            " " +
+            month[new Date(date.seconds * 1000).getMonth()] +
+            " " +
+            (new Date(date.seconds * 1000).getFullYear() + 543)}
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  }
+
   render() {
     const { readyToRender, itemDetail } = this.state;
 
@@ -428,7 +466,7 @@ export default class MovableDetail extends Component {
               style={{
                 fontSize: "25px",
                 color: "black",
-                fontWeight: "normal"
+                fontWeight: "normal",
               }}
             >
               {" "}
@@ -488,7 +526,7 @@ export default class MovableDetail extends Component {
                 <div
                   style={{
                     paddingBottom: "20px",
-                    textAlign: "center"
+                    textAlign: "center",
                   }}
                 >
                   <img
@@ -573,11 +611,26 @@ export default class MovableDetail extends Component {
                       label="ซื้อ/จ้าง/ได้มา จาก"
                       detail={itemDetail.derivedFrom}
                     />
-                    <DetailTable
-                      label="วันที่ซื้อ/จ้าง/ได้มา"
-                      detail={itemDetail.derivedDate}
-                    />
-                    <DetailTable label="ราคา" detail={itemDetail.price} />
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>วันที่ซื้อ/จ้าง/ได้มา</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        {this.convertDate(itemDetail.derivedDate)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>ราคา</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        <NumberFormat
+                          value={itemDetail.price}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                        />
+                      </td>
+                    </tr>
                     <DetailTable
                       label="หน่วยงานเจ้าของงบประมาณ"
                       detail={itemDetail.budgetOf}
@@ -605,14 +658,22 @@ export default class MovableDetail extends Component {
                       label="พัสดุรับประกันไว้ที่บริษัท"
                       detail={itemDetail.insuranceCompany}
                     />
-                    <DetailTable
-                      label="วันที่เริ่มประกัน"
-                      detail={itemDetail.insuranceDate}
-                    />
-                    <DetailTable
-                      label="วันที่สิ้นสุดประกัน"
-                      detail={itemDetail.insuranceExpDate}
-                    />
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>วันที่เริ่มประกัน</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        {this.convertDate(itemDetail.insuranceDate)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontSize: "23px" }}>
+                        <b>วันที่สิ้นสุดประกัน</b>
+                      </td>
+                      <td style={{ fontSize: "25px" }}>
+                        {this.convertDate(itemDetail.insuranceExpDate)}
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
               </CardBody>
@@ -675,18 +736,18 @@ export default class MovableDetail extends Component {
                     <tr>
                       <th
                         style={{
-                          textAlign: "center",
+                          textAlign: "left",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ชื่อส่วนราชการ
@@ -695,7 +756,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ชื่อผู้ใช้ครุภัณฑ์
@@ -704,7 +765,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ชื่อหัวหน้าส่วนราชการ
@@ -758,18 +819,18 @@ export default class MovableDetail extends Component {
                     <tr>
                       <th
                         style={{
-                          textAlign: "center",
+                          textAlign: "left",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         มูลค่าคงเหลือ
@@ -826,18 +887,18 @@ export default class MovableDetail extends Component {
                     <tr>
                       <th
                         style={{
-                          textAlign: "center",
+                          textAlign: "left",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
-                        วันที่
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่
                       </th>
                       <th
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         รายการ
@@ -846,7 +907,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ผลประโยชน์ที่ได้รับ (บาท)
@@ -902,7 +963,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         ครั้งที่
@@ -911,7 +972,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         วันที่
@@ -920,7 +981,7 @@ export default class MovableDetail extends Component {
                         style={{
                           textAlign: "center",
                           fontSize: "20px",
-                          color: "#66615b"
+                          color: "#66615b",
                         }}
                       >
                         รายการซ่อม/ปรับปรุงแก้ไข

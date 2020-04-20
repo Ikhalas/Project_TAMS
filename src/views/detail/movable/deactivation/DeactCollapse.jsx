@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { db } from "../../../../api/firebase";
 import DatePicker from "react-date-picker";
+import NumberFormat from "react-number-format";
 import Select from "react-select";
 import {
   Card,
@@ -16,7 +17,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -43,27 +44,21 @@ function TextInput(props) {
 const options = [
   { value: "ขายทอดตลาด", label: "ขายทอดตลาด" },
   { value: "บริจาค", label: "บริจาค" },
-  { value: "ทิ้ง", label: "ทิ้ง" }
+  { value: "ทิ้ง", label: "ทิ้ง" },
 ];
 
 export default class DeactCollapse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateToShow: new Date(),
       inProgress: false,
 
       docNo: "",
       selectedMet: "",
       salePrice: 0,
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543),
+      date: new Date(),
 
-      confirmModal: false
+      confirmModal: false,
     };
     this._isMounted = false;
     this._profitOrLoss = "";
@@ -79,10 +74,10 @@ export default class DeactCollapse extends Component {
     this._isMounted = false;
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -98,7 +93,7 @@ export default class DeactCollapse extends Component {
       method: this.state.selectedMet.value,
       salePrice: this.state.salePrice,
       profit: this._profitOrLoss,
-      amount: this._amount
+      amount: this._amount,
     };
 
     //console.log(data);
@@ -136,11 +131,21 @@ export default class DeactCollapse extends Component {
       //console.log(this._profitOrLoss)
       return (
         <span style={{ fontSize: "25px" }}>
-          ราคาของครุภัณฑ์ : {this.props.price} บาท
+          ราคาของครุภัณฑ์ :
+          <NumberFormat
+            value={this.props.price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />{" "}
+          บาท
           <br />
           กำไร :{" "}
           <b style={{ fontSize: "27px" }} className="text-success">
-            {Math.abs(amount)}
+            <NumberFormat
+              value={Math.abs(amount)}
+              displayType={"text"}
+              thousandSeparator={true}
+            />{" "}
           </b>{" "}
           บาท
         </span>
@@ -153,11 +158,21 @@ export default class DeactCollapse extends Component {
       //console.log(this._profitOrLoss)
       return (
         <span style={{ fontSize: "25px" }}>
-          ราคาของครุภัณฑ์ : {this.props.price} บาท
+          ราคาของครุภัณฑ์ :{" "}
+          <NumberFormat
+            value={this.props.price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />{" "}
+          บาท
           <br />
           ขาดทุน :{" "}
           <b style={{ fontSize: "27px" }} className="text-danger">
-            {Math.abs(amount)}
+            <NumberFormat
+              value={Math.abs(amount)}
+              displayType={"text"}
+              thousandSeparator={true}
+            />{" "}
           </b>{" "}
           บาท
         </span>
@@ -170,11 +185,21 @@ export default class DeactCollapse extends Component {
       //console.log(this._profitOrLoss)
       return (
         <span style={{ fontSize: "25px" }}>
-          ราคาของครุภัณฑ์ : {this.props.price} บาท
+          ราคาของครุภัณฑ์ :{" "}
+          <NumberFormat
+            value={this.props.price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />{" "}
+          บาท
           <br />
           ขาดทุน :{" "}
           <b style={{ fontSize: "27px" }} className="text-danger">
-            {Math.abs(amount)}
+            <NumberFormat
+              value={Math.abs(amount)}
+              displayType={"text"}
+              thousandSeparator={true}
+            />{" "}
           </b>{" "}
           บาท
         </span>
@@ -184,7 +209,13 @@ export default class DeactCollapse extends Component {
       this._amount = 0;
       return (
         <span style={{ fontSize: "25px" }}>
-          ราคาของครุภัณฑ์ : {this.props.price} บาท
+          ราคาของครุภัณฑ์ :{" "}
+          <NumberFormat
+            value={this.props.price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />{" "}
+          บาท
           <br />
           เท่าทุน
         </span>
@@ -192,7 +223,13 @@ export default class DeactCollapse extends Component {
     } else {
       return (
         <span style={{ fontSize: "25px" }}>
-          ราคาของครุภัณฑ์ : {this.props.price} บาท
+          ราคาของครุภัณฑ์ :{" "}
+          <NumberFormat
+            value={this.props.price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />{" "}
+          บาท
           <br />
           ...
         </span>
@@ -224,7 +261,7 @@ export default class DeactCollapse extends Component {
             <div
               style={{
                 backgroundColor: "#fbe9e7",
-                padding: "8px 10px 8px 20px"
+                padding: "8px 10px 8px 20px",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -259,7 +296,7 @@ export default class DeactCollapse extends Component {
               onClick={this.toggleModal}
               style={{
                 fontSize: "25px",
-                fontWeight: "normal"
+                fontWeight: "normal",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;
@@ -275,7 +312,7 @@ export default class DeactCollapse extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
               disabled={this.state.inProgress}
             >
@@ -297,7 +334,7 @@ export default class DeactCollapse extends Component {
 
   render() {
     const { date, selectedMet, docNo, salePrice } = this.state;
-    const { dateToShow, inProgress } = this.state;
+    const { inProgress } = this.state;
     return (
       <>
         <Card>
@@ -327,21 +364,10 @@ export default class DeactCollapse extends Component {
                     <DatePicker
                       className="date-picker"
                       calendarClassName="calendar-class"
-                      value={dateToShow}
-                      onChange={date => {
-                        if (date) {
-                          let formatted_date =
-                            date.getDate() +
-                            "/" +
-                            (date.getMonth() + 1) +
-                            "/" +
-                            (date.getFullYear() + 543);
-
-                          this.setState({
-                            date: formatted_date,
-                            dateToShow: date
-                          });
-                        }
+                      locale="th-TH"
+                      value={date}
+                      onChange={(date) => {
+                        this.setState({ date });
                       }}
                     />
                   </InputGroup>
@@ -362,7 +388,7 @@ export default class DeactCollapse extends Component {
               </label>
               <Select
                 value={selectedMet}
-                onChange={selectedMet => {
+                onChange={(selectedMet) => {
                   this.setState({ selectedMet });
                 }}
                 options={options}
@@ -409,7 +435,7 @@ export default class DeactCollapse extends Component {
                   fontSize: "25px",
                   fontWeight: "normal",
                   backgroundColor: "#f8f9fa",
-                  color: "gray"
+                  color: "gray",
                 }}
               >
                 &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

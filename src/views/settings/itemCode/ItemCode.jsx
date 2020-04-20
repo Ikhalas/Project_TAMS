@@ -1,7 +1,18 @@
 import React, { Component } from "react";
 import { db } from "../../../api/firebase";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { Card, CardTitle, CardBody, Row, Col, Table, Button } from "reactstrap";
+import {
+  Card,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  Table,
+  Button,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+} from "reactstrap";
 import AddItemCode from "./AddItemCode";
 
 export default class itemsCode extends Component {
@@ -10,10 +21,11 @@ export default class itemsCode extends Component {
     this.state = {
       readyToRender: false,
       itemName: [],
-
-      itemCodeModal: false
+      itemCodeModal: false,
+      currentPage: 0,
     };
     this._isMounted = false;
+    this.pageSize = 10;
   }
 
   componentDidMount() {
@@ -33,21 +45,23 @@ export default class itemsCode extends Component {
 
   getItemName() {
     db.collection("itemsCode")
+      .orderBy("code")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let itemName = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           itemName.push(doc.data());
         });
         this._isMounted && this.setState({ itemName, readyToRender: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   genItemName() {
+    const { currentPage } = this.state;
     return (
       this.state.itemName &&
-      this.state.itemName.map(item => (
+      this.state.itemName.slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize).map((item) => (
         <tr key={item.label}>
           <td></td>
           <td>{item.code}</td>
@@ -62,13 +76,22 @@ export default class itemsCode extends Component {
     this.setState({ itemCodeModal: !this.state.itemCodeModal });
   };
 
-  toggleAlert = res => {
+  handlePagination(e, index) {
+    e.preventDefault();
+    this.setState({
+      currentPage: index,
+    });
+  }
+
+  toggleAlert = (res) => {
     if (res) {
       this.props.toggleAlert(res);
     }
   };
 
   render() {
+    this.pagesCount = Math.ceil(this.state.itemName.length / this.pageSize); // number of pagination
+    const { currentPage } = this.state;
     return this.state.readyToRender ? (
       <>
         <Card>
@@ -108,7 +131,7 @@ export default class itemsCode extends Component {
                     style={{
                       fontSize: "23px",
                       color: "#66615b",
-                      textAlign: "center"
+                      textAlign: "center",
                     }}
                   >
                     ชื่อครุภัณฑ์
@@ -117,7 +140,7 @@ export default class itemsCode extends Component {
                     style={{
                       fontSize: "23px",
                       color: "#66615b",
-                      textAlign: "center"
+                      textAlign: "center",
                     }}
                   >
                     ประเภทครุภัณฑ์
@@ -127,6 +150,39 @@ export default class itemsCode extends Component {
               <tbody>{this.genItemName()}</tbody>
             </Table>
           </CardBody>
+          <div style={{ textAlign: "center", overflowX: "auto" }}>
+            <Pagination
+              aria-label="Page navigation example"
+              style={{
+                justifyContent: "center",
+                margin: "15px",
+                fontSize: "13px",
+              }}
+              className="regular-th"
+            >
+              <PaginationItem disabled={currentPage <= 0}>
+                <PaginationLink
+                  onClick={(e) => this.handlePagination(e, currentPage - 1)}
+                  previous
+                />
+              </PaginationItem>
+
+              {[...Array(this.pagesCount)].map((page, i) => (
+                <PaginationItem active={i === currentPage} key={i}>
+                  <PaginationLink onClick={(e) => this.handlePagination(e, i)}>
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                <PaginationLink
+                  onClick={(e) => this.handlePagination(e, currentPage + 1)}
+                  next
+                />
+              </PaginationItem>
+            </Pagination>
+            </div>
         </Card>
 
         <AddItemCode

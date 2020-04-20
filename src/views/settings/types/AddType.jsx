@@ -11,12 +11,12 @@ import {
   FormGroup,
   Row,
   Col,
-  Spinner
+  Spinner,
 } from "reactstrap";
 
 const moveOptions = [
   { value: "สังหาริมทรัพย์", label: "สังหาริมทรัพย์" },
-  { value: "อสังหาริมทรัพย์", label: "อสังหาริมทรัพย์" }
+  { value: "อสังหาริมทรัพย์", label: "อสังหาริมทรัพย์" },
 ];
 
 export default class AddType extends Component {
@@ -27,7 +27,7 @@ export default class AddType extends Component {
       move: "",
 
       nameCheck: true,
-      inProgress: false
+      inProgress: false,
     };
     this._isMounted = false;
   }
@@ -40,13 +40,18 @@ export default class AddType extends Component {
     this._isMounted = false;
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
       [e.target.name]: e.target.value,
-      nameCheck: true
+      nameCheck: true,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
+  };
+
+  handleCancelBtn = () => {
+    this.props.toggleFn();
+    this.setState({ move: null }); //clear option when cancel modal
   };
 
   async handleSummit(e) {
@@ -58,25 +63,25 @@ export default class AddType extends Component {
         .collection("types")
         .where("label", "==", this.state.name)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           if (snapshot.empty) {
             //console.log("No matching documents. can submit");
             this.setState({ nameCheck: true }); //can submit
             return;
           }
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             //let data = doc.data();
             //console.log(this.state.name + "|" + data.label + " can't submit");
             this.setState({ nameCheck: false, inProgress: false }); //can't submit
           });
         })
-        .catch(error => console.log(error)));
+        .catch((error) => console.log(error)));
 
     if (this.state.nameCheck) {
       const data = {
         label: this.state.name,
         value: this.state.name,
-        movable: this.state.move.label
+        movable: this.state.move.label,
       };
       //console.log(data);
       this.uploadData(data);
@@ -87,7 +92,7 @@ export default class AddType extends Component {
     db.collection("types")
       .add(data)
       .then(() => {
-        this.setState({ inProgress: false });
+        this.setState({ inProgress: false, move: null });
         this.props.toggleFn();
         this.props.toggleAlert("types");
       });
@@ -149,7 +154,7 @@ export default class AddType extends Component {
                   </label>
                   <Select
                     value={move}
-                    onChange={move => this.setState({ move })}
+                    onChange={(move) => this.setState({ move })}
                     options={moveOptions}
                   />
                 </FormGroup>
@@ -161,9 +166,15 @@ export default class AddType extends Component {
               <></>
             ) : (
               <>
-                <span style={{ fontSize: "20px", color: "red", paddingRight:'220px'  }}>
+                <span
+                  style={{
+                    fontSize: "20px",
+                    color: "red",
+                    paddingRight: "220px",
+                  }}
+                >
                   *กรุณากรอกฟิลด์ที่จำเป็นให้ครบถ้วน
-                </span>              
+                </span>
               </>
             )}
             <Button
@@ -171,13 +182,13 @@ export default class AddType extends Component {
               size="sm"
               outline
               color="secondary"
-              onClick={this.props.toggleFn}
+              onClick={this.handleCancelBtn}
               disabled={inProgress}
               style={{
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

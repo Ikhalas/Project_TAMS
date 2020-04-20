@@ -11,7 +11,7 @@ import {
   FormGroup,
   Row,
   Col,
-  Spinner
+  Spinner,
 } from "reactstrap";
 
 export default class AddItemCode extends Component {
@@ -28,7 +28,7 @@ export default class AddItemCode extends Component {
 
       codeCheck: true,
       nameCheck: true,
-      inProgress: false
+      inProgress: false,
     };
     this._isMounted = false;
   }
@@ -44,25 +44,31 @@ export default class AddItemCode extends Component {
 
   getType() {
     db.collection("types")
+      .orderBy("label")
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let typeOption = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           typeOption.push(doc.data());
         });
         this._isMounted && this.setState({ typeOption, readyToRender: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
       [e.target.name]: e.target.value,
       nameCheck: true,
-      codeCheck: true
+      codeCheck: true,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
+  };
+
+  handleCancelBtn = () => {
+    this.props.toggleFn();
+    this.setState({ type: null }); //clear option when cancel modal
   };
 
   async handleSummit(e) {
@@ -74,45 +80,45 @@ export default class AddItemCode extends Component {
         .collection("itemsCode")
         .where("label", "==", this.state.name)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           if (snapshot.empty) {
             //console.log("No matching documents. can submit");
             this.setState({ nameCheck: true }); //can submit
             return;
           }
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             //let data = doc.data();
             //console.log(this.state.name + "|" + data.label + " can't submit");
             this.setState({ nameCheck: false, inProgress: false }); //can't submit
           });
         })
-        .catch(error => console.log(error)));
+        .catch((error) => console.log(error)));
 
     this._isMounted &&
       (await db
         .collection("itemsCode")
         .where("code", "==", this.state.code)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           if (snapshot.empty) {
             //console.log("No matching documents. can submit");
             this.setState({ codeCheck: true }); //can submit
             return;
           }
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             //let data = doc.data();
             //console.log(this.state.name + "|" + data.label + " can't submit");
             this.setState({ codeCheck: false, inProgress: false }); //can't submit
           });
         })
-        .catch(error => console.log(error)));
+        .catch((error) => console.log(error)));
 
     if (this.state.nameCheck && this.state.codeCheck) {
       const data = {
         label: this.state.name,
         value: this.state.name,
         code: this.state.code,
-        type: this.state.type.label
+        type: this.state.type.label,
       };
       //console.log(data);
       this.uploadData(data);
@@ -123,7 +129,7 @@ export default class AddItemCode extends Component {
     db.collection("itemsCode")
       .add(data)
       .then(() => {
-        this.setState({ inProgress: false });
+        this.setState({ inProgress: false, type: null });
         this.props.toggleFn();
         this.props.toggleAlert("itemsCode");
       });
@@ -131,7 +137,7 @@ export default class AddItemCode extends Component {
 
   render() {
     const { itemCodeModal } = this.props;
-    const { name, code, type ,typeOption } = this.state;
+    const { name, code, type, typeOption } = this.state;
     const { codeCheck, nameCheck, inProgress, readyToRender } = this.state;
     return readyToRender ? (
       <>
@@ -213,7 +219,7 @@ export default class AddItemCode extends Component {
                   </label>
                   <Select
                     value={type}
-                    onChange={type => this.setState({ type })}
+                    onChange={(type) => this.setState({ type })}
                     options={typeOption}
                   />
                 </FormGroup>
@@ -221,30 +227,33 @@ export default class AddItemCode extends Component {
             </Row>
           </ModalBody>
           <ModalFooter>
-            
             {name && code && type ? (
               <></>
             ) : (
               <>
-                <span style={{ fontSize: "20px", color: "red", paddingRight:'220px' }}>
+                <span
+                  style={{
+                    fontSize: "20px",
+                    color: "red",
+                    paddingRight: "220px",
+                  }}
+                >
                   *กรุณากรอกฟิลด์ที่จำเป็นให้ครบถ้วน
                 </span>
-               
               </>
             )}
-
             <Button
               className="btn-round regular-th"
               size="sm"
               outline
               color="secondary"
-              onClick={this.props.toggleFn}
+              onClick={this.handleCancelBtn}
               disabled={inProgress}
               style={{
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

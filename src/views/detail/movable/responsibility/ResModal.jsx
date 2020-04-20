@@ -13,7 +13,7 @@ import {
   InputGroup,
   Spinner,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 
 function TextInput(props) {
@@ -42,18 +42,11 @@ export default class ResModal extends Component {
     super(props);
     this.state = {
       subDep: "",
-      dateToShow: new Date(),
       inProgress: false,
-
-      date:
-        new Date().getDate() +
-        "/" +
-        (new Date().getMonth() + 1) +
-        "/" +
-        (new Date().getFullYear() + 543),
+      date: new Date(),
       selectedDep: "",
       resName: "",
-      resUser: ""
+      resUser: "",
     };
     this._isMounted = false;
   }
@@ -72,21 +65,21 @@ export default class ResModal extends Component {
       db.collection("subDepartments")
         .where("parent", "==", this.props.department)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           let subDep = [];
-          snapshot.forEach(doc => {
+          snapshot.forEach((doc) => {
             subDep.push(doc.data());
           });
           this._isMounted && this.setState({ subDep });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     }
   }
 
-  handleInputTextChange = e => {
+  handleInputTextChange = (e) => {
     e.preventDefault();
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     //console.log([e.target.name] + " ===> " + e.target.value);
   };
@@ -99,7 +92,7 @@ export default class ResModal extends Component {
     if (this.props.res.length !== 0) {
       _lastSeq = Math.max.apply(
         Math,
-        this.props.res.map(function(obj) {
+        this.props.res.map(function (obj) {
           return obj.seq;
         })
       );
@@ -112,7 +105,7 @@ export default class ResModal extends Component {
       resDepartment: this.props.department,
       resSubDepartment: this.state.selectedDep.label,
       resUser: this.state.resUser,
-      resName: this.state.resName
+      resName: this.state.resName,
     };
 
     this.addResToDatabase(data);
@@ -131,7 +124,7 @@ export default class ResModal extends Component {
 
   render() {
     const { inProgress, resName, resUser, date } = this.state;
-    const { dateToShow, selectedDep, subDep } = this.state;
+    const { selectedDep, subDep } = this.state;
 
     return (
       <>
@@ -171,21 +164,10 @@ export default class ResModal extends Component {
                     <DatePicker
                       className="date-picker"
                       calendarClassName="calendar-class"
-                      value={dateToShow}
-                      onChange={date => {
-                        if (date) {
-                          let formatted_date =
-                            date.getDate() +
-                            "/" +
-                            (date.getMonth() + 1) +
-                            "/" +
-                            (date.getFullYear() + 543);
-
-                          this.setState({
-                            date: formatted_date,
-                            dateToShow: date
-                          });
-                        }
+                      locale="th-TH"
+                      value={date}
+                      onChange={(date) => {
+                        this.setState({ date });
                       }}
                     />
                   </InputGroup>
@@ -201,9 +183,9 @@ export default class ResModal extends Component {
                   <Select
                     style={{ height: 40, fontSize: "22px" }}
                     value={selectedDep}
-                    onChange={selectedDep => {
+                    onChange={(selectedDep) => {
                       this.setState({
-                        selectedDep
+                        selectedDep,
                       });
                     }}
                     options={subDep}
@@ -238,7 +220,7 @@ export default class ResModal extends Component {
                 fontSize: "25px",
                 fontWeight: "normal",
                 backgroundColor: "#f8f9fa",
-                color: "gray"
+                color: "gray",
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;

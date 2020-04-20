@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { db } from "../../../../api/firebase";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import NumberFormat from "react-number-format";
 import { CardHeader, CardTitle, Table } from "reactstrap";
 
 export default class DeactivateInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      detail: []
+      detail: [],
+      readyRender: false,
     };
   }
   _isMounted = false;
@@ -24,20 +27,53 @@ export default class DeactivateInfo extends Component {
     db.collection("deactivatedLand")
       .where("itemCode", "==", this.props.itemCode)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let detail;
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           detail = doc.data();
         });
-        this._isMounted && this.setState({ detail });
+        this._isMounted && this.setState({ detail, readyRender: true });
         //console.log(Object(this.state.detail));
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
+  }
+
+  convertDate(date) {
+    let month = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+    //console.log(date);
+    //console.log(month[new Date(date.seconds * 1000).getMonth() + 1]);
+    if (date) {
+      return (
+        <>
+          {" "}
+          {new Date(date.seconds * 1000).getDate() +
+            " " +
+            month[new Date(date.seconds * 1000).getMonth()] +
+            " " +
+            (new Date(date.seconds * 1000).getFullYear() + 543)}
+        </>
+      );
+    } else {
+      return <></>;
+    }
   }
 
   render() {
-    const detail = this.state.detail;
-    return (
+    const { detail, readyRender } = this.state;
+    return readyRender ? (
       <>
         <CardHeader
           style={{ textAlign: "center", fontSize: "45px", color: "#ef8157" }}
@@ -58,7 +94,7 @@ export default class DeactivateInfo extends Component {
                 <td>
                   <b>วันที่จำหน่าย</b> :
                 </td>
-                <td>{detail.date}</td>
+                <td>{this.convertDate(detail.date)}</td>
               </tr>
               <tr>
                 <td>
@@ -77,7 +113,14 @@ export default class DeactivateInfo extends Component {
                 <td>
                   <b>ราคาจำหน่าย</b> :
                 </td>
-                <td>{detail.salePrice}&nbsp;บาท</td>
+                <td>
+                  <NumberFormat
+                    value={detail.salePrice}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                  />
+                  &nbsp;บาท
+                </td>
               </tr>
               <tr>
                 <td>
@@ -85,7 +128,12 @@ export default class DeactivateInfo extends Component {
                 </td>
                 <td>
                   {detail.profit}&nbsp;&nbsp;
-                  {detail.amount}&nbsp;บาท
+                  <NumberFormat
+                    value={detail.amount}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                  />
+                  &nbsp;บาท
                 </td>
               </tr>
             </tbody>
@@ -93,6 +141,14 @@ export default class DeactivateInfo extends Component {
         </div>
         <hr />
       </>
+    ) : (
+      <div className="content">
+        <SkeletonTheme color="#fafafa">
+          <p style={{ textAlign: "center" }}>
+            <Skeleton height={400} width={1100} />
+          </p>
+        </SkeletonTheme>
+      </div>
     );
   }
 }

@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardFooter,
   CardTitle,
   Row,
   Col,
@@ -156,7 +155,7 @@ export default class BorrowTable extends Component {
                           </Link>
                         </td>
                       </tr>
-                      <hr />
+                    
                     </tbody>
                   </Table>
                 </CardBody>
