@@ -12,6 +12,7 @@ import Login from "./layouts/Login";
 import AdminLayout from "layouts/Admin.jsx";
 import ItemImovable from "./views/mobile-view/ItemImovable";
 import ItemMovable from "./views/mobile-view/ItemMovable";
+import NotFound from "./views/notfound/NotFound"
 
 const hist = createBrowserHistory();
 
@@ -22,6 +23,7 @@ ReactDOM.render(
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/item-imovable/:id" component={ItemImovable} />
       <Route path="/item-movable/:id" component={ItemMovable} />
+      <Route component={NotFound} />
       <Redirect to="/login" />
     </Switch>
   </Router>,
