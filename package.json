@@ -12,6 +12,7 @@
     "node-sass": "4.12.0",
     "pdfmake": "^0.1.64",
     "perfect-scrollbar": "1.4.0",
+    "qrcode.react": "^1.0.0",
     "react": "16.8.6",
     "react-date-picker": "^7.10.0",
     "react-dom": "16.8.6",

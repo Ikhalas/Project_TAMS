@@ -10,6 +10,7 @@ import ResModal from "./responsibility/ResModal";
 import ValModal from "./valueAdded/ValModal";
 import BenModal from "./benefit/BenModal";
 import MainModal from "./maintenance/MainModal";
+import QRCodeModal from "./qr-code/QRCodeModal";
 import DeactCollapse from "./deactivation/DeactCollapse";
 import DeactivateInfo from "./deactivation/DeactivateInfo";
 import {
@@ -77,6 +78,7 @@ class ImovableDetail extends Component {
       valModal: false,
       benModal: false,
       mainModal: false,
+      qrModal: false,
 
       deactOpen: false,
     };
@@ -415,6 +417,10 @@ class ImovableDetail extends Component {
     this.setState({ mainModal: !this.state.mainModal }, () => {
       //console.log("done")
     });
+  };
+
+  toggleQRModal = () => {
+    this.setState({ qrModal: !this.state.qrModal });
   };
 
   convertDate(date) {
@@ -1059,7 +1065,17 @@ class ImovableDetail extends Component {
         </Row>
         {/* การจำหน่ายครุภัณฑ์ */}
         {this.deactivateLand()}
+        <div className="text-right">
+          <Link
+            style={{ fontSize: "25px" }}
+            //to={"/item-imovable/" + this.props.itemId}
+            onClick={() => this.toggleQRModal()}
+          >
+            QR Code สำหรับครุภัณฑ์
+          </Link>
+        </div>
 
+      
         {this.state.resModal && (
           <ResModal
             resModal={this.state.resModal}
@@ -1098,6 +1114,15 @@ class ImovableDetail extends Component {
             itemCode={this.state.itemDetail.itemCode}
             main={this.state.main}
             toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.qrModal && (
+          <QRCodeModal
+            qrModal={this.state.qrModal}
+            toggleFn={this.toggleQRModal}
+            itemCode={this.state.itemDetail.itemCode}
+            url={"/item-imovable/" + this.props.itemId}
           />
         )}
       </>

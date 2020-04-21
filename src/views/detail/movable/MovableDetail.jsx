@@ -8,6 +8,7 @@ import ResModal from "./responsibility/ResModal";
 import DepModal from "./depreciation/DepModal";
 import BenModal from "./benefit/BenModal";
 import MainModal from "./maintenance/MainModal";
+import QRCodeModal from "./qr-code/QRCodeModal";
 import DeactCollapse from "./deactivation/DeactCollapse";
 import DeactivateInfo from "./deactivation/DeactivateInfo";
 import {
@@ -75,6 +76,7 @@ export default class MovableDetail extends Component {
       depModal: false,
       benModal: false,
       mainModal: false,
+      qrModal: false,
 
       deactOpen: false,
     };
@@ -110,7 +112,7 @@ export default class MovableDetail extends Component {
               itemDetail: Object(doc.data()),
               readyToRender: true,
             });
-          //console.log(this.state._id)
+          //console.log(this.state.itemDetail)
           this._isMounted && this.getResponsibility();
           this._isMounted && this.getDepreciations();
           this._isMounted && this.getBenefit();
@@ -409,6 +411,10 @@ export default class MovableDetail extends Component {
 
   toggleResModal = () => {
     this.setState({ resModal: !this.state.resModal });
+  };
+
+  toggleQRModal = () => {
+    this.setState({ qrModal: !this.state.qrModal });
   };
 
   convertDate(date) {
@@ -996,6 +1002,17 @@ export default class MovableDetail extends Component {
         </Row>
         {/* การจำหน่ายครุภัณฑ์ */}
         {this.deactivateItem()}
+        <div className="text-right">
+          <Link
+            style={{ fontSize: "25px" }}
+            //to={"/item-movable/" + this.props.itemId}
+            onClick={() => this.toggleQRModal()}
+          >
+            QR Code สำหรับครุภัณฑ์
+          </Link>
+        </div>
+
+      
 
         {this.state.resModal && (
           <ResModal
@@ -1035,6 +1052,15 @@ export default class MovableDetail extends Component {
             itemCode={this.state.itemDetail.itemCode}
             main={this.state.main}
             toggleAlert={this.toggleAlert}
+          />
+        )}
+
+        {this.state.qrModal && (
+          <QRCodeModal
+            qrModal={this.state.qrModal}
+            toggleFn={this.toggleQRModal}
+            itemCode={this.state.itemDetail.itemCode}
+            url={"/item-movable/" + this.props.itemId}
           />
         )}
       </>
